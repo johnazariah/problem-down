@@ -168,25 +168,35 @@ For larger graphs, the companion notebook runs the full QAOA loop with classical
 
 ## Reality Check
 
-Let's be honest about where QAOA stands.
+Let's be honest about where QAOA stands — and where it's heading.
 
-**The theoretical picture.** For depth-1 QAOA on MaxCut, Farhi, Goldstone, and Gutmann (2014) proved a guaranteed approximation ratio of 0.6924 for 3-regular graphs. The best classical polynomial-time algorithm (Goemans-Williamson, 1995) achieves 0.878. So at low depth, QAOA *underperforms* the best classical algorithm.
+**The low-depth story.** For depth-1 QAOA on MaxCut, Farhi, Goldstone, and Gutmann (2014) proved a guaranteed approximation ratio of 0.6924 for 3-regular graphs. The best classical polynomial-time algorithm (Goemans-Williamson, 1995) achieves 0.878. So at low depth, QAOA *underperforms* the best classical method. This result gave QAOA a reputation as a promising but underpowered algorithm.
 
-At higher depths, the picture improves — performance monotonically increases with $p$ — but optimising the $2p$ parameters becomes harder. The classical optimisation landscape develops its own ruggedness. And there's a deeper obstacle: **barren plateaus** (McClean et al. 2018). For random circuits on many qubits, the gradient of the cost function vanishes exponentially with system size. This doesn't necessarily kill QAOA (it has more structure than random circuits), but it's a serious concern.
+But low depth is not the whole story.
 
-**The experimental picture.** QAOA has been demonstrated on trapped-ion and superconducting hardware for graphs up to ~20 nodes. Results roughly match simulator predictions after error mitigation. But no experiment has yet shown a practical advantage over classical solvers on a problem anyone cares about.
+**The high-depth story is much more interesting.** QAOA's performance improves monotonically with depth $p$, and recent work has made it possible to compute exact QAOA performance at depths that were previously out of reach — not by running a quantum computer, but by exploiting the mathematical structure of the algorithm itself.
 
-**The competitive landscape.** The best classical heuristics for MaxCut and graph problems are *very* good. Breakout Local Search (BLS), tabu search, and semi-definite programming relaxations are hard to beat. QAOA would need to reach high depth on large graphs — requiring deep circuits with low error rates — to be competitive. Current estimates (Guerreschi and Matsuura 2019) suggest quantum advantage for MaxCut would require thousands of qubits with error rates orders of magnitude below current hardware.
+MaxCut and its generalisation to Max-$k$-XORSAT belong to a family of constraint satisfaction problems where the cost function decomposes into $k$-local terms. For $D$-regular instances of these problems, Basso et al. (2021) showed that QAOA's expected performance in the infinite-size limit can be computed via a *tree tensor network* contraction — a classical calculation whose cost is exponential in $p$ but independent of the graph size.
 
-**What's real today:** QAOA is a proof of concept, not a production tool. It definitively demonstrates that combinatorial optimisation problems *can* be encoded into quantum circuits and that the variational approach works mechanically. The algorithm is correct; the hardware isn't ready.
+Farhi et al. (2025) pushed this to depth $p = 20$ for MaxCut on 3-regular graphs. Azariah and Jordan (2026) extended the approach to Max-$k$-XORSAT for $k \geq 3$ using a Walsh-Hadamard factorisation that reduces the computational cost by a factor of 65,000× for $k = 3$. This factorisation exploits the fact that the $k$-body constraint fold is a convolution on $\mathbb{Z}_2^{2p+1}$ — the Walsh-Hadamard transform diagonalises it. The result: exact QAOA performance through depth $p = 13$ for $(k=3, D=4)$, achieving a satisfaction fraction of $\tilde{c} = 0.877$.
 
-**What would change the picture:** Fault-tolerant quantum computers with $\sim 10^4$ logical qubits would enable high-depth QAOA on industrially relevant graphs. Alternatively, better initialisation strategies, problem-specific ansätze, or recursive QAOA variants could reduce the depth requirements.
+Why does this matter? Because we can now *precisely compare* QAOA against other quantum and classical algorithms on these problems. For Max-$k$-XORSAT, the main quantum competitor is **Decoded Quantum Interferometry** (DQI), a non-variational algorithm introduced by Jordan et al. (Nature, 2025). DQI combined with Belief Propagation post-processing (DQI+BP) was the previous state of the art. The exact QAOA evaluations show that **QAOA surpasses DQI+BP on 13 of 15 $(k, D)$ parameter pairs tested**.
+
+This doesn't mean QAOA has "won" — DQI has its own advantages (no classical optimiser loop, better scaling properties for some regimes). But it definitively refutes the narrative that QAOA is too weak to compete. For this family of problems, at sufficient depth, QAOA is a serious contender.
+
+**The hardware gap.** These are theoretical results — computing what QAOA *would* achieve if you could run it at depth $p = 12$ on a large enough quantum computer. Today's hardware can run QAOA at $p = 1$ or $p = 2$ on a few dozen noisy qubits. The gap between where the algorithm shines ($p \geq 8$) and where hardware can operate ($p \leq 2$) is real. Fault-tolerant quantum computers with $\sim 10^4$ logical qubits would close this gap.
+
+**The barren plateau question.** McClean et al. (2018) showed that for random quantum circuits, the cost function gradient vanishes exponentially with system size. This is a serious concern for variational algorithms. However, QAOA has far more structure than a random circuit — its alternating problem/mixer layers are determined by the problem graph. Barren plateaus have not been observed in practice for QAOA at moderate depths, and the exact evaluations confirm that the parameter landscape remains navigable through $p = 13$.
+
+**What's real today:** QAOA's algorithmic performance is now well-characterised for an important family of combinatorial problems. The algorithm is provably competitive with the best known quantum alternatives. The bottleneck is hardware, not the algorithm.
 
 ---
 
 ## Chef's Notes
 
-- **MaxCut is a gateway drug.** We used it here because it maps directly to qubits ($Z_i Z_j$ interactions), but the QAOA framework applies to *any* combinatorial optimisation problem you can write as a cost function over binary variables. Scheduling, bin packing, graph colouring, portfolio optimisation — they all fit.
+- **MaxCut is a gateway drug.** We used it here because it maps directly to qubits ($Z_i Z_j$ interactions), but QAOA applies to *any* combinatorial optimisation problem you can write as a cost function over binary variables. Scheduling, bin packing, graph colouring, portfolio optimisation — they all fit. MaxCut and $k$-XORSAT are the problems where we can compute QAOA's exact performance; for other problems, we rely on empirical evaluation.
+
+- **The Max-$k$-XORSAT family.** MaxCut is the $k = 2$ case of a broader family: Max-$k$-XORSAT, where each constraint involves $k$ variables connected by an XOR. As $k$ increases, the problem gets harder classically (the random satisfiability threshold drops) but the QAOA analysis extends cleanly — the cost Hamiltonian becomes a sum of $k$-body $Z$-interactions instead of 2-body. The same tree tensor network machinery evaluates QAOA performance for any $k$, with a computational trick (Walsh-Hadamard factorisation) that makes $k \geq 3$ tractable.
 
 - **The cost Hamiltonian pattern recurs everywhere.** The idea of encoding an objective function as a quantum operator whose ground state is the optimal solution appears in Unit 3 (molecular simulation — the Hamiltonian encodes the energy), Unit 6 (QUBO/annealing), and Unit 7 (QPE). Once you see the pattern, you see it everywhere.
 
@@ -198,6 +208,7 @@ At higher depths, the picture improves — performance monotonically increases w
 
 - **Further reading:**
     - Farhi, Goldstone, Gutmann (2014). *A Quantum Approximate Optimization Algorithm.* [arXiv:1411.4028](https://arxiv.org/abs/1411.4028)
-    - Guerreschi and Matsuura (2019). *QAOA for Max-Cut requires hundreds of qubits for quantum speed-up.* [arXiv:1812.07589](https://arxiv.org/abs/1812.07589)
-    - Zhou et al. (2020). *Quantum Approximate Optimization Algorithm: Performance, Mechanism, and Implementation on Near-Term Devices.* [arXiv:1812.01041](https://arxiv.org/abs/1812.01041)
-    - Bravyi, Kliesch, Koenig, Tang (2020). *Obstacles to variational quantum optimization from symmetry protection.* [arXiv:1910.08980](https://arxiv.org/abs/1910.08980)
+    - Basso, Farhi, Marwaha, Villalonga, Zhou (2021). *The Quantum Approximate Optimization Algorithm at High Depth for MaxCut on Large-Girth Regular Graphs and the Sherrington-Kirkpatrick Model.* [arXiv:2110.14206](https://arxiv.org/abs/2110.14206)
+    - Farhi, Goldstone, Gutmann, Zhou (2025). *An exact formula for the expected value of QAOA.* [arXiv:2503.12789](https://arxiv.org/abs/2503.12789)
+    - Jordan, Wahl, Mele (2025). *Efficiently extracting quantum advantages in optimization by Decoded Quantum Interferometry.* [Nature 646:831–836](https://doi.org/10.1038/s41586-024-08033-4)
+    - Azariah and Jordan (2026). *Filling in the Gaps: Generic Tree Folding for Exact QAOA on Max-$k$-XORSAT.* (In preparation.)
