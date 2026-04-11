@@ -1,12 +1,131 @@
 # Chapter 14: QPE and Trotterisation
 
-_This chapter pairs with the previous application chapter. It teaches the algorithm from first principles._
+_This chapter pairs with Chapter 13 (Materials Science), which explained why the Hubbard model defeats classical methods and how QPE could solve it. Here we build QPE and the Trotter time-evolution circuit from the components introduced in earlier chapters._
 
 ## In This Chapter
 
-- **What you'll learn:** Quantum Phase Estimation in full — controlled time evolution, Trotter decomposition, error bounds, and resource estimation for the Hubbard model.
-- **What you need:** This chapter builds on the QFT from Chapter 4 (Shor) and the ZZ gate from Chapter 2 (QAOA). It combines them into the full QPE+Trotter pipeline for Hamiltonian simulation.
+- **What you'll learn:** How QPE extracts exact energy eigenvalues, how Trotterisation approximates time evolution as a circuit, and how to estimate the resources needed for real materials simulation.
+- **What you need:** From Chapter 4 (Shor), you know the QFT and phase kickback. From Chapter 2 (QAOA), you know the ZZ gate and CNOT sandwich. Here we combine them for Hamiltonian simulation.
+- **Runnable version:** The companion notebook [`07-materials-science.ipynb`](../notebooks/07-materials-science.ipynb) runs QPE on a 2-site Hubbard model on a cloud Quokka.
 
 ---
 
-*Coming soon. This chapter will follow the pedagogical model established in Chapter 2 (Building QAOA): start from the concepts the reader already has, build new ones organically, with concrete examples, common mistakes, and a complete working circuit by the end.*
+## QPE: eigenvalue extraction
+
+### The idea
+
+Quantum Phase Estimation answers the question: given a unitary operator $U$ and one of its eigenstates $|\psi\rangle$ (with $U|\psi\rangle = e^{2\pi i \phi}|\psi\rangle$), what is the eigenvalue phase $\phi$?
+
+For Hamiltonian simulation: $U = e^{-iHt}$ and the eigenvalue is $e^{-iEt}$, so $\phi = -Et/(2\pi)$. Measuring $\phi$ gives us the energy $E$.
+
+### The circuit
+
+QPE uses $m$ ancilla qubits (for $m$ bits of precision) and one system register:
+
+1. **Hadamard** all ancillas → superposition
+2. **Controlled-$U^{2^k}$** for each ancilla qubit $k$ → phase accumulation
+3. **Inverse QFT** on the ancillas → converts phases to a binary number
+4. **Measure** the ancillas → read out $\phi$
+
+Steps 1, 3, and 4 we've seen before. The inverse QFT is the QFT from Chapter 4, run backwards (swap the order of gates, negate the rotation angles). Step 2 is the new ingredient.
+
+### Controlled-$U^{2^k}$
+
+Ancilla qubit $k$ controls the application of $U^{2^k}$ to the system register. If the system is in eigenstate $|\psi\rangle$:
+
+$$\text{c-}U^{2^k}\left(\frac{|0\rangle + |1\rangle}{\sqrt{2}}\right)|\psi\rangle = \frac{|0\rangle + e^{2\pi i \cdot 2^k \phi}|1\rangle}{\sqrt{2}} |\psi\rangle$$
+
+The ancilla picks up a phase proportional to $2^k \phi$. After all $m$ controlled operations, the ancilla register holds:
+
+$$\frac{1}{\sqrt{2^m}} \sum_{k=0}^{2^m-1} e^{2\pi i k \phi} |k\rangle$$
+
+This is exactly the QFT of $|\phi\rangle$. Applying the inverse QFT yields $\phi$ (or its best $m$-bit approximation).
+
+> **Connection to Shor:** In Chapter 4, QPE was implicit — the controlled modular exponentiation + QFT was QPE applied to the modular multiplication operator. Here we make it explicit and apply it to a physically motivated Hamiltonian.
+
+---
+
+## Trotterisation: implementing $e^{-iHt}$
+
+### The problem
+
+QPE requires controlled applications of $U = e^{-iHt}$. But $H$ is a sum of terms that don't commute:
+
+$$H = H_1 + H_2 + \cdots + H_L$$
+
+We can implement $e^{-iH_k t}$ for each individual term (because each term has a simple structure — products of Pauli operators). But $e^{-iHt} \neq e^{-iH_1 t} \cdot e^{-iH_2 t} \cdots e^{-iH_L t}$ because the terms don't commute.
+
+### First-order Trotter
+
+The **Trotter formula** says: the product of exponentials approximates the exponential of the sum if the time step is small:
+
+$$e^{-iHt} \approx \left(e^{-iH_1 \Delta t} \cdot e^{-iH_2 \Delta t} \cdots e^{-iH_L \Delta t}\right)^{N}$$
+
+where $\Delta t = t/N$. The error is $O(L^2 t^2 \Delta t)$ — it goes to zero as $\Delta t \to 0$ (more Trotter steps).
+
+### Second-order Trotter (Suzuki)
+
+A better approximation symmetrises the product:
+
+$$e^{-iHt} \approx \left(e^{-iH_1 \Delta t/2} \cdot e^{-iH_2 \Delta t/2} \cdots e^{-iH_L \Delta t} \cdots e^{-iH_2 \Delta t/2} \cdot e^{-iH_1 \Delta t/2}\right)^{N}$$
+
+The error drops to $O(L^3 t^3 \Delta t^2)$ — much better for the same circuit depth. Higher-order formulas exist but add circuit complexity.
+
+### Implementing each term
+
+For the Hubbard model:
+
+**Hopping terms** $c_{i\sigma}^\dagger c_{j\sigma} + \text{h.c.}$: after Jordan-Wigner encoding (Chapter 6), these become $\frac{1}{2}(X_i X_j + Y_i Y_j) \cdot Z_\text{string}$. The time evolution under this term is:
+
+$$e^{-i\theta(X_i X_j + Y_i Y_j)/2}$$
+
+This requires 2 CNOTs mixed with single-qubit rotations — a known decomposition that generalises the ZZ sandwich from Chapter 2.
+
+**Interaction terms** $n_{i\uparrow} n_{i\downarrow}$: after encoding, each becomes $\frac{(1-Z_{i\uparrow})(1-Z_{i\downarrow})}{4}$. This is diagonal — the time evolution is a $ZZ$ phase gate, exactly the CNOT sandwich from Chapter 2:
+
+```
+cx q[i_up], q[i_down];
+rz(U * dt / 2) q[i_down];
+cx q[i_up], q[i_down];
+```
+
+Every piece of the Trotter circuit is built from gates we already know.
+
+---
+
+## Resource estimation
+
+### Gate count
+
+For an $L \times L$ Hubbard lattice with $2L^2$ spin-orbitals:
+
+| Component | Gate count |
+|:---|:---|
+| Hopping terms per Trotter step | $O(L^2)$ CNOTs |
+| Interaction terms per Trotter step | $O(L^2)$ CNOTs |
+| QFT (for QPE) | $O(m^2)$ controlled rotations |
+| Total | $O(m \cdot N_\text{Trotter} \cdot L^2)$ |
+
+For a $10 \times 10$ lattice with chemical-precision QPE ($m \approx 20$ bits, $N_\text{Trotter} \approx 10^3$): roughly $10^7$ gates on $\sim 200$ qubits.
+
+### Physical qubits
+
+With surface code error correction (physical error rate $10^{-3}$, code distance $\sim 20$): each logical qubit requires $\sim 800$ physical qubits. The $10 \times 10$ Hubbard model needs:
+
+$$200 \text{ logical} \times 800 \text{ physical/logical} \approx 160{,}000 \text{ physical qubits}$$
+
+This is in the same ballpark as the Pinnacle architecture's estimate for RSA-2048 (Chapter 3: 100,000 physical qubits). Both are ambitious but plausible targets for the next decade of hardware development.
+
+---
+
+## What you should take away
+
+1. **QPE = controlled time evolution + inverse QFT.** It extracts energy eigenvalues to arbitrary precision. The QFT (from Chapter 4) and phase kickback (from Chapter 4) do the heavy lifting.
+
+2. **Trotterisation is the bridge between Hamiltonians and circuits.** It breaks $e^{-iHt}$ into a product of simple operations — each implemented with the gates from Chapter 2 (ZZ sandwich for diagonal terms) and generalisations for off-diagonal terms.
+
+3. **The circuit is deep but structured.** Every gate in a Trotter circuit has a physical meaning: it simulates one interaction in the Hamiltonian for one time step. More accuracy → more Trotter steps → deeper circuit.
+
+4. **Resource estimates are concrete.** For the 2D Hubbard model: ~200 qubits, ~$10^7$ gates, ~$10^5$ physical qubits with error correction. These numbers define the engineering targets.
+
+5. **Everything connects.** QPE reuses the QFT from Shor (Chapter 4). Trotterisation reuses the ZZ gate from QAOA (Chapter 2). The fermionic encoding comes from VQE (Chapter 6). This chapter is where the threads converge.
