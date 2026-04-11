@@ -164,6 +164,9 @@ For larger graphs, the companion notebook runs the full QAOA loop with classical
 
 → **See [Quokka Cookbook — Recipe 07: QAOA for MaxCut](https://github.com/johnazariah/quokka-cookbook/recipes/07-qaoa-maxcut/) for the QASM implementation you can run on your Quokka.**
 
+!!! lab "Lab 1: Build the QAOA circuit gate by gate"
+    Want to understand how the cost Hamiltonian becomes a quantum circuit? Recipe 07 in the Quokka Cookbook walks through the same MaxCut QAOA — one gate at a time, in QASM you can paste into your Quokka.
+
 ---
 
 ## Reality Check

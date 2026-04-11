@@ -79,6 +79,9 @@ We discretise the stock price into $2^n$ bins, encode the log-normal distributio
 
 → **See [notebook `05-finance.ipynb`](../notebooks/05-finance.ipynb) for the runnable version.**
 
+!!! lab "Lab 5: Grover's search on your Quokka"
+    Amplitude estimation is built on Grover's algorithm. See [Quokka Cookbook — Recipe 06: Grover's Search](https://github.com/johnazariah/quokka-cookbook/recipes/06-grovers-search/) for the oracle + diffusion circuit, and [Recipe 12: Quantum Counting](https://github.com/johnazariah/quokka-cookbook/recipes/12-quantum-counting/) for QPE applied to the Grover iterator.
+
 ---
 
 ## Reality Check

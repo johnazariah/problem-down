@@ -89,6 +89,9 @@ We build a quantum kernel classifier for a synthetic 2D dataset: two classes arr
 
 → **See [notebook `04-machine-learning.ipynb`](../notebooks/04-machine-learning.ipynb) for the runnable version.**
 
+!!! lab "Lab 4: Quantum feature maps on your Quokka"
+    The quantum kernel circuit is just parameterised rotations + entanglement + measurement. See [Quokka Cookbook — Recipe 01: Bell State](https://github.com/johnazariah/quokka-cookbook/recipes/01-bell-state/) for entanglement fundamentals, and the companion notebook for the full kernel computation.
+
 ---
 
 ## Reality Check
