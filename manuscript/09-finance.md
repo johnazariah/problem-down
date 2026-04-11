@@ -84,9 +84,7 @@ We discretise the stock price into $2^n$ bins, encode the log-normal distributio
 
 ---
 
-## Deep Dive: Amplitude Estimation from Grover
-
-*Coming soon. This section will teach the algorithm from first principles, following the pedagogical model of [From Molecules to Qubits](https://github.com/johnazariah/encodings-book): start from a basis of ignorance, build intuition step by step, with concrete examples and common mistakes flagged along the way.*
+→ *Want to understand the algorithm in detail? Read the next chapter.*
 
 ---
 

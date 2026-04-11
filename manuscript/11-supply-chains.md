@@ -99,9 +99,7 @@ Formulate as QUBO: 8 nurses × 8 shift-slots = 64 binary variables (reducible wi
 
 ---
 
-## Deep Dive: QUBO Engineering
-
-*Coming soon. This section will teach the algorithm from first principles, following the pedagogical model of [From Molecules to Qubits](https://github.com/johnazariah/encodings-book): start from a basis of ignorance, build intuition step by step, with concrete examples and common mistakes flagged along the way.*
+→ *Want to understand the algorithm in detail? Read the next chapter.*
 
 ---
 
