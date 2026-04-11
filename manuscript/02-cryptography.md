@@ -211,9 +211,11 @@ Shor's algorithm is the most famous quantum algorithm, and its implications are 
 
 In short: Shor's algorithm has never been run, at scale, on a number whose factors were unknown.
 
-**Resource estimates for RSA-2048.** Gidney and Ekerå (2021) estimate that factoring a 2,048-bit RSA key would require approximately **20 million noisy physical qubits** (assuming surface code error correction with a physical error rate of $10^{-3}$) and roughly **8 hours** of computation. This is orders of magnitude beyond current hardware — the largest quantum computers in 2026 have a few thousand physical qubits.
+**Resource estimates for RSA-2048.** Gidney and Ekerå (2021) estimated that factoring a 2,048-bit RSA key would require approximately **20 million noisy physical qubits** (assuming surface code error correction with a physical error rate of $10^{-3}$) and roughly **8 hours** of computation.
 
-With more optimistic assumptions (better error correction codes, lower physical error rates), the estimate drops to perhaps 4 million qubits. Still far away, but conceivably within reach in 10–20 years.
+That estimate has dropped dramatically. In February 2026, Webster, Berent, Chandra, and Hockings introduced the **Pinnacle architecture** (arXiv:2602.11457), which uses quantum LDPC codes instead of surface codes to reduce the cost of breaking RSA-2048 to under **100,000 physical qubits** — a 200× improvement. The largest quantum computers in 2026 have a few thousand physical qubits, so we're still short — but 100K qubits is within plausible reach of hardware roadmaps in the next 5–10 years. The threat timeline just got much shorter.
+
+On the elliptic curve side, Kim, Jang, et al. (ePrint 2026/106) designed new quantum circuits for ECDLP that reduce the total gate count by 52–54% compared to Roetteler et al., bringing the estimated time to break P-224 (comparable security to RSA-2048) down to minutes on a fault-tolerant machine.
 
 **The post-quantum migration.** The threat is taken seriously. NIST finalised its first set of post-quantum cryptography standards in 2024: CRYSTALS-Kyber (key encapsulation) and CRYSTALS-Dilithium (digital signatures), both based on lattice problems believed to be hard for quantum computers. The U.S. government has mandated that federal systems begin migrating to post-quantum cryptography. Google, Cloudflare, and Apple have already deployed post-quantum key exchange in their products.
 
@@ -236,7 +238,9 @@ The migration timeline is measured in decades, not years. Cryptographic infrastr
 - **Further reading:**
     - Shor (1994). *Algorithms for Quantum Computation: Discrete Logarithms and Factoring.* [arXiv:quant-ph/9508027](https://arxiv.org/abs/quant-ph/9508027)
     - Gidney and Ekerå (2021). *How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits.* [arXiv:1905.09749](https://arxiv.org/abs/1905.09749)
+    - Webster, Berent, Chandra, Hockings et al. (2026). *The Pinnacle Architecture: Reducing the cost of breaking RSA-2048 to 100,000 physical qubits using quantum LDPC codes.* [arXiv:2602.11457](https://arxiv.org/abs/2602.11457)
     - Roetteler, Naehrig, Svore, Lauter (2017). *Quantum Resource Estimates for Computing Elliptic Curve Discrete Logarithms.* [arXiv:1706.06752](https://arxiv.org/abs/1706.06752)
+    - Kim, Jang, Wang, Baksi, Song et al. (2026). *New Quantum Circuits for ECDLP: Breaking Prime Elliptic Curve Cryptography in Minutes.* [ePrint 2026/106](https://eprint.iacr.org/2026/106)
     - NIST (2024). *Post-Quantum Cryptography Standardization.* [csrc.nist.gov/projects/post-quantum-cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
     - Vandersypen et al. (2001). *Experimental realization of Shor's quantum factoring algorithm using nuclear magnetic resonance.* [Nature 414:883–887](https://doi.org/10.1038/414883a)
     - Nielsen and Chuang (2000). *Quantum Computation and Quantum Information.* Chapter 5: The quantum Fourier transform and its applications.
