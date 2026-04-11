@@ -79,7 +79,9 @@ Appendix B           — Further reading (curated, annotated bibliography)
 
 **Key design decision:** No concept is taught before it's needed. Quantum concepts (qubits, superposition, entanglement, phase kickback, QFT, etc.) are introduced *inside* the deep dive chapters, the first time the algorithm under discussion requires them. The appendix collects all concepts into a reference glossary — but nobody should start there.
 
-**Key design decision:** Application chapters contain *no* circuit-level detail and *no* cookbook recipe links. They reference the next chapter (the deep dive) for readers who want to go deeper. Deep dive chapters reference the [Quokka Cookbook](https://github.com/johnazariah/quokka-cookbook) for runnable QASM implementations.
+**Key design decision:** Application chapters contain *no* circuit-level detail. They reference the next chapter (the deep dive) for readers who want to go deeper. Deep dive chapters are self-contained algorithm tutorials that weave in circuit concepts from the [Quokka Cookbook](https://github.com/johnazariah/quokka-cookbook) organically — the cookbook content is subsumed into the book, not cross-referenced as a separate resource.
+
+**Key design decision:** The Quokka Cookbook repo remains as a standalone QASM reference for people running circuits on their Quokka hardware, but the book is the complete pedagogical resource. Every circuit concept taught in the cookbook is covered in a deep dive chapter, in context, with full explanation. The cookbook is a *byproduct* of the book, not a dependency.
 
 **Key design decision: two reading paths.**
 
@@ -302,24 +304,30 @@ This rhythm is the book's signature. Readers who internalise it will start seein
 
 ### 4.2 Concept introduction policy
 
-No concept is introduced before it is needed. Every concept is introduced *in the context of a problem it solves*.
+No concept is introduced before it is needed. Every concept is introduced *in the context of a problem it solves*, inside the deep dive chapter that first requires it.
 
-| Concept | Introduced in | Motivated by |
-|---------|--------------|--------------|
-| Qubits as binary variables | Unit 1 (Logistics) | Encoding route choices |
-| Superposition | Unit 2 (Crypto) | "Try all periods at once" |
-| Interference | Unit 2 (Crypto) | "Amplify the right period" |
-| Entanglement | Unit 1 (Logistics) | Correlations in QAOA |
-| Phase kickback | Unit 2 (Crypto) | The mechanism behind period-finding |
-| QFT | Unit 2 (Crypto) | Extracting periodicity |
-| Variational methods | Unit 1 (Logistics) | Optimising QAOA parameters |
-| Fermions / second quantisation | Unit 3 (Drug Discovery) | Why electrons aren't qubits |
-| Grover / amplitude amplification | Unit 5 (Finance) | Boosting good samples |
-| QPE | Unit 7 (Materials) | Exact energy extraction |
-| Trotter decomposition | Unit 7 (Materials) | Implementing time evolution |
-| Quantum embedding | Unit 8 (Climate) | Splitting a problem across quantum/classical |
+| Concept | Introduced in deep dive | Motivated by | Cookbook recipe absorbed |
+|---------|------------------------|--------------|------------------------|
+| Qubits, measurement | Ch 2 (QAOA) | Encoding binary decisions | Recipe 01 (Bell State) |
+| Superposition, Hadamard | Ch 2 (QAOA) | Creating uniform search | — |
+| CNOT, entanglement | Ch 2 (QAOA) | The ZZ gate for edge costs | Recipe 01 (Bell State) |
+| Phase kickback | Ch 4 (Shor's) | Why period-finding works | Recipe 03 (Deutsch-Jozsa) |
+| Oracles | Ch 4 (Shor's) | Modular exponentiation | Recipe 03 (Deutsch-Jozsa) |
+| QFT | Ch 4 (Shor's) | Extracting periodicity | Recipe 09 (QFT) |
+| Teleportation | Ch 4 (Shor's) | Bell measurement aside | Recipe 02 (Teleportation) |
+| Hidden structure / HSP | Ch 4 (Shor's) | Shor as a special case | Recipes 04, 05 (BV, Simon's) |
+| Fermions / second quantisation | Ch 6 (VQE) | Why electrons aren't qubits | — |
+| Pauli decomposition, measurement bases | Ch 6 (VQE) | Measuring molecular energy | Recipe 08 (VQE for H₂) |
+| Variational methods | Ch 2 (QAOA) | Optimising circuit parameters | Recipe 07 (QAOA MaxCut) |
+| Grover / amplitude amplification | Ch 10 (Amp. Est.) | Boosting good samples | Recipe 06 (Grover) |
+| QPE | Ch 14 (QPE+Trotter) | Exact energy extraction | Recipe 10 (QPE) |
+| Trotter decomposition | Ch 14 (QPE+Trotter) | Implementing time evolution | — |
+| QUBO / Ising conversion | Ch 12 (QUBO) | Encoding constraints | Recipe 07 (QAOA MaxCut) |
+| Quantum embedding | Ch 16 (Embedding) | Splitting quantum/classical | — |
+| Error mitigation (ZNE) | Ch 17 (Practical) | Making noisy results useful | Recipe 11 (ZNE) |
+| Quantum counting | Ch 18 (Practical) | Counting without finding | Recipe 12 (Counting) |
 
-Appendix A collects all of these into a "toolbox" summary for reference. But no one should *start* from the appendix.
+Every cookbook recipe finds a home in a deep dive chapter. Appendix A collects all concepts into a reference glossary — but nobody should start there.
 
 ### 4.3 Honesty policy
 
