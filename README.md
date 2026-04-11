@@ -1,6 +1,6 @@
-# Quantum Computing From the Problem Down
+# What Quantum Computers Are Actually For
 
-Eight real-world problems. Eight quantum algorithms. No qubit-first pedagogy.
+*Eight problems from logistics to climate — and the algorithms that could solve them*
 
 Each unit starts with an industry problem people already care about — a dollar figure, a bottleneck, a human cost — then pulls in only the quantum machinery needed to solve it.
 
@@ -30,8 +30,8 @@ SPEC.md        — project specification
 
 ## Related projects
 
-- [The Quokka Cookbook](https://github.com/johnazariah/quokka-cookbook) — runnable QASM recipes for quokka (the "how")
-- [Fermion-to-Qubit Encodings](https://github.com/johnazariah/encodings) — deep dive on encodings for quantum chemistry simulation
+- [The Quokka Cookbook](https://github.com/johnazariah/quokka-cookbook) — runnable QASM recipes for Quokka (the “how”)
+- [From Molecules to Qubits](https://github.com/johnazariah/encodings-book) — deep dive on encodings for quantum chemistry simulation
 
 ## License
 

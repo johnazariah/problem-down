@@ -1,9 +1,10 @@
-# Problem Down — Agent Handoff
+# What Quantum Computers Are Actually For — Agent Handoff
 
-> **Project:** Quantum Computing From the Problem Down
+> **Project:** What Quantum Computers Are Actually For
+> **Subtitle:** Eight problems from logistics to climate — and the algorithms that could solve them
 > **Owner:** John Azariah (johnazariah)
 > **Repo:** https://github.com/johnazariah/problem-down (private)
-> **Status:** Early planning — spec complete, no chapters drafted yet
+> **Status:** All 8 units drafted, pre-publication
 
 ---
 
@@ -28,11 +29,11 @@ The core thesis: **start with a problem people already care about, then pull in 
 
 - **SPEC.md** — Complete and detailed. Contains unit breakdowns, pedagogical principles, format strategy, and open questions. **Read this first.**
 - **README.md** — Project overview with unit table and repo structure.
-- **manuscript/** — Empty. No chapters drafted yet.
-- **notebooks/** — Empty. No companion notebooks yet.
+- **manuscript/** — All 8 units drafted (~15,500 words total, ~2,000 words per unit). First drafts — each needs expansion to ~5,000 words.
+- **notebooks/** — 3 companion notebooks (Units 1–3). All run on cloud Quokka via HTTP POST.
 - **figures/** — Empty.
 
-This project is in the **planning phase**. The next major step is drafting the first unit.
+This project is in the **first draft review phase**. Next steps: expand units, create remaining notebooks (4–8), set up Jupyter Book for publishing.
 
 ## The spec (SPEC.md) — key decisions
 

@@ -1,6 +1,7 @@
-# Spec: Quantum Computing From the Problem Down
+# Spec: What Quantum Computers Are Actually For
 
-> **Status:** Draft — brainstorming phase
+> **Subtitle:** Eight problems from logistics to climate — and the algorithms that could solve them
+> **Status:** Draft — all 8 units drafted
 > **Author:** John Azariah
 > **Date:** April 2026
 > **Relation to Quokka Cookbook:** Complementary project. The Cookbook teaches *how* (circuits, QASM, quokka). This project teaches *why* (applications, industry problems, quantum advantage). The Cookbook is "Book B"; this is "Book A." They cross-reference each other.
@@ -143,7 +144,7 @@ We teach the *why* at each reduction, not just the *how*.
 
 **Reality check:** Largest molecules simulated quantumly. The measurement overhead problem. Error mitigation vs. error correction. Google's Hartree-Fock experiment (2020).
 
-**Cross-reference:** Readers who want to go deep on encodings → *Fermion-to-Qubit Encodings for Quantum Simulation* (the encodings book).
+**Cross-reference:** Readers who want to go deep on encodings → *From Molecules to Qubits* (the encodings book).
 
 ---
 

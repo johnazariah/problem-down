@@ -38,7 +38,7 @@ There's a crucial complication. Electrons are **fermions** — they obey the Pau
 
 This is different from qubits, which are **bosonic** in the sense that there's no sign change when you swap them. A quantum computer built from qubits doesn't natively enforce fermionic antisymmetry. To simulate electrons on qubits, you need a **fermion-to-qubit encoding** — a mathematical map that translates between the language of electrons (creation and annihilation operators) and the language of qubits (Pauli operators).
 
-This translation is non-trivial. Different encodings (Jordan-Wigner, Bravyi-Kitaev, parity, and others) make different tradeoffs between qubit count, gate depth, and locality. Choosing the right encoding can make the difference between a circuit that's feasible on near-term hardware and one that isn't. This is exactly the subject of our companion book, *Fermion-to-Qubit Encodings for Quantum Simulation*.
+This translation is non-trivial. Different encodings (Jordan-Wigner, Bravyi-Kitaev, parity, and others) make different tradeoffs between qubit count, gate depth, and locality. Choosing the right encoding can make the difference between a circuit that's feasible on near-term hardware and one that isn't. This is exactly the subject of our companion book, *From Molecules to Qubits*.
 
 ### The classical approximation hierarchy
 
@@ -78,7 +78,7 @@ The simplest encoding is **Jordan-Wigner**: each orbital maps to one qubit, and 
 
 **Bravyi-Kitaev** achieves better locality at the cost of a more complex mapping. There are many other encodings, each optimised for different properties. The choice of encoding affects the circuit depth and therefore the feasibility of the computation on real hardware.
 
-For a deep dive on encodings, see our companion book: [*Fermion-to-Qubit Encodings for Quantum Simulation*](https://github.com/johnazariah/encodings).
+For a deep dive on encodings, see our companion book: [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).
 
 ### VQE: the variational quantum eigensolver
 
@@ -153,7 +153,7 @@ VQE with a 4-qubit UCCSD ansatz reproduces the exact Full CI result for H₂ to 
 
 - **VQE is QAOA's cousin.** Same variational loop, different cost function, different ansatz. If you understood the QAOA loop in Unit 1, VQE is a natural extension.
 
-- **Fermion-to-qubit encodings are a deep topic.** We've given the 30-second version (Jordan-Wigner, Bravyi-Kitaev). For the full story — including parity encoding, ternary tree encoding, tapering, and the algebraic structure behind all of them — see our companion book: [*Fermion-to-Qubit Encodings for Quantum Simulation*](https://github.com/johnazariah/encodings).
+- **Fermion-to-qubit encodings are a deep topic.** We've given the 30-second version (Jordan-Wigner, Bravyi-Kitaev). For the full story — including parity encoding, ternary tree encoding, tapering, and the algebraic structure behind all of them — see our companion book: [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).
 
 - **H₂ is the "Hello World" of quantum chemistry.** Just as the Bell state is the simplest interesting quantum circuit, H₂ is the simplest interesting molecular simulation. It's small enough to verify classically, rich enough to show the full pipeline, and pedagogically indispensable. Our encodings book uses H₂ throughout for the same reason.
 
@@ -163,5 +163,5 @@ VQE with a 4-qubit UCCSD ansatz reproduces the exact Full CI result for H₂ to 
     - Peruzzo et al. (2014). *A variational eigenvalue solver on a photonic quantum processor.* [Nature Communications 5:4213](https://doi.org/10.1038/ncomms5213)
     - McArdle, Endo, Aspuru-Guzik, Benjamin, Yuan (2020). *Quantum computational chemistry.* [Reviews of Modern Physics 92:015003](https://doi.org/10.1103/RevModPhys.92.015003)
     - Google AI Quantum (2020). *Hartree-Fock on a superconducting qubit quantum computer.* [Science 369:1084–1089](https://doi.org/10.1126/science.abb9811)
-    - Azariah et al. *Fermion-to-Qubit Encodings for Quantum Simulation.* [github.com/johnazariah/encodings](https://github.com/johnazariah/encodings)
+    - Azariah et al. *From Molecules to Qubits.* [github.com/johnazariah/encodings-book](https://github.com/johnazariah/encodings-book)
     - Szabo and Ostlund (1996). *Modern Quantum Chemistry: Introduction to Advanced Electronic Structure Theory.* The classical reference for computational chemistry foundations.
