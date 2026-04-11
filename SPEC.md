@@ -39,25 +39,55 @@ This is the same pedagogy that made the [encodings book](../encodings-book/) wor
 
 ### 3.1 Overview
 
+The book alternates between **application chapters** (the "why") and **deep dive chapters** (the "how"). Application chapters tell the industry story — problem, bottleneck, quantum angle, worked example, reality check. Deep dive chapters teach the algorithm from first principles, building quantum concepts organically when the algorithm needs them. Readers doing the quick path read only the application chapters; readers doing the full path read everything.
+
 ```
-Preface          — Why another quantum computing book?
-Introduction     — The zoom-in/zoom-out framework; how to read this book
+Preface              — Why another quantum computing book?
+Introduction         — The zoom-in/zoom-out framework; how to read this book
 
-Unit 1           — Logistics         (QAOA, combinatorial optimisation)
-Unit 2           — Cryptography      (Shor's, period-finding, QFT)
-Unit 3           — Drug Discovery    (VQE, molecular simulation)
-Unit 4           — Machine Learning  (quantum kernels, sampling)
-Unit 5           — Finance           (amplitude estimation, Monte Carlo)
-Unit 6           — Supply Chains     (QUBO, quantum annealing)
-Unit 7           — Materials Science (QPE, Hubbard models)
-Unit 8           — Climate & Energy  (surface chemistry, embedding)
+Chapter 1            — Logistics         (application: QAOA for MaxCut)
+Chapter 2            — Building QAOA     (deep dive: qubits, superposition, CNOT, ZZ gate, variational loop)
 
-Conclusion       — What's actually ready today; a sober roadmap
-Appendix A       — The quantum toolbox (summary of all machinery introduced)
-Appendix B       — Further reading (curated, annotated bibliography)
+Chapter 3            — Cryptography      (application: Shor's algorithm)
+Chapter 4            — Inside Shor's     (deep dive: phase kickback, QFT, modular exponentiation)
+
+Chapter 5            — Drug Discovery    (application: VQE for molecular simulation)
+Chapter 6            — The VQE Pipeline  (deep dive: fermions, encodings, Pauli measurement)
+
+Chapter 7            — Machine Learning  (application: quantum kernel estimation)
+Chapter 8            — Quantum Kernels   (deep dive: feature maps, swap test, kernel matrix)
+
+Chapter 9            — Finance           (application: quantum amplitude estimation)
+Chapter 10           — Amplitude Estimation (deep dive: Grover's algorithm, QPE on Grover)
+
+Chapter 11           — Supply Chains     (application: QUBO and quantum annealing)
+Chapter 12           — QUBO Engineering  (deep dive: constraint encoding, Ising conversion, annealing)
+
+Chapter 13           — Materials Science (application: QPE for the Hubbard model)
+Chapter 14           — QPE & Trotterisation (deep dive: time evolution, Trotter error, resource estimation)
+
+Chapter 15           — Climate & Energy  (application: catalyst design with quantum embedding)
+Chapter 16           — Quantum Embedding (deep dive: active space, DMET, self-consistency)
+
+Chapter 17           — Error Mitigation  (practical: ZNE and noise-aware computing)
+Chapter 18           — Quantum Counting  (practical: QPE meets Grover)
+
+Conclusion           — What's actually ready today; a sober roadmap
+Appendix A           — The quantum toolbox (glossary of every concept, where introduced, key formula)
+Appendix B           — Further reading (curated, annotated bibliography)
 ```
 
-### 3.2 Unit detail
+**Key design decision:** No concept is taught before it's needed. Quantum concepts (qubits, superposition, entanglement, phase kickback, QFT, etc.) are introduced *inside* the deep dive chapters, the first time the algorithm under discussion requires them. The appendix collects all concepts into a reference glossary — but nobody should start there.
+
+**Key design decision:** Application chapters contain *no* circuit-level detail and *no* cookbook recipe links. They reference the next chapter (the deep dive) for readers who want to go deeper. Deep dive chapters reference the [Quokka Cookbook](https://github.com/johnazariah/quokka-cookbook) for runnable QASM implementations.
+
+**Key design decision: two reading paths.**
+
+- **Application chapters are self-contained and can be read in any order.** A finance person jumps to Chapter 9, a chemist to Chapter 5. Each application chapter makes sense without any prior reading.
+- **Deep dive chapters are sequential and must be read in order (2 → 4 → 6 → 8 → 10 → 12 → 14 → 16).** Each deep dive builds on concepts introduced in earlier deep dives. Chapter 2 teaches qubits and CNOT. Chapter 4 assumes those and introduces phase kickback. Chapter 6 assumes CNOT and adds fermion encodings.
+- **The natural hybrid path:** a reader starts at any application chapter, gets curious, reads the paired deep dive, discovers they need a concept from an earlier deep dive, follows the dependency chain backwards. The book *pulls them in* rather than *front-loading* prerequisites.
+
+### 3.2 Chapter detail
 
 Each unit follows a fixed template:
 
@@ -307,6 +337,7 @@ Every unit has a **Reality Check** box. These are non-negotiable. The rules:
 - **Cost landscape visualisations** (3D surfaces, energy diagrams) wherever optimisation is involved
 - **Scaling plots** (log-log: problem size vs. resources) in every Reality Check
 - **"Before/after" comparisons** (classical bottleneck vs. quantum resolution) as a recurring visual motif
+- **Chapter colour coding:** Application chapters use **teal / dark green** (grounded, real-world). Deep dive chapters use **deep purple** (technical, algorithmic). This gives readers an instant visual signal about the kind of chapter they're in — visible in headers, running footers, and thumb indexes. In the digital edition, chapter title bars and sidebar markers alternate colours.
 
 ---
 
