@@ -119,6 +119,77 @@ The difference between DFT and active-space results is the **correlation energy*
 
 ---
 
+## Deep Dive: Quantum Embedding Methods
+
+*This section explains how to split a large problem between quantum and classical processors. Skip it if you want the application story only.*
+
+### The active space concept
+
+A catalyst system might have 500 orbitals, but strong correlation lives in only 10–50 of them — the metal d-orbitals and the adsorbate frontier orbitals. The rest are either doubly occupied (core) or empty (virtual), and their contribution to the energy is well-captured by mean-field methods.
+
+**Active space selection** means choosing which orbitals to treat with quantum methods. This is partly automated (natural orbital analysis, entropy-based selection) and partly chemical intuition (transition metals → d-orbitals, conjugated systems → π-orbitals).
+
+### DMET: Density Matrix Embedding Theory
+
+DMET (Knizia and Chan, 2012) partitions a system into a fragment (the active site) and an environment (everything else):
+
+1. **Solve the full system approximately** (e.g., Hartree-Fock) to get a mean-field density matrix
+2. **Construct a bath** — a small set of orbitals that captures how the environment entangles with the fragment. The bath has the same dimension as the fragment (so a 10-orbital fragment gets a 10-orbital bath → 20-orbital embedded problem).
+3. **Solve the embedded problem exactly** (or with VQE/QPE on a quantum computer): the fragment + bath Hamiltonian
+4. **Extract observables** (energy, density matrix) from the embedded solution
+5. **Self-consistency:** update the mean-field solution and repeat until convergence
+
+The quantum computer appears only in step 3: solving the fragment + bath system. For a 10-orbital fragment: 20-orbital embedded problem → 20 qubits (Jordan-Wigner) → feasible on near-term hardware.
+
+### Active-space VQE vs. active-space QPE
+
+Two options for solving the embedded problem:
+
+**Active-space VQE** (NISQ): shallow circuits, measurement overhead, variational upper bounds. Suitable for 10–30 active orbitals on hardware available in the next 5 years.
+
+**Active-space QPE** (fault-tolerant): deep circuits, exact eigenvalues, no measurement overhead. Suitable for 30–100 active orbitals on hardware expected in 10–15 years.
+
+The pipeline is the same either way — only the quantum solver changes. The embedding framework is solver-agnostic.
+
+### The self-consistency loop
+
+DMET requires self-consistency because the fragment and environment are coupled:
+
+```python
+while not converged:
+    # Step 1: Mean-field solution of full system
+    mf = run_hartree_fock(full_system)
+    
+    # Step 2: Construct bath from mean-field density matrix
+    bath = construct_bath(mf.density_matrix, fragment_orbitals)
+    
+    # Step 3: Build embedded Hamiltonian
+    H_embed = build_embedded_hamiltonian(mf, fragment_orbitals, bath)
+    
+    # Step 4: Solve on quantum computer
+    E_fragment = run_vqe(H_embed, quantum_computer)
+    
+    # Step 5: Update mean-field with quantum correction
+    mf = update_mean_field(mf, E_fragment, fragment_orbitals)
+    
+    # Check convergence
+    converged = check_convergence(mf)
+```
+
+Typically 5–10 iterations suffice. Each iteration requires one quantum computation (step 4) and fast classical linear algebra (steps 1, 2, 3, 5).
+
+### Connection to the encodings book
+
+Step 3 — building the embedded Hamiltonian — requires:
+
+1. Computing molecular integrals in the active space
+2. Applying a fermion-to-qubit encoding (Jordan-Wigner, Bravyi-Kitaev, or more advanced)
+3. Optionally tapering (reducing qubit count using symmetries)
+
+This is exactly the pipeline in [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book), applied to the embedded fragment rather than the full molecule. The encoding step is identical; only the input (embedded Hamiltonian vs. molecular Hamiltonian) differs.
+
+---
+
 ## Reality Check
 
 **Microsoft and PNNL's nitrogen fixation estimate.** In 2022, Microsoft and Pacific Northwest National Laboratory published resource estimates for simulating the FeMo cofactor of nitrogenase — the enzyme that fixes atmospheric nitrogen. This is a biologically critical catalyst with a strongly correlated active site. Their estimate: ~4 million physical qubits for a useful simulation using QPE with surface code error correction. With the Pinnacle architecture (Unit 2), this could potentially drop to $\sim 200,000$ physical qubits.

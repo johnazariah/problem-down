@@ -206,6 +206,97 @@ This is a toy example — 4 qubits, a number you can factor in your head. But th
 
 ---
 
+## Deep Dive: Inside Shor's Algorithm
+
+*This section builds the algorithm gate by gate. Skip it if you want the application story only.*
+
+### The Quantum Fourier Transform, gate by gate
+
+The $n$-qubit QFT maps computational basis states to frequency-domain states:
+
+$$\text{QFT}|x\rangle = \frac{1}{\sqrt{2^n}} \sum_{k=0}^{2^n-1} e^{2\pi i x k / 2^n} |k\rangle$$
+
+The key insight is that the output *factorises* into a tensor product of single-qubit states:
+
+$$\text{QFT}|x\rangle = \bigotimes_{\ell=1}^{n} \frac{1}{\sqrt{2}} \left(|0\rangle + e^{2\pi i x / 2^\ell} |1\rangle\right)$$
+
+This factorisation means the QFT can be built from single-qubit Hadamards and two-qubit controlled rotations:
+
+```
+q[0] : ─ H ─ R₂ ─ R₃ ─ ... ─ Rₙ ─────────────────
+             │    │         │
+q[1] : ──────●─── H ── R₂ ─ ... ─ Rₙ₋₁ ──────────
+                       │         │
+q[2] : ────────────────●──── H ─ ... ─ Rₙ₋₂ ─────
+                                       ...
+q[n-1]: ─────────────────────────────── H ─────────
+```
+
+where $R_k$ is a controlled phase gate: $R_k = \text{diag}(1, e^{2\pi i / 2^k})$.
+
+In QASM, for 3 qubits:
+
+```
+h q[0];
+cp(pi/2) q[1], q[0];    // R₂ controlled by q[1]
+cp(pi/4) q[2], q[0];    // R₃ controlled by q[2]
+h q[1];
+cp(pi/2) q[2], q[1];    // R₂ controlled by q[2]
+h q[2];
+// Swap q[0] and q[2] for bit reversal
+```
+
+Gate count: $n(n-1)/2$ controlled rotations + $n$ Hadamards = $O(n^2)$ gates. Compare with the classical FFT: $O(n \cdot 2^n)$ operations. The QFT is exponentially faster — but you can't read the output directly (measurement collapses it).
+
+### Modular exponentiation
+
+The most expensive part of Shor's algorithm is computing $a^x \bmod N$ in superposition. This requires a reversible circuit for modular exponentiation.
+
+The standard approach:
+
+1. **Decompose** $a^x = a^{x_{n-1} \cdot 2^{n-1}} \cdot a^{x_{n-2} \cdot 2^{n-2}} \cdots a^{x_0 \cdot 2^0}$ (repeated squaring)
+2. **Implement** each controlled multiplication $|y\rangle \to |y \cdot a^{2^k} \bmod N\rangle$, controlled by input qubit $x_k$
+3. Each multiplication uses **modular addition**, which uses **quantum adders** (e.g., Draper's QFT-based adder or Cuccaro's ripple-carry adder)
+
+The circuit depth is $O(n^2 \log n)$ gates for an $n$-bit number. For RSA-2048 ($n \approx 2048$), this means roughly $10^{10}$ gates — feasible on a fault-tolerant machine but far beyond NISQ.
+
+Gidney and Ekerå (2021) optimised this to $O(n^2)$ Toffoli gates using windowed arithmetic, which is where the "20 million noisy qubits" estimate comes from. The Pinnacle architecture (2026) reduces this further using quantum LDPC codes.
+
+### The continued fractions algorithm
+
+After the QFT, you measure some value $k$. The ratio $k/2^n$ is close to $j/r$ for some integer $j$, where $r$ is the period we want.
+
+The **continued fractions algorithm** extracts $r$ from this noisy rational approximation. It works by iteratively computing:
+
+$$\frac{k}{2^n} = a_0 + \cfrac{1}{a_1 + \cfrac{1}{a_2 + \cdots}}$$
+
+The convergents of this continued fraction are the best rational approximations with small denominators. One of them will have denominator $r$ (or a multiple of $r$).
+
+In Python:
+
+```python
+from fractions import Fraction
+frac = Fraction(k, 2**n).limit_denominator(N)
+r_candidate = frac.denominator
+```
+
+You verify by checking $a^{r_\text{candidate}} \equiv 1 \pmod{N}$. If it doesn't work, run the quantum circuit again — each run gives an independent $j$, and $O(\log \log N)$ repetitions suffice with high probability.
+
+### Putting the pieces together
+
+The full Shor's circuit for an $n$-bit number:
+
+1. **Input register:** $2n$ qubits (for the QFT precision), all in $|+\rangle$
+2. **Output register:** $n$ qubits, initialised to $|1\rangle$ (for modular exponentiation)
+3. **Controlled modular exponentiation:** $2n$ controlled operations
+4. **Inverse QFT** on the input register: $O(n^2)$ gates
+5. **Measure** the input register: get $k$
+6. **Classical post-processing:** continued fractions → $r$ → $\gcd$ → factors
+
+Total quantum gates: $O(n^3)$ with standard arithmetic, $O(n^2)$ with Gidney-Ekerå optimisations. Total qubits: $O(n)$.
+
+---
+
 ## Reality Check
 
 Shor's algorithm is the most famous quantum algorithm, and its implications are enormous. But let's be precise about what has and hasn't been demonstrated.

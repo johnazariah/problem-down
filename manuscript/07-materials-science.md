@@ -108,6 +108,89 @@ The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, rep
 
 ---
 
+## Deep Dive: QPE and Trotterisation
+
+*This section builds the QPE circuit and the Trotter time-evolution operator. Skip it if you want the application story only.*
+
+### QPE: the full circuit
+
+Quantum Phase Estimation extracts an eigenvalue $E$ from a unitary operator $U$ with eigenvector $|\psi\rangle$: $U|\psi\rangle = e^{2\pi i \phi}|\psi\rangle$.
+
+The circuit uses $m$ ancilla qubits (for $m$ bits of precision) and one system register (holding $|\psi\rangle$):
+
+```
+Ancilla q[0] : ─ H ─ ctrl-U^(2^(m-1)) ────── ┐
+Ancilla q[1] : ─ H ─ ctrl-U^(2^(m-2)) ────── │ QFT⁻¹ → Measure
+  ...                                         │
+Ancilla q[m-1]: ─ H ─ ctrl-U^(2^0) ────────── ┘
+System        : ─── |ψ⟩ ─────────────────────────
+```
+
+After the controlled-$U$ operations, the ancilla register holds:
+
+$$\frac{1}{\sqrt{2^m}} \sum_{k=0}^{2^m-1} e^{2\pi i \phi k} |k\rangle$$
+
+This is the QFT of $|\phi\rangle$ — applying the inverse QFT yields $\phi$ (or its best $m$-bit approximation) in the ancilla register.
+
+### From eigenvalue to energy
+
+For Hamiltonian simulation, $U = e^{-iHt}$. The eigenvalue is $e^{-iEt}$, so the phase is $\phi = -Et/(2\pi)$. After QPE:
+
+$$E = -\frac{2\pi \hat{\phi}}{t}$$
+
+where $\hat{\phi}$ is the measured phase. The precision in $E$ scales as $2\pi / (t \cdot 2^m)$ — use more ancilla qubits or longer evolution time for better energy resolution.
+
+### Trotterisation: implementing $e^{-iHt}$
+
+The Hubbard Hamiltonian has two non-commuting parts: $H = H_\text{hop} + H_\text{int}$.
+
+**First-order Trotter:**
+
+$$e^{-iHt} \approx \left(e^{-iH_\text{hop}\Delta t} \cdot e^{-iH_\text{int}\Delta t}\right)^{N_\text{steps}}$$
+
+where $\Delta t = t / N_\text{steps}$. The error is $O(t^2 \Delta t)$.
+
+**Second-order Trotter (Suzuki):**
+
+$$e^{-iHt} \approx \left(e^{-iH_\text{hop}\Delta t/2} \cdot e^{-iH_\text{int}\Delta t} \cdot e^{-iH_\text{hop}\Delta t/2}\right)^{N_\text{steps}}$$
+
+The error drops to $O(t^3 \Delta t^2)$ — much better for the same circuit depth.
+
+### Implementing the hopping term
+
+$H_\text{hop} = -t \sum_{\langle i,j \rangle, \sigma} (c_{i\sigma}^\dagger c_{j\sigma} + \text{h.c.})$
+
+After Jordan-Wigner encoding, each hopping term becomes:
+
+$$c_i^\dagger c_j + c_j^\dagger c_i \to \frac{1}{2}(X_i X_j + Y_i Y_j) \cdot \prod_{k=i+1}^{j-1} Z_k$$
+
+The $Z$ string enforces fermionic antisymmetry. For nearest-neighbour hopping on a 1D chain, the string length is 1 (no intermediate qubits). For 2D lattices, the string can be longer — this is one advantage of non-Jordan-Wigner encodings.
+
+Implementing $e^{-i\theta(X_i X_j + Y_i Y_j)/2}$ requires 2 CNOTs and parameterised rotations — similar to the $ZZ$ gate from Unit 1 but in a different basis.
+
+### Implementing the interaction term
+
+$H_\text{int} = U \sum_i n_{i\uparrow} n_{i\downarrow}$
+
+After Jordan-Wigner: $n_{i\sigma} = \frac{1 - Z_{i\sigma}}{2}$, so:
+
+$$n_{i\uparrow} n_{i\downarrow} = \frac{(1 - Z_{i\uparrow})(1 - Z_{i\downarrow})}{4}$$
+
+This is diagonal — $e^{-i\theta n_{i\uparrow} n_{i\downarrow}}$ is just a $ZZ$ phase gate, exactly like the QAOA cost unitary from Unit 1. No entangling gates needed beyond what we already know.
+
+### Gate count and resource scaling
+
+For an $L \times L$ Hubbard lattice:
+
+- Qubits: $2L^2$ (spin-up and spin-down orbitals)
+- Trotter steps per QPE query: $N_\text{steps} \sim t / \epsilon_\text{Trotter}$
+- QPE queries: $2^m$ for $m$-bit precision
+- Total gates: $O(L^2 \cdot N_\text{steps} \cdot 2^m)$
+
+For a $10 \times 10$ lattice with chemical precision: ~1,000 logical qubits, ~$10^{11}$ gates. This is the frontier target for fault-tolerant quantum computers.
+
+---
+
 ## Reality Check
 
 **The 2D Hubbard model is the "grand challenge" of quantum simulation.** It has been called the "standard model of condensed matter physics" — the simplest model that might explain high-temperature superconductivity in cuprate materials. Solving it is widely regarded as the problem most likely to yield the *first* practical quantum advantage in simulation.

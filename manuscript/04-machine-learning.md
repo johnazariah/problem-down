@@ -94,6 +94,81 @@ We build a quantum kernel classifier for a synthetic 2D dataset: two classes arr
 
 ---
 
+## Deep Dive: Building a Quantum Kernel Classifier
+
+*This section constructs the classifier step by step. Skip it if you want the application story only.*
+
+### Designing a quantum feature map
+
+A feature map $U_\phi(x)$ encodes a classical data point $x$ into a quantum state $|\phi(x)\rangle = U_\phi(x)|0\rangle^n$. The art is choosing $U_\phi$ so that:
+
+1. The resulting kernel $K(x, x') = |\langle \phi(x') | \phi(x) \rangle|^2$ has no efficient classical computation
+2. The kernel captures useful structure in the data
+
+A common design (Havlíček et al. 2019):
+
+```
+// Layer 1: encode features
+ry(x₁) q[0];
+ry(x₂) q[1];
+
+// Entangle
+cx q[0], q[1];
+
+// Layer 2: encode feature interactions
+rz(x₁ · x₂) q[1];
+
+// Disentangle
+cx q[0], q[1];
+```
+
+The $R_Y$ gates encode individual features as rotation angles. The CNOT creates entanglement. The $R_Z(x_1 \cdot x_2)$ gate encodes a *nonlinear* feature interaction — this is where the quantum kernel goes beyond linear maps. You can repeat layers for richer feature maps.
+
+### Computing the kernel value
+
+For two data points $x$ and $x'$, the kernel is:
+
+$$K(x, x') = |\langle 0^n | U_\phi(x')^\dagger U_\phi(x) | 0^n \rangle|^2$$
+
+Circuit: apply $U_\phi(x)$, then $U_\phi(x')^\dagger$ (the adjoint — reverse the gates, negate the angles), then measure. The probability of getting $|0\rangle^n$ is $K(x, x')$.
+
+```
+// Apply U(x)
+ry(x₁) q[0]; ry(x₂) q[1]; cx q[0], q[1]; rz(x₁·x₂) q[1]; cx q[0], q[1];
+
+// Apply U†(x')
+cx q[0], q[1]; rz(-x'₁·x'₂) q[1]; cx q[0], q[1]; ry(-x'₂) q[1]; ry(-x'₁) q[0];
+
+// Measure
+measure q[0] -> c[0]; measure q[1] -> c[1];
+```
+
+Run this $N_\text{shots}$ times. $K(x, x') \approx \text{count}(00) / N_\text{shots}$.
+
+### Building the kernel matrix
+
+For $m$ training points, you need all $m^2$ pairwise kernel values. That's $m^2$ circuit executions (each with many shots). For $m = 100$ and 1000 shots each: 10 million total measurements.
+
+This is the **kernel matrix** $K_{ij} = K(x_i, x_j)$. It's symmetric and positive semi-definite (by construction — it's a Gram matrix of inner products).
+
+### Training the SVM
+
+Once you have $K$, the rest is classical. A support vector machine with a precomputed kernel solves:
+
+$$\max_\alpha \sum_i \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j K_{ij}$$
+
+subject to $0 \leq \alpha_i \leq C$ and $\sum_i \alpha_i y_i = 0$. This is a standard quadratic program — solved by `sklearn.svm.SVC(kernel='precomputed')` in one line.
+
+The quantum computer only appears in the kernel computation. Everything else — the SVM training, prediction, cross-validation — is classical.
+
+### When is the quantum kernel provably better?
+
+Huang et al. (2022) showed: if the quantum feature map produces states that are indistinguishable from Haar-random states when viewed through classical measurements, then no classical learner can compute the same kernel. But this doesn't guarantee the kernel is *useful* for any particular dataset.
+
+The provable separations are for **constructed** problems: classification tasks deliberately designed to align with the quantum feature map's structure. For natural datasets, no provable advantage has been demonstrated.
+
+---
+
 ## Reality Check
 
 **The quantum ML landscape is contentious.** Unlike factoring (where Shor's algorithm gives a clear exponential speedup) or molecular simulation (where the problem is inherently quantum), ML advantage is much harder to establish. The data is classical, the metrics are empirical, and classical baselines keep improving.

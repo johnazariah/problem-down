@@ -84,6 +84,82 @@ We discretise the stock price into $2^n$ bins, encode the log-normal distributio
 
 ---
 
+## Deep Dive: Amplitude Estimation from Grover
+
+*This section builds the full amplitude estimation algorithm. Skip it if you want the application story only.*
+
+### Grover's algorithm: the geometric picture
+
+Grover's search operates in a 2D subspace. Define:
+
+$$|\text{good}\rangle = \frac{1}{\sqrt{M}} \sum_{x : f(x)=1} |x\rangle, \quad |\text{bad}\rangle = \frac{1}{\sqrt{N-M}} \sum_{x : f(x)=0} |x\rangle$$
+
+where $M$ is the number of marked items and $N = 2^n$. The initial superposition $|s\rangle = H^{\otimes n}|0\rangle^n$ lies in the span of $|\text{good}\rangle$ and $|\text{bad}\rangle$:
+
+$$|s\rangle = \sin\theta |\text{good}\rangle + \cos\theta |\text{bad}\rangle, \quad \sin\theta = \sqrt{M/N}$$
+
+The Grover iterator $G = -S_0 \cdot S_f$ is a rotation by $2\theta$ in this 2D plane:
+
+$$G^k |s\rangle = \sin((2k+1)\theta) |\text{good}\rangle + \cos((2k+1)\theta) |\text{bad}\rangle$$
+
+After $k = \lfloor \pi/(4\theta) \rfloor$ iterations, $\sin((2k+1)\theta) \approx 1$ — you measure a good state with near certainty.
+
+### The oracle circuit
+
+The oracle $S_f$ flips the phase of marked states: $S_f|x\rangle = (-1)^{f(x)}|x\rangle$. For option pricing, the oracle marks states where the discretised stock price exceeds the strike: $f(x) = 1$ if $\text{price}(x) > K$.
+
+This is a **comparator circuit**: given a quantum register encoding a price, flip an ancilla qubit if the price exceeds $K$, then use phase kickback to convert the ancilla flip to a phase flip.
+
+For a 3-qubit price register with threshold $K = 5$ (binary 101):
+
+```
+// Mark states >= 101 (i.e., 101, 110, 111)
+// This is a multi-controlled Z with appropriate controls
+```
+
+### The diffusion operator
+
+The diffusion $S_0 = 2|s\rangle\langle s| - I$ reflects about the mean amplitude. Implementation:
+
+```
+// Apply H to all qubits
+h q[0]; h q[1]; h q[2];
+// Flip about |0⟩
+x q[0]; x q[1]; x q[2];
+// Multi-controlled Z
+ccz q[0], q[1], q[2];  // or decompose with Toffoli + phase
+// Undo flips
+x q[0]; x q[1]; x q[2];
+h q[0]; h q[1]; h q[2];
+```
+
+### From Grover to amplitude estimation
+
+The Grover iterator $G$ has eigenvalues $e^{\pm 2i\theta}$ with eigenstates in the good/bad subspace. The angle $\theta$ encodes the fraction $M/N = \sin^2\theta$ — exactly what we want for Monte Carlo estimation.
+
+**Quantum amplitude estimation** applies QPE (from Unit 2) to $G$:
+
+1. Prepare $|s\rangle$ (the initial superposition — this is approximately an eigenstate of $G$)
+2. Apply controlled-$G^{2^k}$ operations, controlled by ancilla qubits
+3. Apply inverse QFT to the ancillas
+4. Measure the ancillas → get an estimate of $\theta$
+5. Compute $\tilde{a} = \sin^2(\pi \bar{\theta} / 2^m)$ where $\bar{\theta}$ is the measured value and $m$ is the number of ancilla bits
+
+The precision scales as $1/2^m$ — requiring $O(2^m)$ applications of $G$, compared to $O(2^{2m})$ classical samples for the same precision. That's the quadratic speedup.
+
+### The convergence comparison
+
+| Precision $\epsilon$ | Classical samples | Quantum queries |
+|---|---|---|
+| $10^{-1}$ | 100 | 10 |
+| $10^{-2}$ | 10,000 | 100 |
+| $10^{-3}$ | $10^6$ | 1,000 |
+| $10^{-6}$ | $10^{12}$ | $10^6$ |
+
+The quantum advantage grows *linearly* with the required precision — you save quadratically more as you need more accuracy.
+
+---
+
 ## Reality Check
 
 **What's been demonstrated.** Goldman Sachs and IBM published a series of papers (2019–2021) on quantum amplitude estimation for derivative pricing, demonstrating the algorithm on simulators for simple options. Actual quantum hardware experiments have been limited to toy models (2–4 qubits, highly simplified distributions).

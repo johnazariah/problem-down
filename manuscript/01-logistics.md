@@ -169,6 +169,102 @@ For larger graphs, the companion notebook runs the full QAOA loop with classical
 
 ---
 
+## Deep Dive: Building QAOA from Gates
+
+*This section teaches the algorithm in detail. Skip it if you want the application story only — the Reality Check continues below.*
+
+### The ZZ interaction gate
+
+The cost Hamiltonian for MaxCut is $C = \sum_{(i,j) \in E} \frac{1 - Z_i Z_j}{2}$. To implement $e^{-i\gamma C}$, we need to implement $e^{-i\gamma Z_i Z_j / 2}$ for each edge.
+
+The standard decomposition uses two CNOTs and one $R_Z$ rotation:
+
+```
+q[i] : ───●──────────────●───
+          │              │
+q[j] : ───X─── Rz(γ) ───X───
+```
+
+Why does this work? The CNOT maps the computational basis as:
+- $|00\rangle \to |00\rangle$, $|01\rangle \to |01\rangle$, $|10\rangle \to |11\rangle$, $|11\rangle \to |10\rangle$
+
+After the first CNOT, the $Z_i Z_j$ eigenvalue ($+1$ when equal, $-1$ when different) is stored in qubit $j$. The $R_Z(\gamma)$ rotation applies a phase $e^{-i\gamma/2}$ or $e^{+i\gamma/2}$ depending on this eigenvalue. The second CNOT restores the original state. Net effect: $e^{-i\gamma Z_i Z_j / 2}$.
+
+In QASM:
+
+```
+cx q[i], q[j];
+rz(gamma) q[j];
+cx q[i], q[j];
+```
+
+For a graph with $m$ edges, you need $2m$ CNOTs and $m$ $R_Z$ gates. These can be applied in any order (they commute for non-overlapping edges, and the order doesn't matter for the total unitary since all $Z_i Z_j$ terms commute).
+
+### The mixer
+
+The mixer Hamiltonian is $B = \sum_i X_i$. Since $[X_i, X_j] = 0$ (different qubits commute), the mixer unitary factorises:
+
+$$e^{-i\beta B} = \prod_i e^{-i\beta X_i} = \prod_i R_X(2\beta)$$
+
+Each qubit gets a single $R_X(2\beta)$ rotation. In QASM: `rx(2*beta) q[i];` for each qubit. This is the simplest part of the circuit.
+
+### Constructing the initial state
+
+QAOA starts from the equal superposition $|+\rangle^n$, which is the ground state of the mixer Hamiltonian $B$. Create it with a Hadamard on each qubit:
+
+```
+h q[0];
+h q[1];
+...
+h q[n-1];
+```
+
+### The complete depth-1 QAOA circuit
+
+Putting it all together for a 3-node triangle:
+
+```
+// Initial state
+h q[0]; h q[1]; h q[2];
+
+// Problem unitary: edge (0,1)
+cx q[0], q[1]; rz(gamma) q[1]; cx q[0], q[1];
+// Problem unitary: edge (0,2)
+cx q[0], q[2]; rz(gamma) q[2]; cx q[0], q[2];
+// Problem unitary: edge (1,2)
+cx q[1], q[2]; rz(gamma) q[2]; cx q[1], q[2];
+
+// Mixer
+rx(2*beta) q[0]; rx(2*beta) q[1]; rx(2*beta) q[2];
+
+// Measure
+measure q[0] -> c[0]; measure q[1] -> c[1]; measure q[2] -> c[2];
+```
+
+Gate count: 3 Hadamards + 6 CNOTs + 3 $R_Z$ + 3 $R_X$ + 3 measurements = 18 gates. For a general graph with $n$ nodes and $m$ edges at depth $p$: $n + p(4m + n)$ gates.
+
+### The classical optimiser loop
+
+The quantum circuit takes $(\gamma, \beta)$ as input and produces measurement samples. The expected cost is:
+
+$$\langle C \rangle = \sum_{\text{outcomes}} P(\text{outcome}) \cdot \text{cut\_value}(\text{outcome})$$
+
+This is estimated by running the circuit many times (shots) and averaging. A classical optimiser (COBYLA, Nelder-Mead, L-BFGS) then adjusts $(\gamma, \beta)$ to minimise $-\langle C \rangle$ (or equivalently maximise the cut).
+
+The optimisation landscape is typically smooth for small $p$ and becomes rougher at higher $p$. Good initialisation matters — random starting points often work for $p \leq 3$, but for higher depths, strategies like interpolation from lower-depth optima (Zhou et al. 2020) or the "landscape concentration" property (Brandão et al. 2018) help.
+
+### From depth 1 to depth $p$
+
+Depth-$p$ QAOA repeats the problem-mixer sequence $p$ times with independent parameters:
+
+$$|\vec{\gamma}, \vec{\beta}\rangle = \prod_{k=1}^{p} e^{-i\beta_k B} e^{-i\gamma_k C} |+\rangle^n$$
+
+More depth = more parameters ($2p$ total) = better approximation = deeper circuits. In the limit $p \to \infty$, QAOA can find the exact optimum (it's a universal quantum computation). In practice, $p = 1$ to $p = 20$ are the interesting range.
+
+The exact performance at each depth — which is what decides whether QAOA is competitive — can be computed using the tree tensor network methods described in the Reality Check.
+
+---
+
 ## Reality Check
 
 Let's be honest about where QAOA stands — and where it's heading.

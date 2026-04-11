@@ -136,6 +136,81 @@ VQE with a 4-qubit UCCSD ansatz reproduces the exact Full CI result for H₂ to 
 
 ---
 
+## Deep Dive: The VQE Pipeline End to End
+
+*This section walks through every step from molecule to energy. Skip it if you want the application story only.*
+
+### Step 1: Molecular integrals
+
+The starting point is a classical quantum chemistry package (PySCF, Psi4, Gaussian). You specify the molecule (atom types and positions) and a basis set (e.g., STO-3G, cc-pVDZ). The package computes:
+
+- **One-electron integrals** $h_{ij} = \langle \phi_i | \hat{h} | \phi_j \rangle$: kinetic energy + electron-nucleus attraction
+- **Two-electron integrals** $h_{ijkl} = \langle \phi_i \phi_j | \hat{v} | \phi_k \phi_l \rangle$: electron-electron repulsion
+
+For H₂ in STO-3G: 2 spatial orbitals → 4 spin-orbitals → a Hamiltonian with a handful of unique integrals. For a drug-sized molecule: hundreds of orbitals → billions of integrals (though many are negligibly small).
+
+### Step 2: Fermion-to-qubit encoding
+
+The second-quantised Hamiltonian is:
+
+$$H = \sum_{ij} h_{ij} a_i^\dagger a_j + \frac{1}{2} \sum_{ijkl} h_{ijkl} a_i^\dagger a_j^\dagger a_k a_l$$
+
+The **Jordan-Wigner** encoding maps each spin-orbital to one qubit:
+
+$$a_j^\dagger \to \frac{1}{2}(X_j - iY_j) \otimes Z_{j-1} \otimes Z_{j-2} \otimes \cdots \otimes Z_0$$
+
+The string of $Z$ operators enforces fermionic antisymmetry. Each fermionic term becomes a sum of Pauli strings. For H₂ (4 spin-orbitals, Jordan-Wigner), the Hamiltonian decomposes into ~15 Pauli terms.
+
+The **Bravyi-Kitaev** encoding achieves $O(\log n)$ locality (vs. $O(n)$ for Jordan-Wigner) at the cost of a more complex mapping. For details, see [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).
+
+### Step 3: The ansatz circuit
+
+The parameterised circuit that prepares trial wavefunctions. For UCCSD (Unitary Coupled Cluster with Singles and Doubles):
+
+1. Start from the Hartree-Fock state: `x q[0]; x q[1];` (occupy the lowest orbitals)
+2. Apply parameterised single excitations: $e^{\theta_s (a_i^\dagger a_j - a_j^\dagger a_i)}$
+3. Apply parameterised double excitations: $e^{\theta_d (a_i^\dagger a_j^\dagger a_k a_l - \text{h.c.})}$
+
+Each excitation operator, after encoding, becomes a sequence of CNOT ladders and $R_Z$ rotations. For H₂, the single UCCSD excitation is:
+
+```
+// Hartree-Fock state
+x q[0];
+
+// Single excitation with parameter theta
+ry(theta) q[0];
+cx q[0], q[1];
+```
+
+This is the circuit in the worked example and the Quokka Cookbook Recipe 08.
+
+### Step 4: Measuring the energy
+
+The encoded Hamiltonian is $H = \sum_i c_i P_i$ where each $P_i$ is a Pauli string (e.g., $Z_0 Z_1$, $X_0 X_1$, $Y_0 Y_1$).
+
+To measure $\langle P_i \rangle$:
+
+- **$Z$ terms:** measure directly in the computational basis. $\langle Z_j \rangle = P(|0\rangle_j) - P(|1\rangle_j)$.
+- **$X$ terms:** apply $H$ (Hadamard) before measurement, then measure in the $Z$ basis. $\langle X_j \rangle = P(|+\rangle_j) - P(|-\rangle_j)$.
+- **$Y$ terms:** apply $S^\dagger H$ before measurement.
+- **Multi-qubit terms** ($Z_i Z_j$, $X_i X_j$): apply the appropriate basis rotations, measure, multiply the eigenvalues.
+
+The total energy is:
+
+$$\langle H \rangle = \sum_i c_i \langle P_i \rangle$$
+
+Each $\langle P_i \rangle$ has statistical error $\sim 1/\sqrt{N_\text{shots}}$. For $T$ Pauli terms, the total error in the energy is $\sim T / \sqrt{N_\text{shots}}$. This **measurement overhead** is the main practical cost of VQE.
+
+**Grouping trick:** Pauli terms that commute (e.g., $Z_0 Z_1$ and $Z_0$) can be measured simultaneously from the same circuit run. Optimal grouping reduces the number of distinct circuits needed.
+
+### Step 5: Classical optimisation
+
+Same loop as QAOA (Unit 1): the classical optimiser adjusts $\theta$ to minimise $\langle H \rangle$. Common choices: COBYLA (derivative-free), L-BFGS (gradient-based, using parameter-shift rules for gradients), SPSA (stochastic, noise-resilient).
+
+The variational principle guarantees $\langle H \rangle \geq E_0$ — you can only overestimate the true ground-state energy. Finding the global minimum of the energy landscape is not guaranteed (local minima exist), but chemical intuition in the ansatz design helps: the UCCSD ansatz starts near the Hartree-Fock solution, so the optimiser has a good starting point.
+
+---
+
 ## Reality Check
 
 **What's been demonstrated.** VQE has been run on real quantum hardware for small molecules: H₂ (2 qubits, various groups since 2014), LiH (4 qubits), BeH₂ (6 qubits), and H₂O (up to 12 qubits with tapering). Google's 2020 Hartree-Fock experiment on 12 qubits was a milestone, though it used a non-variational approach.

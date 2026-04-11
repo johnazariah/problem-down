@@ -99,6 +99,56 @@ Formulate as QUBO: 8 nurses × 8 shift-slots = 64 binary variables (reducible wi
 
 ---
 
+## Deep Dive: QUBO Engineering
+
+*This section shows how to formulate real constraints as QUBO penalty terms. Skip it if you want the application story only.*
+
+### The QUBO pattern
+
+Any constrained binary optimisation can be converted to QUBO form:
+
+$$\text{minimise} \quad x^T Q x + c^T x$$
+
+where $x \in \{0,1\}^n$ and $Q$ is a real symmetric matrix. Since $x_i^2 = x_i$ for binary variables, the diagonal of $Q$ absorbs the linear terms.
+
+### Encoding constraints as penalties
+
+**Equality constraint** ($\sum_i x_i = k$): add penalty $P \cdot (\sum_i x_i - k)^2$ where $P$ is a large positive weight.
+
+Example: "exactly one nurse per shift." If $x_{n,s} = 1$ means nurse $n$ takes shift $s$:
+
+$$P \cdot \left(\sum_n x_{n,s} - 1\right)^2 = P \cdot \left(\sum_n x_{n,s}^2 + 2\sum_{n < n'} x_{n,s} x_{n',s} - 2\sum_n x_{n,s} + 1\right)$$
+
+This is quadratic in $x$ — it fits QUBO form. The minimum (zero penalty) occurs when exactly one $x_{n,s} = 1$.
+
+**Inequality constraint** ($\sum_i x_i \leq k$): introduce slack variables $s_1, \ldots, s_k$ and convert to equality: $\sum_i x_i + \sum_j s_j = k$. The slack variables add qubits but keep the QUBO structure.
+
+**Soft preferences** ("nurse $n$ prefers day shifts"): add a linear preference term $w \cdot x_{n,\text{night}}$ with a small positive weight $w < P$. The optimiser will avoid night shifts for nurse $n$ when possible, but will violate the preference if needed to satisfy hard constraints.
+
+### The QUBO-to-Ising conversion
+
+Substituting $x_i = \frac{1 - Z_i}{2}$:
+
+$$x_i x_j = \frac{(1 - Z_i)(1 - Z_j)}{4} = \frac{1 - Z_i - Z_j + Z_i Z_j}{4}$$
+
+Every QUBO term becomes a combination of $ZZ$, $Z$, and constant terms in the Ising model. The mapping is mechanical — no approximation involved.
+
+### Annealing schedule design
+
+For quantum annealing, the schedule $s(t) \in [0, 1]$ interpolates between the initial Hamiltonian $H_0$ (transverse field) and the problem Hamiltonian $H_1$ (Ising):
+
+$$H(t) = (1 - s(t)) H_0 + s(t) H_1$$
+
+The adiabatic theorem requires $T \geq O(1/\Delta^2)$ where $\Delta$ is the minimum spectral gap — the smallest energy difference between the ground state and the first excited state during the anneal. For hard problems, $\Delta$ can be exponentially small, making the required anneal time exponentially long.
+
+In practice, you anneal faster than the adiabatic limit and accept some probability of ending in an excited state. Run the annealer multiple times and take the best result. This is heuristic, not guaranteed — but it often works well.
+
+### Embedding onto hardware
+
+D-Wave's qubits are connected in a specific graph (Pegasus topology). Your problem graph may not map directly — you need a **minor embedding** that chains multiple physical qubits together to simulate a single logical variable. This embedding overhead can be significant: a 100-variable problem might require 500+ physical qubits.
+
+---
+
 ## Reality Check
 
 **D-Wave.** The company most associated with quantum annealing, D-Wave has built machines with over 5,000 qubits — far more than any gate-based machine. Their Advantage system can natively solve QUBO problems with thousands of variables. But the qubits are noisy, the connectivity is limited (Pegasus graph), and embedding real problems onto the hardware graph introduces significant overhead.
