@@ -20,7 +20,7 @@ In 1994, Peter Shor shattered this assumption.
 
 Shor showed that a quantum computer can factor $N$ in time *polynomial* in the number of digits — roughly $n^3$. Not sub-exponential. Not "somewhat faster." Polynomial. For a 2,000-digit number, the difference is between $10^{30}$ years and a few hours.
 
-Shor's algorithm doesn't just threaten RSA. It breaks any cryptosystem built on the difficulty of factoring (RSA) or the discrete logarithm problem (Diffie-Hellman, elliptic curve cryptography). That's most of the cryptography we rely on.
+Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** (which breaks Diffie-Hellman and elliptic curve cryptography). ECC — which was adopted precisely because its keys are shorter than RSA's for equivalent classical security — is in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~20 million noisy qubits needed for RSA-2048. Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
 
 Let's understand why — and how.
 
@@ -236,6 +236,7 @@ The migration timeline is measured in decades, not years. Cryptographic infrastr
 - **Further reading:**
     - Shor (1994). *Algorithms for Quantum Computation: Discrete Logarithms and Factoring.* [arXiv:quant-ph/9508027](https://arxiv.org/abs/quant-ph/9508027)
     - Gidney and Ekerå (2021). *How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits.* [arXiv:1905.09749](https://arxiv.org/abs/1905.09749)
+    - Roetteler, Naehrig, Svore, Lauter (2017). *Quantum Resource Estimates for Computing Elliptic Curve Discrete Logarithms.* [arXiv:1706.06752](https://arxiv.org/abs/1706.06752)
     - NIST (2024). *Post-Quantum Cryptography Standardization.* [csrc.nist.gov/projects/post-quantum-cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
     - Vandersypen et al. (2001). *Experimental realization of Shor's quantum factoring algorithm using nuclear magnetic resonance.* [Nature 414:883–887](https://doi.org/10.1038/414883a)
     - Nielsen and Chuang (2000). *Quantum Computation and Quantum Information.* Chapter 5: The quantum Fourier transform and its applications.
