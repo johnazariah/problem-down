@@ -1,0 +1,30 @@
+# ============================================================================
+# Problem Down — Python dependencies
+# ============================================================================
+
+# Quantum computing
+qiskit>=1.0
+qiskit-aer>=0.13
+
+# Circuit visualization
+pylatexenc>=2.10       # qiskit latex drawer dependency
+
+# Notebooks
+jupyter
+jupyterlab
+ipykernel
+
+# Publishing
+jupyter-book>=1.0
+sphinx-proof
+
+# Plotting
+matplotlib>=3.7
+numpy>=1.24
+
+# Quokka cloud connection
+requests
+
+# Utility
+scipy
+scikit-learn           # for ML unit notebook

@@ -1,0 +1,37 @@
+{
+  "name": "Problem Down — Quantum Computing Book",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "ms-toolsai.jupyter-renderers",
+        "James-Yu.latex-workshop",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "yzhang.markdown-all-in-one",
+        "streetsidesoftware.code-spell-checker",
+        "tomoki1207.pdf"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "jupyter.notebookFileRoot": "${workspaceFolder}",
+        "editor.wordWrap": "on",
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "latex-workshop.latex.autoBuild.run": "onSave",
+        "latex-workshop.latex.outDir": "%DIR%/out"
+      }
+    }
+  },
+
+  "postCreateCommand": "pip install --no-cache-dir -r requirements.txt",
+
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace"
+}
