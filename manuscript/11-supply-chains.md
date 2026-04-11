@@ -94,8 +94,6 @@ Formulate as QUBO: 8 nurses × 8 shift-slots = 64 binary variables (reducible wi
 
 → **See [notebook `06-supply-chains.ipynb`](../notebooks/06-supply-chains.ipynb) for the runnable version.**
 
-!!! lab "Lab 6: Build the QUBO circuit"
-    Want to see how the Ising Hamiltonian translates to gates? The QAOA circuit for this QUBO uses the same $ZZ$ interaction pattern as the MaxCut recipe. See [Quokka Cookbook — Recipe 07: QAOA for MaxCut](https://github.com/johnazariah/quokka-cookbook/recipes/07-qaoa-maxcut/) for the circuit-level walkthrough.
 
 ---
 

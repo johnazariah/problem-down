@@ -129,10 +129,7 @@ VQE with a 4-qubit UCCSD ansatz reproduces the exact Full CI result for H₂ to 
 
 → **See [notebook `03-drug-discovery.ipynb`](../notebooks/03-drug-discovery.ipynb) for the runnable version.**
 
-→ **See [Quokka Cookbook — Recipe 08: VQE for H₂](https://github.com/johnazariah/quokka-cookbook/recipes/08-vqe-h2/) for the QASM implementation.**
 
-!!! lab "Lab 3: Run VQE on your Quokka"
-    Recipe 08 builds the H₂ VQE circuit gate by gate in QASM. You'll see the Hartree-Fock initial state, the parameterised excitation, and the measurement — the same pipeline described in this chapter, rendered as a circuit you can run.
 
 ---
 

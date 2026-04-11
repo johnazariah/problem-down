@@ -103,8 +103,6 @@ The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, rep
 
 → **See [notebook `07-materials-science.ipynb`](../notebooks/07-materials-science.ipynb) for the runnable version.**
 
-!!! lab "Lab 7: QPE on a Quokka"
-    The QPE circuit uses the QFT as a subroutine — the same transform from Unit 2 (Shor's algorithm). See [Quokka Cookbook — Recipe 10: Quantum Phase Estimation](https://github.com/johnazariah/quokka-cookbook/recipes/10-quantum-phase-estimation/) for the gate-level walkthrough, and [Recipe 09: QFT](https://github.com/johnazariah/quokka-cookbook/recipes/09-quantum-fourier-transform/) for the QFT deep dive.
 
 ---
 

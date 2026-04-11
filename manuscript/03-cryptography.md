@@ -199,10 +199,7 @@ This is a toy example — 4 qubits, a number you can factor in your head. But th
 
 → **See [notebook `02-cryptography.ipynb`](../notebooks/02-cryptography.ipynb) for a runnable implementation.**
 
-→ **See [Quokka Cookbook — Recipe 09: Quantum Fourier Transform](https://github.com/johnazariah/quokka-cookbook/recipes/09-quantum-fourier-transform/) and [Recipe 10: Quantum Phase Estimation](https://github.com/johnazariah/quokka-cookbook/recipes/10-quantum-phase-estimation/) for the circuit building blocks.**
 
-!!! lab "Lab 2: QFT and QPE on your Quokka"
-    Shor's algorithm is built from two circuit primitives: the QFT (Recipe 09) and phase estimation (Recipe 10). Both are in the Quokka Cookbook — run them individually to see how periodicity extraction works at the gate level.
 
 ---
 

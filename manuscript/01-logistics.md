@@ -162,10 +162,7 @@ For larger graphs, the companion notebook runs the full QAOA loop with classical
 
 → **See [notebook `01-logistics.ipynb`](../notebooks/01-logistics.ipynb) for the runnable version.**
 
-→ **See [Quokka Cookbook — Recipe 07: QAOA for MaxCut](https://github.com/johnazariah/quokka-cookbook/recipes/07-qaoa-maxcut/) for the QASM implementation you can run on your Quokka.**
 
-!!! lab "Lab 1: Build the QAOA circuit gate by gate"
-    Want to understand how the cost Hamiltonian becomes a quantum circuit? Recipe 07 in the Quokka Cookbook walks through the same MaxCut QAOA — one gate at a time, in QASM you can paste into your Quokka.
 
 ---
 
@@ -213,7 +210,6 @@ This doesn't mean QAOA has "won" — DQI has its own advantages (no classical op
 
 - **The variational quantum-classical loop appears again in VQE** (Unit 3). If you understood the QAOA loop — quantum circuit produces a cost estimate, classical optimiser updates parameters, repeat — then you already understand VQE's architecture. The only difference is the cost function (molecular energy vs. cut count) and the ansatz (chemistry-motivated vs. graph-motivated).
 
-- **For the runnable QASM circuit,** see [Quokka Cookbook — Recipe 07](https://github.com/johnazariah/quokka-cookbook/recipes/07-qaoa-maxcut/). That recipe builds the same MaxCut QAOA circuit gate by gate in OpenQASM 2.0.
 
 - **Further reading:**
     - Farhi, Goldstone, Gutmann (2014). *A Quantum Approximate Optimization Algorithm.* [arXiv:1411.4028](https://arxiv.org/abs/1411.4028)

@@ -109,13 +109,6 @@ The difference between DFT and active-space results is the **correlation energy*
 
 → **See [notebook `08-climate-energy.ipynb`](../notebooks/08-climate-energy.ipynb) for the runnable version.**
 
-!!! lab "Lab 8: The complete circuit pipeline"
-    This example uses every circuit building block from the cookbook:
-    
-    - [Recipe 08: VQE for H₂](https://github.com/johnazariah/quokka-cookbook/recipes/08-vqe-h2/) — the VQE loop
-    - [Recipe 09: QFT](https://github.com/johnazariah/quokka-cookbook/recipes/09-quantum-fourier-transform/) — if using QPE instead of VQE
-    - [Recipe 10: QPE](https://github.com/johnazariah/quokka-cookbook/recipes/10-quantum-phase-estimation/) — the full phase estimation circuit
-    - [Recipe 11: Error Mitigation](https://github.com/johnazariah/quokka-cookbook/recipes/11-error-mitigation-zne/) — making noisy results useful
 
 ---
 

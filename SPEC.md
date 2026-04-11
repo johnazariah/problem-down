@@ -79,7 +79,7 @@ Appendix B           — Further reading (curated, annotated bibliography)
 
 **Key design decision:** No concept is taught before it's needed. Quantum concepts (qubits, superposition, entanglement, phase kickback, QFT, etc.) are introduced *inside* the deep dive chapters, the first time the algorithm under discussion requires them. The appendix collects all concepts into a reference glossary — but nobody should start there.
 
-**Key design decision:** Application chapters contain *no* circuit-level detail. They reference the next chapter (the deep dive) for readers who want to go deeper. Deep dive chapters are self-contained algorithm tutorials that weave in circuit concepts from the [Quokka Cookbook](https://github.com/johnazariah/quokka-cookbook) organically — the cookbook content is subsumed into the book, not cross-referenced as a separate resource.
+**Key design decision:** Application chapters contain *no* circuit-level detail. They reference the next chapter (the deep dive) for readers who want to go deeper. Deep dive chapters are self-contained algorithm tutorials that weave in circuit concepts organically — the Quokka Cookbook content has been subsumed into the book's deep dive chapters.
 
 **Key design decision:** The Quokka Cookbook repo remains as a standalone QASM reference for people running circuits on their Quokka hardware, but the book is the complete pedagogical resource. Every circuit concept taught in the cookbook is covered in a deep dive chapter, in context, with full explanation. The cookbook is a *byproduct* of the book, not a dependency.
 
