@@ -122,7 +122,7 @@ Formulate as QUBO: 8 nurses × 8 shift-slots = 64 binary variables (reducible wi
     - Lucas (2014). *Ising formulations of many NP problems.* [Frontiers in Physics 2:5](https://doi.org/10.3389/fphy.2014.00005)
     - Farhi et al. (2001). *A quantum adiabatic evolution algorithm applied to random instances of an NP-complete problem.* [Science 292:472–475](https://doi.org/10.1126/science.1057726) ([arXiv:quant-ph/0001106](https://arxiv.org/abs/quant-ph/0001106))
     - Rønnow et al. (2014). *Defining and detecting quantum speedup.* [Science 345:420–424](https://doi.org/10.1126/science.1252319) ([arXiv:1401.2910](https://arxiv.org/abs/1401.2910))
-    - King et al. (2023). *Quantum critical dynamics in a 5,000-qubit programmable spin glass.* [Nature 617:61–66](https://doi.org/10.1038/s41586-023-05867-2)
+    - King et al. (2023). *Quantum critical dynamics in a 5,000-qubit programmable spin glass.* [Nature 617:61–66](https://doi.org/10.1038/s41586-023-05867-2) ([arXiv:2207.13800](https://arxiv.org/abs/2207.13800))
     - Katzgraber, Hamze & Andrist (2014). *Glued trees are not hard for quantum annealing: designing hard Ising instances.* [Physical Review X 4:021008](https://doi.org/10.1103/PhysRevX.4.021008) ([arXiv:1404.6539](https://arxiv.org/abs/1404.6539))
     - Katzgraber, Trebst, Huse & Troyer (2006). *Feedback-optimized parallel tempering Monte Carlo.* [Journal of Statistical Mechanics P03018](https://doi.org/10.1088/1742-5468/2006/03/P03018) ([arXiv:cond-mat/0602085](https://arxiv.org/abs/cond-mat/0602085))
     - Mandrà, Katzgraber & Thomas (2017). *The pitfalls of planar spin-glass benchmarks.* [Quantum Science and Technology 2:038501](https://doi.org/10.1088/2058-9565/aa7877) ([arXiv:1703.00622](https://arxiv.org/abs/1703.00622))
