@@ -1,6 +1,6 @@
-# What Quantum Computers Are Actually For
+# The Problem With Quantum
 
-*Eight problems from logistics to climate — and the algorithms that could solve them*
+*What quantum computers are really for*
 
 Each unit starts with an industry problem people already care about; a dollar figure, a bottleneck, a human cost; then pulls in only the quantum machinery needed to solve it.
 

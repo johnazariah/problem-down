@@ -2,8 +2,8 @@
 version: 1
 project:
   id: 01c53116-a752-44e6-a733-12d60b99e96a
-  title: What Quantum Computers Are Actually For
-  subtitle: Eight problems from logistics to climate, and the algorithms that could solve them
+  title: The Problem With Quantum
+  subtitle: What quantum computers are really for
   authors:
     - name: John Azariah
       affiliation: Centre for Quantum Software & Information, University of Technology Sydney
@@ -65,4 +65,4 @@ project:
 site:
   template: book-theme
   options:
-    logo_text: What Quantum Computers Are Actually For
+    logo_text: The Problem With Quantum
