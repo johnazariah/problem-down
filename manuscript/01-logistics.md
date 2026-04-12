@@ -30,7 +30,7 @@ You have a graph; a set of cities (nodes) connected by roads (edges), each road 
 
 For our purposes, let's start with something even simpler: **MaxCut**. Take a graph and colour every node either red or blue. An edge is "cut" if its endpoints have different colours. MaxCut asks: what colouring cuts the most edges?
 
-MaxCut sounds like a toy problem, but it's NP-hard; just as hard as TSP in a complexity-theoretic sense. And it's beautifully suited to our purposes because it translates directly into the language of qubits.
+MaxCut sounds like it has nothing to do with delivery trucks. But TSP, MaxCut, and virtually every combinatorial optimisation problem share the same deep structure: you have $n$ binary decisions, a cost function that depends on how those decisions interact, and an exponentially large space of possibilities to search. The difference is just what the decisions represent (which city to visit next vs. what colour to assign) and what the cost counts (total distance vs. cut edges). The quantum approach we're about to build works on *any* problem with this structure. We're using MaxCut because it's the cleanest example — each decision is one qubit, and the cost function translates directly into the language of quantum mechanics. Once you see how QAOA handles MaxCut, the path to TSP, vehicle routing, and scheduling is a change of cost function, not a change of algorithm.
 
 Here's why MaxCut is hard. A graph with $n$ nodes has $2^n$ possible colourings. For each colouring, you can count the cut edges in $O(m)$ time, where $m$ is the number of edges. So the brute-force algorithm takes $O(m \cdot 2^n)$ time. For $n = 50$, that's roughly $10^{15}$ operations; doable but slow. For $n = 100$, it's $10^{30}$ operations. For $n = 300$, you'd need more time than the age of the universe.
 
@@ -61,7 +61,9 @@ Let's see how it plays out for MaxCut.
 
 ### Qubits as binary decisions
 
-The first step is encoding. Each node in the graph gets one qubit. A qubit in state $|0\rangle$ means "red"; $|1\rangle$ means "blue." An $n$-node graph requires $n$ qubits. A specific colouring; say, nodes 1 and 3 are blue, node 2 is red; corresponds to the quantum state $|101\rangle$.
+The first step is encoding. Each node in the graph gets one qubit. A classical bit is either 0 or 1. A qubit is the quantum version: it has two definite states, which physicists write as $|0\rangle$ and $|1\rangle$. The vertical bar and angle bracket are just packaging — the notation is called a "ket," and it's how physicists label quantum states. You can read $|0\rangle$ as "the state labelled zero" and $|1\rangle$ as "the state labelled one." When you measure a qubit, you always get one of these two outcomes: 0 or 1, just like a classical bit. The difference is what happens *before* you measure — but we'll get to that in a moment.
+
+For MaxCut, $|0\rangle$ means "red" and $|1\rangle$ means "blue." An $n$-node graph requires $n$ qubits. A specific colouring — say, nodes 1 and 3 are blue, node 2 is red — corresponds to the quantum state $|101\rangle$ (just the individual qubit labels strung together).
 
 So far, this is just notation. The quantum part starts when we use *superposition*.
 
@@ -77,11 +79,20 @@ Physicists have a word for "the function that assigns a number to every state of
 
 This reframing is not just convenient; it's the key insight that makes quantum optimisation work. Quantum systems are *built* to find low-energy states. It's what they do naturally. By encoding our problem as a Hamiltonian, we're asking quantum mechanics to do what it already does best.
 
-Here's how we build the Hamiltonian for MaxCut. For each edge $(i, j)$, we need an expression that equals 1 when the edge is cut and 0 when it isn't. The trick uses a quantum operator called $Z$ (the Pauli-$Z$ operator, which gives $+1$ for $|0\rangle$ and $-1$ for $|1\rangle$). If you want to verify the formula yourself, Deep-Dive 1 walks through the algebra; for now, just check the two cases:
+Here's how we build the Hamiltonian for MaxCut. For each edge $(i, j)$, we need an expression that equals 1 when the edge is cut and 0 when it isn't. The trick uses a quantum operator called $Z$ (the Pauli-$Z$ operator, which gives $+1$ for $|0\rangle$ and $-1$ for $|1\rangle$):
 
 $$\frac{1 - Z_i Z_j}{2}$$
 
-If qubits $i$ and $j$ are the *same* colour, $Z_i Z_j = (+1)(+1) = +1$ or $(-1)(-1) = +1$, and the expression gives $(1-1)/2 = 0$. If they're *different* colours, $Z_i Z_j = (+1)(-1) = -1$, and the expression gives $(1-(-1))/2 = 1$. That's exactly what we want: 1 for a cut edge, 0 for an uncut one.
+Does it work? Check all four cases:
+
+| $q_i$ | $q_j$ | Same colour? | $Z_i$ | $Z_j$ | $Z_i Z_j$ | $\tfrac{1}{2}(1 - Z_i Z_j)$ |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| $\vert 0\rangle$ (red) | $\vert 0\rangle$ (red) | yes | $+1$ | $+1$ | $+1$ | $0$ — uncut |
+| $\vert 0\rangle$ (red) | $\vert 1\rangle$ (blue) | no | $+1$ | $-1$ | $-1$ | $1$ — **cut** |
+| $\vert 1\rangle$ (blue) | $\vert 0\rangle$ (red) | no | $-1$ | $+1$ | $-1$ | $1$ — **cut** |
+| $\vert 1\rangle$ (blue) | $\vert 1\rangle$ (blue) | yes | $-1$ | $-1$ | $+1$ | $0$ — uncut |
+
+The formula returns 1 exactly when the edge is cut and 0 when it isn't. That's all we need.
 
 The total cost Hamiltonian sums this over every edge:
 
@@ -97,6 +108,14 @@ Before we look at the QAOA circuit, a quick orientation on how quantum programs 
 
 A quantum circuit is read left to right, like sheet music. Each horizontal line (called a **wire**) represents one qubit. Boxes or symbols on the wires represent **operations** (also called gates). A gate on one wire acts on that qubit alone; a gate connecting two wires (drawn with a vertical line between them) acts on both qubits together. At the end, a measurement symbol ($M$ or a meter icon) reads out the qubit's value as a classical 0 or 1.
 
+Here's what that looks like in practice. The circuit below implements **quantum teleportation** — moving the state of one qubit to another using entanglement and two classical bits. You don't need to understand it yet; just notice the structure:
+
+![Quantum teleportation circuit: three qubit wires read left to right, with Hadamard and CNOT gates creating entanglement, measurements, and classically controlled corrections](../figures/teleportation-circuit.png)
+
+Three wires, three qubits. Gates ($H$, CNOT) sit on the wires at specific moments in time. The grey arrows carry classical measurement results down to later gates. Read left to right, the circuit tells you exactly what happens and when — just like a musical score tells musicians what to play and when.
+
+We'll return to teleportation in later units. For now, this is the visual language for every quantum algorithm in the book.
+
 > **Unitary.** You'll see quantum operations called "unitary." This is a technical term from linear algebra that means two things: the operation is *reversible* (you can always undo it), and it *preserves probabilities* (they still add up to 1 afterwards). Every quantum gate is unitary. Measurement is not; it's the one irreversible step, where the quantum state collapses to a definite classical value. Deep-Dive 1 goes deeper into the mathematics.
 
 A few gates we'll meet repeatedly:
@@ -106,33 +125,44 @@ A few gates we'll meet repeatedly:
 - $X$ (Pauli-X): flips a qubit; $|0\rangle \to |1\rangle$ and vice versa. Related gate $R_X(\theta)$ rotates by a tunable angle.
 - CNOT: a two-qubit gate that flips the second qubit if the first is $|1\rangle$. This is how qubits become *entangled*; correlated in ways that have no classical analogue.
 
-With that vocabulary, the QAOA circuit will make sense.
+With that vocabulary, let's look at the QAOA circuit.
 
-### The variational loop
+### The QAOA circuit
 
-But how do you choose $\gamma$ and $\beta$? This is where QAOA becomes a **variational** algorithm; a quantum-classical hybrid:
+Here is the entire QAOA algorithm for our three-node MaxCut problem:
 
-1. Pick initial values of $\gamma$ and $\beta$
+![QAOA circuit: Hadamard initialisation, then repeated rounds of Cost and Mix with different angles each round, then measurement](../figures/qaoa-box-circuit.png)
+
+Read left to right. Initialise, then alternate between two boxes — Cost and Mix — for $p$ rounds, each round with its own pair of angles ($\gamma_k$, $\beta_k$). Then measure. That's the entire algorithm. The angles are different in every round: round 1 uses $\gamma_1, \beta_1$; round 2 uses $\gamma_2, \beta_2$; and so on. There are $2p$ parameters in total, and choosing them well is the whole game. We'll get to that. First, let's open each box.
+
+**Box 1: Initialisation.** A Hadamard gate $H$ on every qubit. This creates an equal superposition of all $2^n$ colourings, each with the same amplitude $1/\sqrt{2^n}$. Think of it as a blank canvas: every possible solution is present, and none is preferred. If you measured right now, you'd get a uniformly random colouring. Not useful yet.
+
+**Box 2: The cost phase** ($e^{-i\gamma_k C}$). This is where our Hamiltonian earns its keep. For each edge $(i,j)$, the circuit applies a rotation whose angle is proportional to $\gamma_k$. The effect: every colouring in the superposition picks up a *phase* that depends on its cut count. Colourings that cut more edges get one phase; colourings that cut fewer get a different phase.
+
+But here's the catch: phase changes alone are invisible to measurement. The *probabilities* haven't changed at all. If you measured right now, you'd still get a uniformly random colouring. The cost phase has written information in invisible ink: it tagged good solutions differently from bad ones, but the tags are hidden in the phases, and measurement only sees probabilities.
+
+So what good are the phases? This is where the real quantum magic enters.
+
+> **Interference.** Quantum amplitudes aren't just numbers — they have both a magnitude and a *direction* (technically, a complex phase). Think of them as arrows. When two arrows point the same way, they reinforce: their magnitudes add. When they point in opposite directions, they cancel: their magnitudes subtract. This is *interference*, and it's the mechanism that makes quantum computing fundamentally different from classical computing.
+>
+> Superposition gives you the blank canvas — all $2^n$ solutions present at once. But superposition alone is useless: you can't look at all the solutions, and a random one is no better than a coin flip. Interference is what sculpts the canvas. It converts the phase information (which solution is good, which is bad) into probability information (which solution you're likely to measure). Every quantum algorithm is, at its core, an interference machine. The details differ — Shor's algorithm uses the Quantum Fourier Transform to create constructive interference at the period. Grover's uses the diffusion operator. QAOA uses the mixer. But the trick is always the same: arrange for good answers to reinforce and bad answers to cancel.
+
+**Box 3: The mixer** ($e^{-i\beta_k B}$). An $R_X(2\beta_k)$ rotation on every qubit. This "stirs" the superposition, causing amplitudes from different colourings to overlap and interfere. Because the cost phase tagged good colourings with different phases from bad ones, the mixer's stirring produces constructive interference for high-cut colourings and destructive interference for low-cut ones. After the mixer, the probabilities are no longer uniform: good solutions are more likely to appear when you measure.
+
+**Then repeat.** One round of cost-then-mix shifts the probabilities a little. Two rounds shift them more. Each round uses fresh angles ($\gamma_k$, $\beta_k$), so the algorithm can tag and stir with different intensities at each step — like a photographer adjusting focus and exposure between shots. As $p \to \infty$, QAOA converges to the exact optimum. In practice, you use a small $p$ and accept an approximate answer — hence "Approximate" in the name.
+
+But who chooses the $2p$ angles? You could try random values, but that's wasteful. Instead, QAOA uses a **variational loop** — a quantum-classical hybrid:
+
+1. Pick initial values of $\gamma_1, \beta_1, \ldots, \gamma_p, \beta_p$
 2. Run the quantum circuit, measure the output
 3. Compute the expected cost (run many times, take the average)
 4. Feed this cost to a classical optimiser (COBYLA, Nelder-Mead, gradient descent)
-5. The optimiser suggests better values of $\gamma$ and $\beta$
+5. The optimiser suggests better angles
 6. Repeat until convergence
 
 The quantum computer explores the solution space. The classical computer tunes the exploration strategy. Neither could do the other's job efficiently.
 
-For deeper QAOA (more rounds of alternation, called $p$-depth QAOA), you have $2p$ parameters: $\gamma_1, \beta_1, \gamma_2, \beta_2, \ldots, \gamma_p, \beta_p$. In principle, as $p \to \infty$, QAOA can find the exact optimum. In practice, you use a small number of rounds and accept an approximate answer; hence "Approximate" in the name.
-
-### How it becomes a circuit
-
-Each ingredient has a direct circuit implementation:
-
-- **Initial state:** Apply a Hadamard gate $H$ to every qubit → equal superposition $|+\rangle^n$
-- **Problem unitary ($e^{-i\gamma C}$):** For each edge $(i,j)$, apply $\text{CNOT}(i,j) \cdot R_Z(2\gamma) \cdot \text{CNOT}(i,j)$. This implements $e^{-i\gamma Z_i Z_j}$.
-- **Mixer ($e^{-i\beta B}$):** Apply $R_X(2\beta)$ to every qubit.
-- **Measurement:** Measure all qubits in the computational basis.
-
-The circuit depth grows linearly with the number of edges and the depth parameter $p$. For small graphs, this is entirely feasible on current quantum hardware.
+For the gate-level decomposition of each box — how the cost phase becomes a sequence of CNOTs and $R_Z$ rotations, and what $R_X$ does geometrically — see Deep-Dive 1.
 
 
 ## Worked Example
@@ -183,25 +213,27 @@ For larger graphs, the companion notebook runs the full QAOA loop with classical
 
 → *Want to understand how the QAOA circuit is built, gate by gate? Read the next chapter.*
 
+### Back to the trucks
+
+We started with UPS drivers and 20-stop routes. We solved MaxCut on a triangle. How do you get from one to the other?
+
+The same machinery applies. TSP and its industrial cousin, the **Vehicle Routing Problem** (VRP), can be written as cost functions over binary variables — which city does driver $k$ visit at time step $t$? The cost Hamiltonian becomes a sum of distance terms plus penalty terms that enforce constraints (visit every city exactly once, return to the depot, respect vehicle capacity). The encoding is more complex than MaxCut — you need $O(n^2)$ qubits instead of $n$, and the constraint penalties add terms to the Hamiltonian — but the algorithm is identical: initialise in superposition, alternate cost and mixer phases, measure. QAOA doesn't care whether the cost function counts cut edges or travel distance. It just needs a Hamiltonian.
+
+That's also why we'll see this same pattern in every unit of this book. Drug molecules, financial portfolios, nurse schedules, material properties — they all become Hamiltonians, and the quantum algorithm searches for the ground state. The problem changes. The strategy doesn't.
+
 
 ## Reality Check
 
 
 Let's be honest about where QAOA stands; and where it's heading.
 
-**The low-depth story.** For depth-1 QAOA on MaxCut, Farhi, Goldstone, and Gutmann (2014) proved a guaranteed approximation ratio of 0.6924 for 3-regular graphs. The best classical polynomial-time algorithm (Goemans-Williamson, 1995) achieves 0.878. So at low depth, QAOA *underperforms* the best classical method. This result gave QAOA a reputation as a promising but underpowered algorithm.
+**The low-depth story.** For depth-1 QAOA on MaxCut, Farhi, Goldstone, and Gutmann (2014) proved a guaranteed approximation ratio of 0.6924 for 3-regular graphs. The best classical polynomial-time algorithm (Goemans-Williamson, 1995) achieves 0.878. So at low depth, QAOA *underperforms* the best classical method. This is worth stating plainly: if you can only run one or two rounds, you're better off with Goemans-Williamson.
 
-But low depth is not the whole story.
+**Beyond low depth.** QAOA's performance improves monotonically with depth $p$, and a body of work has made it possible to compute exact QAOA performance at depths that were previously out of reach. MaxCut is the $k = 2$ case of a broader family called Max-$k$-XORSAT, where each constraint involves $k$ variables connected by an XOR. For $D$-regular instances, Basso et al. (2021) showed that QAOA's expected performance in the infinite-size limit can be computed via a *tree tensor network* contraction — a classical calculation whose cost is exponential in $p$ but independent of the graph size. Farhi et al. (2025) pushed this to depth $p = 20$ for MaxCut on 3-regular graphs.
 
-**The high-depth story is much more interesting.** QAOA's performance improves monotonically with depth $p$, and recent work has made it possible to compute exact QAOA performance at depths that were previously out of reach; not by running a quantum computer, but by exploiting the mathematical structure of the algorithm itself.
+Meanwhile, a different quantum approach has emerged: **Decoded Quantum Interferometry** (DQI), a non-variational algorithm introduced by Jordan et al. (Nature, 2025). DQI combined with Belief Propagation post-processing (DQI+BP) achieves strong results on Max-$k$-XORSAT without any classical optimiser loop, and was the state of the art for several $(k, D)$ parameter regimes.
 
-MaxCut and its generalisation to Max-$k$-XORSAT belong to a family of constraint satisfaction problems where the cost function decomposes into $k$-local terms. For $D$-regular instances of these problems, Basso et al. (2021) showed that QAOA's expected performance in the infinite-size limit can be computed via a *tree tensor network* contraction; a classical calculation whose cost is exponential in $p$ but independent of the graph size.
-
-Farhi et al. (2025) pushed this to depth $p = 20$ for MaxCut on 3-regular graphs. Azariah and Jordan (2026) extended the approach to Max-$k$-XORSAT for $k \geq 3$ using a Walsh-Hadamard factorisation that reduces the computational cost by a factor of 65,000× for $k = 3$. This factorisation exploits the fact that the $k$-body constraint fold is a convolution on $\mathbb{Z}_2^{2p+1}$; the Walsh-Hadamard transform diagonalises it. The result: exact QAOA performance through depth $p = 13$ for $(k=3, D=4)$, achieving a satisfaction fraction of $\tilde{c} = 0.877$.
-
-Why does this matter? Because we can now *precisely compare* QAOA against other quantum and classical algorithms on these problems. For Max-$k$-XORSAT, the main quantum competitor is **Decoded Quantum Interferometry** (DQI), a non-variational algorithm introduced by Jordan et al. (Nature, 2025). DQI combined with Belief Propagation post-processing (DQI+BP) was the previous state of the art. The exact QAOA evaluations show that **QAOA surpasses DQI+BP on 13 of 15 $(k, D)$ parameter pairs tested**.
-
-This doesn't mean QAOA has "won": DQI has its own advantages (no classical optimiser loop, better scaling properties for some regimes). But it definitively refutes the narrative that QAOA is too weak to compete. For this family of problems, at sufficient depth, QAOA is a serious contender.
+Recent work by Azariah and Jordan (2026) extended the tree tensor network approach to Max-$k$-XORSAT for $k \geq 3$, enabling exact QAOA evaluation through depth $p = 13$. These calculations show that QAOA at sufficient depth is competitive with DQI+BP across most parameter regimes tested — though each algorithm has its strengths.
 
 **The hardware gap.** These are theoretical results; computing what QAOA *would* achieve if you could run it at depth $p = 12$ on a large enough quantum computer. Today's hardware can run QAOA at $p = 1$ or $p = 2$ on a few dozen noisy qubits. The gap between where the algorithm shines ($p \geq 8$) and where hardware can operate ($p \leq 2$) is real. Fault-tolerant quantum computers with $\sim 10^4$ logical qubits would close this gap.
 
