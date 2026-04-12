@@ -18,6 +18,7 @@ project:
   license: All Rights Reserved
   toc:
     - file: README.md
+    - file: manuscript/00-preface.md
     - title: "Unit 1: Logistics"
       children:
         - file: manuscript/01-logistics.md

@@ -18,6 +18,7 @@ pandoc \
   --highlight-style=tango \
   --top-level-division=chapter \
   -o manuscript.pdf \
+  manuscript/00-preface.md \
   manuscript/01-logistics.md \
   manuscript/02-building-qaoa.md \
   manuscript/03-cryptography.md \
