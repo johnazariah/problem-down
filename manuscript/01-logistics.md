@@ -49,43 +49,64 @@ What if, instead of sitting at one colouring and looking around, you could be at
 
 That's the core idea behind the **Quantum Approximate Optimization Algorithm** (QAOA), introduced by Farhi, Goldstone, and Gutmann in 2014. It's not a magic bullet; it won't solve NP-hard problems in polynomial time (nobody believes that's possible). But it offers a fundamentally different way to explore the solution landscape, one that exploits quantum mechanics in a structural way that classical algorithms cannot mimic.
 
+Before we dive into QAOA itself, let's step back and sketch how quantum algorithms work in general. Nearly every quantum algorithm follows the same three-act structure:
+
+1. **Encode** the problem into a quantum system. Binary decisions become qubits. Costs become operators. The search space becomes the space of quantum states.
+2. **Manipulate** the quantum state using carefully chosen operations. This is where the quantum magic happens: interference suppresses bad solutions and amplifies good ones, without ever looking at them one by one.
+3. **Measure** the result. Measurement collapses the quantum state to a single classical answer. If the manipulation was done well, that answer is likely to be a good one.
+
+That's the whole recipe. The art is in step 2, and it's different for every algorithm. For QAOA, the manipulation is a rhythmic alternation between "imprint the cost" and "mix the solutions." For Shor's algorithm (Unit 2), it's a Fourier transform. For VQE (Unit 3), it's a chemistry-inspired trial state. But the three-act structure is always the same.
+
+Let's see how it plays out for MaxCut.
+
 ### Qubits as binary decisions
 
-Let's encode our MaxCut problem. Each node in the graph gets one qubit. A qubit in state $|0\rangle$ means "red"; $|1\rangle$ means "blue." An $n$-node graph requires $n$ qubits. A specific colouring; say, nodes 1 and 3 are blue, node 2 is red; corresponds to the computational basis state $|101\rangle$.
+The first step is encoding. Each node in the graph gets one qubit. A qubit in state $|0\rangle$ means "red"; $|1\rangle$ means "blue." An $n$-node graph requires $n$ qubits. A specific colouring; say, nodes 1 and 3 are blue, node 2 is red; corresponds to the quantum state $|101\rangle$.
 
-The key is that a qubit doesn't have to be $|0\rangle$ or $|1\rangle$. It can be in a *superposition*: $\alpha|0\rangle + \beta|1\rangle$, where $\alpha$ and $\beta$ are complex numbers with $|\alpha|^2 + |\beta|^2 = 1$. When you put $n$ qubits in superposition, the system can be in a superposition of all $2^n$ colourings simultaneously. We don't look at them all; measurement gives us one. But between preparation and measurement, we can manipulate the amplitudes to make good colourings more likely.
+So far, this is just notation. The quantum part starts when we use *superposition*.
 
-### The cost Hamiltonian
+> **Superposition.** A qubit doesn't have to be $|0\rangle$ or $|1\rangle$. It can be in a state like $\alpha|0\rangle + \beta|1\rangle$, where $\alpha$ and $\beta$ are numbers (complex, if you care, but the intuition works with real numbers) satisfying $|\alpha|^2 + |\beta|^2 = 1$. The values $|\alpha|^2$ and $|\beta|^2$ are the probabilities of getting 0 or 1 when you measure. Before measurement, both possibilities coexist. This isn't a metaphor; it's how the physics works. When you put $n$ qubits into superposition, the system represents all $2^n$ possible states at once. You'll hear people say "the quantum computer tries all answers simultaneously." That's misleading. What really happens is subtler: the $2^n$ possibilities can *interfere* with each other, and clever algorithms arrange for the good answers to reinforce and the bad ones to cancel. Deep-Dive 1 makes this precise.
 
-QAOA turns the MaxCut objective into a quantum operator; a **cost Hamiltonian** $C$.
+With $n$ qubits in superposition, we have all $2^n$ colourings present in a single quantum state. We can't look at them all; measurement gives us just one. But between preparation and measurement, we can manipulate the amplitudes to make good colourings more likely to appear. That's the game.
 
-For each edge $(i, j)$ in the graph, we need an expression that equals 1 when the edge is cut and 0 when it isn't. Here's the trick (if you want to verify it yourself, Deep-Dive 1 walks through the algebra; for now, just check the two cases below):
+### Turning costs into energy
+
+Now we need to tell the quantum computer what "good" means. We need to translate the MaxCut objective; "cut as many edges as possible"; into something a quantum system can work with.
+
+Physicists have a word for "the function that assigns a number to every state of a system": they call it a **Hamiltonian**. In physics, the Hamiltonian describes the total energy, and the system naturally evolves toward its lowest-energy state. We're going to borrow this idea: assign an "energy" to every colouring, where lower energy means more edges cut. Then "find the best colouring" becomes "find the lowest-energy state."
+
+This reframing is not just convenient; it's the key insight that makes quantum optimisation work. Quantum systems are *built* to find low-energy states. It's what they do naturally. By encoding our problem as a Hamiltonian, we're asking quantum mechanics to do what it already does best.
+
+Here's how we build the Hamiltonian for MaxCut. For each edge $(i, j)$, we need an expression that equals 1 when the edge is cut and 0 when it isn't. The trick uses a quantum operator called $Z$ (the Pauli-$Z$ operator, which gives $+1$ for $|0\rangle$ and $-1$ for $|1\rangle$). If you want to verify the formula yourself, Deep-Dive 1 walks through the algebra; for now, just check the two cases:
 
 $$\frac{1 - Z_i Z_j}{2}$$
 
-$Z_i$ is the Pauli-$Z$ operator on qubit $i$. It gives $+1$ when the qubit is $|0\rangle$ and $-1$ when it's $|1\rangle$. So if qubits $i$ and $j$ are the *same* colour, $Z_i Z_j = (+1)(+1) = +1$ or $(-1)(-1) = +1$, and the expression gives $(1-1)/2 = 0$. If they're *different* colours, $Z_i Z_j = -1$, and the expression gives $(1-(-1))/2 = 1$. That's exactly what we want: 1 for a cut edge, 0 for an uncut one.
+If qubits $i$ and $j$ are the *same* colour, $Z_i Z_j = (+1)(+1) = +1$ or $(-1)(-1) = +1$, and the expression gives $(1-1)/2 = 0$. If they're *different* colours, $Z_i Z_j = (+1)(-1) = -1$, and the expression gives $(1-(-1))/2 = 1$. That's exactly what we want: 1 for a cut edge, 0 for an uncut one.
 
 The total cost Hamiltonian sums this over every edge:
 
 $$C = \sum_{(i,j) \in E} \frac{1 - Z_i Z_j}{2}$$
 
-The ground state of $-C$ (the state with lowest energy) is the colouring that maximises the cut. We've translated "find the best colouring" into "find the ground state of this operator." This is not just a mathematical trick; it's a change of perspective that opens the door to quantum mechanics.
+The state with the highest value of $C$ is the colouring that cuts the most edges. Equivalently, the **ground state** of $-C$ (the lowest-energy state) is the optimal solution.
 
-### The QAOA circuit
+This pattern; "encode the objective as a Hamiltonian, then find its ground state"; is the central trick of quantum optimisation, and it recurs throughout this book. In Unit 3, the Hamiltonian encodes molecular energy. In Unit 6, it encodes scheduling constraints. In Unit 7, it encodes the physics of a material. The problems are different, but the strategy is the same: translate "find the best X" into "find the lowest energy."
 
-QAOA works by applying two alternating operations:
+### Reading a quantum circuit
 
-1. **The problem unitary** $e^{-i\gamma C}$: this "imprints" the cost function onto the phases of the quantum state. Good colourings acquire different phases from bad ones. The parameter $\gamma$ controls how strongly the cost function influences the state.
+Before we look at the QAOA circuit, a quick orientation on how quantum programs are drawn.
 
-2. **The mixer unitary** $e^{-i\beta B}$, where $B = \sum_i X_i$: this "mixes" the amplitudes between different colourings, allowing the algorithm to explore the solution space. The parameter $\beta$ controls how much mixing occurs.
+A quantum circuit is read left to right, like sheet music. Each horizontal line (called a **wire**) represents one qubit. Boxes or symbols on the wires represent **operations** (also called gates). A gate on one wire acts on that qubit alone; a gate connecting two wires (drawn with a vertical line between them) acts on both qubits together. At the end, a measurement symbol ($M$ or a meter icon) reads out the qubit's value as a classical 0 or 1.
 
-One round of QAOA applies both operators in sequence:
+> **Unitary.** You'll see quantum operations called "unitary." This is a technical term from linear algebra that means two things: the operation is *reversible* (you can always undo it), and it *preserves probabilities* (they still add up to 1 afterwards). Every quantum gate is unitary. Measurement is not; it's the one irreversible step, where the quantum state collapses to a definite classical value. Deep-Dive 1 goes deeper into the mathematics.
 
-$$|\gamma, \beta\rangle = e^{-i\beta B} \, e^{-i\gamma C} \, |+\rangle^n$$
+A few gates we'll meet repeatedly:
 
-where $|+\rangle^n$ is the equal superposition of all colourings (created by applying Hadamard gates to all qubits). You measure the qubits, and the colouring you get is your candidate solution.
+- $H$ (Hadamard): puts a qubit into superposition. Turns $|0\rangle$ into an equal mix of $|0\rangle$ and $|1\rangle$.
+- $Z$ (Pauli-Z): you've already met this; it gives $+1$ for $|0\rangle$ and $-1$ for $|1\rangle$. Related gates $R_Z(\theta)$ rotate by a tunable angle.
+- $X$ (Pauli-X): flips a qubit; $|0\rangle \to |1\rangle$ and vice versa. Related gate $R_X(\theta)$ rotates by a tunable angle.
+- CNOT: a two-qubit gate that flips the second qubit if the first is $|1\rangle$. This is how qubits become *entangled*; correlated in ways that have no classical analogue.
 
-The magic is in the interference. The problem unitary $e^{-i\gamma C}$ assigns phases proportional to the cost of each colouring. The mixer $e^{-i\beta B}$ then causes these phases to interfere; constructively for good solutions, destructively for bad ones. After several rounds of alternation, the probability of measuring a high-quality colouring increases.
+With that vocabulary, the QAOA circuit will make sense.
 
 ### The variational loop
 
