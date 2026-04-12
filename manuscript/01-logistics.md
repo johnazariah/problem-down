@@ -207,4 +207,4 @@ This doesn't mean QAOA has "won": DQI has its own advantages (no classical optim
     - Basso, Farhi, Marwaha, Villalonga, Zhou (2021). *The Quantum Approximate Optimization Algorithm at High Depth for MaxCut on Large-Girth Regular Graphs and the Sherrington-Kirkpatrick Model.* [arXiv:2110.14206](https://arxiv.org/abs/2110.14206)
     - Farhi, Gutmann, Ranard, Villalonga (2025). *Lower bounding the MaxCut of high girth 3-regular graphs using the QAOA.* [arXiv:2503.12789](https://arxiv.org/abs/2503.12789)
     - Jordan, Shutty, Wootters, Zalcman, et al. (2025). *Optimization by decoded quantum interferometry.* [Nature (2025)](https://doi.org/10.1038/s41586-025-09527-5) ([arXiv:2408.08292](https://arxiv.org/abs/2408.08292))
-    - Azariah and Jordan (2026). *Filling in the Gaps: Generic Tree Folding for Exact QAOA on Max-$k$-XORSAT.* (In preparation.)
+    - Azariah and Jordan (2026). *Exact QAOA on Max-$k$-XORSAT via generic tree folding.* (Working title; in preparation.)

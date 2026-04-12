@@ -1,0 +1,65 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: 01c53116-a752-44e6-a733-12d60b99e96a
+  title: What Quantum Computers Are Actually For
+  subtitle: Eight problems from logistics to climate, and the algorithms that could solve them
+  authors:
+    - name: John Azariah
+      affiliation: Centre for Quantum Software & Information, University of Technology Sydney
+  keywords:
+    - quantum computing
+    - quantum algorithms
+    - QAOA
+    - VQE
+    - quantum machine learning
+    - quantum chemistry
+  github: https://github.com/johnazariah/problem-down
+  license: All Rights Reserved
+  toc:
+    - file: README.md
+    - title: "Unit 1: Logistics"
+      children:
+        - file: manuscript/01-logistics.md
+        - file: manuscript/02-building-qaoa.md
+        - file: notebooks/01-logistics.ipynb
+    - title: "Unit 2: Cryptography"
+      children:
+        - file: manuscript/03-cryptography.md
+        - file: manuscript/04-inside-shors.md
+        - file: notebooks/02-cryptography.ipynb
+    - title: "Unit 3: Drug Discovery"
+      children:
+        - file: manuscript/05-drug-discovery.md
+        - file: manuscript/06-vqe-pipeline.md
+        - file: notebooks/03-drug-discovery.ipynb
+    - title: "Unit 4: Machine Learning"
+      children:
+        - file: manuscript/07-machine-learning.md
+        - file: manuscript/08-quantum-kernels.md
+        - file: notebooks/04-machine-learning.ipynb
+    - title: "Unit 5: Finance"
+      children:
+        - file: manuscript/09-finance.md
+        - file: manuscript/10-amplitude-estimation.md
+        - file: notebooks/05-finance.ipynb
+    - title: "Unit 6: Supply Chains"
+      children:
+        - file: manuscript/11-supply-chains.md
+        - file: manuscript/12-qubo-engineering.md
+        - file: notebooks/06-supply-chains.ipynb
+    - title: "Unit 7: Materials Science"
+      children:
+        - file: manuscript/13-materials-science.md
+        - file: manuscript/14-qpe-trotter.md
+        - file: notebooks/07-materials-science.ipynb
+    - title: "Unit 8: Climate & Energy"
+      children:
+        - file: manuscript/15-climate-energy.md
+        - file: manuscript/16-quantum-embedding.md
+        - file: notebooks/08-climate-energy.ipynb
+
+site:
+  template: book-theme
+  options:
+    logo_text: What Quantum Computers Are Actually For
