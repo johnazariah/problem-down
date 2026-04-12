@@ -2,9 +2,7 @@
 
 *Eight problems from logistics to climate — and the algorithms that could solve them*
 
-Each unit starts with an industry problem people already care about — a dollar figure, a bottleneck, a human cost — then pulls in only the quantum machinery needed to solve it.
-
-See [SPEC.md](SPEC.md) for the full project specification.
+Each unit starts with an industry problem people already care about; a dollar figure, a bottleneck, a human cost; then pulls in only the quantum machinery needed to solve it.
 
 ## Units
 
@@ -35,4 +33,4 @@ SPEC.md        — project specification
 
 ## License
 
-MIT
+All rights reserved. See [LICENSE](LICENSE).

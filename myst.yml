@@ -16,8 +16,10 @@ project:
     - quantum chemistry
   github: https://github.com/johnazariah/problem-down
   license: All Rights Reserved
+  exclude:
+    - SPEC.md
+    - README.md
   toc:
-    - file: README.md
     - file: manuscript/00-preface.md
     - title: "Unit 1: Logistics"
       children:
