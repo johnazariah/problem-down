@@ -1,12 +1,11 @@
 # Unit 5: Finance — *Pricing the Unpriceable*
 
----
 
 ## The Hook
 
-In 2008, the financial crisis taught the world that mispriced derivatives can destroy economies. At the heart of the crisis were *exotic options* — financial instruments so complex that even the banks selling them couldn't price them accurately.
+In 2008, the financial crisis taught the world that mispriced derivatives can destroy economies. At the heart of the crisis were *exotic options*; financial instruments so complex that even the banks selling them couldn't price them accurately.
 
-Pricing a derivative means answering one question: **what is the expected payoff?** For a simple European call option, there's an analytical formula (Black-Scholes). For exotic options — path-dependent, multi-asset, with early exercise features — there is no formula. The standard method is **Monte Carlo simulation**: generate millions of random market scenarios, compute the payoff for each, and take the average.
+Pricing a derivative means answering one question: **what is the expected payoff?** For a simple European call option, there's an analytical formula (Black-Scholes). For exotic options; path-dependent, multi-asset, with early exercise features; there is no formula. The standard method is **Monte Carlo simulation**: generate millions of random market scenarios, compute the payoff for each, and take the average.
 
 Monte Carlo works, but it's slow. The statistical error (the uncertainty in your price estimate) shrinks as $1/\sqrt{N}$ where $N$ is the number of samples. To get one more digit of accuracy, you need **100 times more samples**. For complex derivatives that take seconds per sample, this translates to hours or days of computation. Banks run massive compute clusters to price their portfolios overnight. Goldman Sachs reportedly runs over a billion Monte Carlo simulations *per day*.
 
@@ -14,7 +13,6 @@ The $1/\sqrt{N}$ convergence rate isn't a software limitation. It's a mathematic
 
 Unless you're quantum.
 
----
 
 ## The Bottleneck
 
@@ -28,7 +26,6 @@ where $\sigma$ is the standard deviation. To halve the error, quadruple $N$. To 
 
 For a derivative that needs 6 digits of accuracy ($10^{-6}$ relative error) with $\sigma \sim 1$: you need $N \sim 10^{12}$ samples. At 1 microsecond per sample, that's 12 days.
 
----
 
 ## The Quantum Angle
 
@@ -44,9 +41,9 @@ After $k = O(\sqrt{N/M})$ iterations, the overlap with the solution space is clo
 
 ### Quantum amplitude estimation
 
-Now the key insight: the *angle* $\theta$ encodes $M/N$ — the fraction of inputs that are solutions. If you can measure $\theta$ precisely, you can estimate $M/N$ without ever finding a specific solution.
+Now the key insight: the *angle* $\theta$ encodes $M/N$; the fraction of inputs that are solutions. If you can measure $\theta$ precisely, you can estimate $M/N$ without ever finding a specific solution.
 
-**Quantum Amplitude Estimation** (QAE) does exactly this. It applies quantum phase estimation (from Unit 2) to the Grover iterator $G$. The eigenvalues of $G$ are $e^{\pm 2i\theta}$, and QPE extracts $\theta$ with precision $O(1/N_{\text{queries}})$ — that's $1/N$, not $1/\sqrt{N}$.
+**Quantum Amplitude Estimation** (QAE) does exactly this. It applies quantum phase estimation (from Unit 2) to the Grover iterator $G$. The eigenvalues of $G$ are $e^{\pm 2i\theta}$, and QPE extracts $\theta$ with precision $O(1/N_{\text{queries}})$; that's $1/N$, not $1/\sqrt{N}$.
 
 Applied to Monte Carlo:
 
@@ -64,7 +61,6 @@ Quantum amplitude estimation: precision $\epsilon$ requires $O(1/\epsilon)$ quer
 
 A quadratic speedup sounds modest compared to Shor's exponential speedup. But for Monte Carlo, quadratic is transformative. The reason: the baseline is *already polynomial* (Monte Carlo is $O(1/\epsilon^2)$), and the constant factors are large. Going from $10^{12}$ to $10^6$ is the difference between "we need a compute cluster" and "we need a laptop."
 
----
 
 ## Worked Example
 
@@ -80,36 +76,34 @@ We discretise the stock price into $2^n$ bins, encode the log-normal distributio
 → **See [notebook `05-finance.ipynb`](../notebooks/05-finance.ipynb) for the runnable version.**
 
 
----
 
 → *Want to understand the algorithm in detail? Read the next chapter.*
 
----
 
 ## Reality Check
 
 **What's been demonstrated.** Goldman Sachs and IBM published a series of papers (2019–2021) on quantum amplitude estimation for derivative pricing, demonstrating the algorithm on simulators for simple options. Actual quantum hardware experiments have been limited to toy models (2–4 qubits, highly simplified distributions).
 
-**The depth problem.** QAE requires quantum phase estimation, which requires deep circuits — $O(1/\epsilon)$ applications of the Grover iterator. For useful precision ($\epsilon \sim 10^{-3}$), that's thousands of sequential operations, each involving the full oracle circuit. On NISQ devices with short coherence times, this is currently infeasible.
+**The depth problem.** QAE requires quantum phase estimation, which requires deep circuits: $O(1/\epsilon)$ applications of the Grover iterator. For useful precision ($\epsilon \sim 10^{-3}$), that's thousands of sequential operations, each involving the full oracle circuit. On NISQ devices with short coherence times, this is currently infeasible.
 
 **Approximate QAE.** Variants like iterative QAE (Suzuki et al. 2020) and maximum likelihood QAE reduce the circuit depth at the cost of more measurements. These are more NISQ-friendly but haven't demonstrated practical advantage.
 
-**What would change the picture.** Fault-tolerant quantum computers with $O(10^3)$ logical qubits and the ability to run circuits of depth $O(10^4)$. The financial industry is actively investing — JP Morgan, Goldman Sachs, BBVA, and others have quantum computing research teams focused on this exact application.
+**What would change the picture.** Fault-tolerant quantum computers with $O(10^3)$ logical qubits and the ability to run circuits of depth $O(10^4)$. The financial industry is actively investing: JP Morgan, Goldman Sachs, BBVA, and others have quantum computing research teams focused on this exact application.
 
-**The quadratic wall.** A quadratic speedup means quantum advantage arrives only above a certain problem size, where the improved scaling overcomes the overhead of quantum error correction. For Monte Carlo, estimates suggest this crossover requires $10^3$–$10^4$ logical qubits — ambitious but within the scope of hardware roadmaps.
+**The quadratic wall.** A quadratic speedup means quantum advantage arrives only above a certain problem size, where the improved scaling overcomes the overhead of quantum error correction. For Monte Carlo, estimates suggest this crossover requires $10^3$–$10^4$ logical qubits; ambitious but within the scope of hardware roadmaps.
 
----
 
 ## Chef's Notes
 
-- **Grover's algorithm appears here, not as a standalone topic.** Most books introduce Grover as "quantum search" — finding a needle in a haystack. That's correct but unrelatable. Here, Grover appears as a *subroutine* inside amplitude estimation, motivated by a real computational bottleneck ($1/\sqrt{N}$ convergence). The speedup matters because Monte Carlo is everywhere, not because search is theoretically interesting.
+- **Grover's algorithm appears here, not as a standalone topic.** Most books introduce Grover as "quantum search"; finding a needle in a haystack. That's correct but unrelatable. Here, Grover appears as a *subroutine* inside amplitude estimation, motivated by a real computational bottleneck ($1/\sqrt{N}$ convergence). The speedup matters because Monte Carlo is everywhere, not because search is theoretically interesting.
 
 - **The quadratic speedup is the most common quantum advantage.** Exponential speedups (Shor, simulation) get the headlines, but quadratic speedups (Grover, amplitude estimation) apply to a much broader class of problems. Anywhere you're sampling, searching, or optimising, a quadratic improvement is potentially available.
 
-- **Connection to Unit 2.** QAE uses QPE, which uses the QFT — the same machinery from Shor's algorithm. The quantum ingredient is the same: extract a quantity (a period, an eigenvalue, an amplitude) encoded in the *phase* of a quantum state.
+- **Connection to Unit 2.** QAE uses QPE, which uses the QFT; the same machinery from Shor's algorithm. The quantum ingredient is the same: extract a quantity (a period, an eigenvalue, an amplitude) encoded in the *phase* of a quantum state.
 
 - **Further reading:**
     - Montanaro (2015). *Quantum speedup of Monte Carlo methods.* [arXiv:1504.06987](https://arxiv.org/abs/1504.06987)
     - Stamatopoulos, Egger, Sun, et al. (2020). *Option pricing using quantum computers.* [Quantum 4:291](https://doi.org/10.22331/q-2020-07-06-291)
     - Suzuki, Uno, Raymond, et al. (2020). *Amplitude estimation without phase estimation.* [Quantum Information Processing 19:75](https://doi.org/10.1007/s11128-019-2565-2)
     - Grover (1996). *A fast quantum mechanical algorithm for database search.* [arXiv:quant-ph/9605043](https://arxiv.org/abs/quant-ph/9605043)
+    - 3Blue1Brown (2023). *Grover's algorithm visually explained.* [youtube.com/watch?v=KeJqcnpPluc](https://www.youtube.com/watch?v=KeJqcnpPluc)

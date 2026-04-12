@@ -1,10 +1,9 @@
 # Unit 2: Cryptography — *The Trapdoor Quantum Computers Can Kick Open*
 
----
 
 ## The Hook
 
-Every time you type a credit card number into a website, a quiet miracle happens. Your browser and the server agree on a secret key — a number that only the two of them know — even though they've never met before, and even though everything they say to each other travels across a network that anyone can eavesdrop on.
+Every time you type a credit card number into a website, a quiet miracle happens. Your browser and the server agree on a secret key; a number that only the two of them know; even though they've never met before, and even though everything they say to each other travels across a network that anyone can eavesdrop on.
 
 This is **public-key cryptography**, and it protects virtually every financial transaction, every encrypted email, every software update, and every government communication on Earth. The entire system rests on a single mathematical assumption:
 
@@ -12,19 +11,18 @@ This is **public-key cryptography**, and it protects virtually every financial t
 
 Take two 1,000-digit primes $p$ and $q$. Multiplying them takes microseconds. The product $N = p \times q$ is a 2,000-digit number. Now hand someone $N$ and ask them to find $p$ and $q$. The best classical algorithms would take longer than the age of the universe.
 
-This asymmetry — easy to combine, hard to separate — is a **trapdoor**. RSA encryption, invented in 1977 and still the backbone of internet security, is built on exactly this trapdoor. If you know $p$ and $q$, you can decrypt messages quickly. If you only know $N$, you can't.
+This asymmetry; easy to combine, hard to separate; is a **trapdoor**. RSA encryption, invented in 1977 and still the backbone of internet security, is built on exactly this trapdoor. If you know $p$ and $q$, you can decrypt messages quickly. If you only know $N$, you can't.
 
-For nearly 50 years, this trapdoor has held. Classical computers have gotten faster, and classical factoring algorithms have improved (the General Number Field Sieve, circa 1993, is the current champion). But the best classical algorithms are still *sub-exponential* — they scale as roughly $e^{n^{1/3}}$ where $n$ is the number of digits. For 2,000-digit numbers, that's far beyond any conceivable classical computer.
+For nearly 50 years, this trapdoor has held. Classical computers have gotten faster, and classical factoring algorithms have improved (the General Number Field Sieve, circa 1993, is the current champion). But the best classical algorithms are still *sub-exponential*; they scale as roughly $e^{n^{1/3}}$ where $n$ is the number of digits. For 2,000-digit numbers, that's far beyond any conceivable classical computer.
 
 In 1994, Peter Shor shattered this assumption.
 
-Shor showed that a quantum computer can factor $N$ in time *polynomial* in the number of digits — roughly $n^3$. Not sub-exponential. Not "somewhat faster." Polynomial. For a 2,000-digit number, the difference is between $10^{30}$ years and a few hours.
+Shor showed that a quantum computer can factor $N$ in time *polynomial* in the number of digits; roughly $n^3$. Not sub-exponential. Not "somewhat faster." Polynomial. For a 2,000-digit number, the difference is between $10^{30}$ years and a few hours.
 
-Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** (which breaks Diffie-Hellman and elliptic curve cryptography). ECC — which was adopted precisely because its keys are shorter than RSA's for equivalent classical security — is in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~20 million noisy qubits needed for RSA-2048. Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
+Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** (which breaks Diffie-Hellman and elliptic curve cryptography). ECC; which was adopted precisely because its keys are shorter than RSA's for equivalent classical security; is in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~20 million noisy qubits needed for RSA-2048. Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
 
-Let's understand why — and how.
+Let's understand why; and how.
 
----
 
 ## The Bottleneck
 
@@ -36,20 +34,20 @@ RSA works like this:
 
 1. Alice picks two large primes $p$ and $q$ and computes $N = pq$
 2. She publishes $N$ (her public key) and keeps $p, q$ secret (her private key)
-3. Bob encrypts a message using $N$ — a fast operation
-4. Only Alice, who knows $p$ and $q$, can decrypt it — because decryption requires computing a modular inverse that depends on $(p-1)(q-1)$
+3. Bob encrypts a message using $N$; a fast operation
+4. Only Alice, who knows $p$ and $q$, can decrypt it; because decryption requires computing a modular inverse that depends on $(p-1)(q-1)$
 
 The security assumption: given $N$, nobody can find $p$ and $q$ efficiently. If they could, they could compute $(p-1)(q-1)$, derive the decryption key, and read everything.
 
 ### Why classical algorithms struggle
 
-The naive approach — try dividing $N$ by every number up to $\sqrt{N}$ — takes $O(\sqrt{N})$ time. For a 2,000-digit $N$, that's $10^{1000}$ operations. Hopeless.
+The naive approach; try dividing $N$ by every number up to $\sqrt{N}$; takes $O(\sqrt{N})$ time. For a 2,000-digit $N$, that's $10^{1000}$ operations. Hopeless.
 
 The best classical algorithm, the General Number Field Sieve (GNFS), is far cleverer. It exploits algebraic number theory to find *relations* among smooth numbers modulo $N$. Its running time is:
 
 $$L_N\left[\frac{1}{3}, \left(\frac{64}{9}\right)^{1/3}\right] \approx e^{1.923 \cdot n^{1/3} \cdot (\ln n)^{2/3}}$$
 
-where $n = \log_2 N$. This is sub-exponential — faster than brute force, slower than polynomial. For RSA-2048 (a 617-digit number), the estimated classical effort is around $2^{112}$ operations — securely beyond reach for the foreseeable future.
+where $n = \log_2 N$. This is sub-exponential; faster than brute force, slower than polynomial. For RSA-2048 (a 617-digit number), the estimated classical effort is around $2^{112}$ operations; securely beyond reach for the foreseeable future.
 
 The fundamental issue: factoring has no known *polynomial-time* classical algorithm. There's no proof that one doesn't exist (factoring is not known to be NP-complete), but decades of effort by the world's best mathematicians and computer scientists have failed to find one.
 
@@ -73,15 +71,14 @@ If $r$ is even and $a^{r/2} \not\equiv -1 \pmod{N}$, then $\gcd(a^{r/2} - 1, N)$
 
 So: **if you can find periods efficiently, you can factor efficiently.** Classically, finding the period of $f(x) = a^x \bmod N$ is at least as hard as factoring. Quantumly, it's not.
 
----
 
 ## The Quantum Angle
 
 Shor's algorithm finds the period $r$ of $f(x) = a^x \bmod N$ using three quantum ingredients, each introduced here for the first time:
 
-1. **Superposition** — query $f$ on all inputs simultaneously
-2. **The Quantum Fourier Transform** — extract the period from the phase pattern
-3. **Interference** — amplify the right answer, suppress the wrong ones
+1. **Superposition**; query $f$ on all inputs simultaneously
+2. **The Quantum Fourier Transform**; extract the period from the phase pattern
+3. **Interference**; amplify the right answer, suppress the wrong ones
 
 ### Superposition: querying all inputs at once
 
@@ -103,7 +100,7 @@ With one application of $U_f$, we've "evaluated" $f$ on all $2^n$ inputs. The ca
 
 The function $f(x) = a^x \bmod N$ is periodic with period $r$. This means the amplitudes in our quantum state have a hidden structure: for each value $y$ in the output register, the input values $x$ that map to $y$ are evenly spaced with spacing $r$.
 
-We need to extract $r$ without knowing which $y$ we'll observe. The tool for this is the **Quantum Fourier Transform** (QFT) — the quantum analogue of the discrete Fourier transform.
+We need to extract $r$ without knowing which $y$ we'll observe. The tool for this is the **Quantum Fourier Transform** (QFT); the quantum analogue of the discrete Fourier transform.
 
 The classical DFT converts a signal from the time domain to the frequency domain. A periodic signal with period $r$ has a frequency peak at $1/r$. The QFT does the same thing to quantum amplitudes.
 
@@ -115,19 +112,19 @@ The key property: if the input amplitudes are periodic with period $r$, then aft
 
 ### Phase kickback: why the QFT "sees" the period
 
-Why does the QFT work here? The deep reason is **phase kickback** — the mechanism by which a function evaluation on a quantum computer imprints information as *phases* rather than as bit values.
+Why does the QFT work here? The deep reason is **phase kickback**; the mechanism by which a function evaluation on a quantum computer imprints information as *phases* rather than as bit values.
 
 When $f$ is computed in superposition, the output register becomes entangled with the input register. If we were to measure the output register and get some value $y_0$, the input register would collapse to an equal superposition of all $x$ values satisfying $f(x) = y_0$:
 
 $$\frac{1}{\sqrt{r}} \sum_{j=0}^{r-1} |x_0 + jr\rangle$$
 
-where $x_0$ is the smallest such $x$. This state is periodic with period $r$ — and the QFT converts periodicity in position to peaks in frequency.
+where $x_0$ is the smallest such $x$. This state is periodic with period $r$; and the QFT converts periodicity in position to peaks in frequency.
 
 We don't actually need to measure the output register. The entanglement does the work for us: the QFT on the input register "sees" the period regardless of which $y_0$ the output register would have yielded. This is the subtlety that makes quantum period-finding work.
 
 ### Interference: why the wrong answers cancel
 
-The QFT isn't magic — it's interference. Each output state $|k\rangle$ receives contributions from all input states $|x\rangle$, weighted by the complex phase $e^{2\pi i xk / 2^n}$. When $k$ is a multiple of $2^n / r$, the phases from the $r$ equally-spaced inputs align — they add constructively. When $k$ is not a multiple of $2^n / r$, the phases point in different directions and cancel — destructive interference.
+The QFT isn't magic; it's interference. Each output state $|k\rangle$ receives contributions from all input states $|x\rangle$, weighted by the complex phase $e^{2\pi i xk / 2^n}$. When $k$ is a multiple of $2^n / r$, the phases from the $r$ equally-spaced inputs align; they add constructively. When $k$ is not a multiple of $2^n / r$, the phases point in different directions and cancel; destructive interference.
 
 This is the same physics that makes light and dark fringes in a double-slit experiment. The QFT is a multi-slit experiment with $2^n$ slits, and the period $r$ determines which fringes are bright.
 
@@ -143,9 +140,8 @@ Shor's algorithm:
 6. Use the continued fractions algorithm to extract $r$ from $k / 2^n$
 7. Compute $\gcd(a^{r/2} \pm 1, N)$ → factors of $N$
 
-Steps 1, 6, and 7 are classical. Steps 2–5 are quantum. The quantum part runs in $O(n^2 \log n)$ gates — polynomial in the number of digits.
+Steps 1, 6, and 7 are classical. Steps 2–5 are quantum. The quantum part runs in $O(n^2 \log n)$ gates; polynomial in the number of digits.
 
----
 
 ## Worked Example
 
@@ -179,9 +175,9 @@ Using 4 qubits for the input register ($2^4 = 16$), the QFT concentrates amplitu
 | Measured $k$ | $k / 2^n = k / 16$ | Continued fractions → $r$ |
 |-------------|--------------------|----|
 | 0 | 0 | No information |
-| 4 | 1/4 | $r = 4$ ✓ |
+| 4 | 1/4 | $r = 4$ $\checkmark$ |
 | 8 | 1/2 | $r = 2$ (try again) |
-| 12 | 3/4 | $r = 4$ ✓ |
+| 12 | 3/4 | $r = 4$ $\checkmark$ |
 
 Three out of four outcomes give us $r = 4$ (or a multiple).
 
@@ -193,31 +189,29 @@ $$7^{4/2} = 7^2 = 49$$
 $$\gcd(49 - 1, 15) = \gcd(48, 15) = 3$$
 $$\gcd(49 + 1, 15) = \gcd(50, 15) = 5$$
 
-And indeed: $15 = 3 \times 5$. ∎
+And indeed: $15 = 3 \times 5$. $\blacksquare$
 
-This is a toy example — 4 qubits, a number you can factor in your head. But the algorithm scales polynomially: factoring a 2,000-digit number requires roughly 4,000 logical qubits and $O(n^3)$ gates with $n \approx 6,600$ bits. The same algorithm, larger registers, more gates, same polynomial efficiency.
+This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially: factoring a 2,000-digit number requires roughly 4,000 logical qubits and $O(n^3)$ gates with $n \approx 6,600$ bits. The same algorithm, larger registers, more gates, same polynomial efficiency.
 
 → **See [notebook `02-cryptography.ipynb`](../notebooks/02-cryptography.ipynb) for a runnable implementation.**
 
 
 
----
 
 → *Want to understand the algorithm in detail? Read the next chapter.*
 
----
 
 ## Reality Check
 
 Shor's algorithm is the most famous quantum algorithm, and its implications are enormous. But let's be precise about what has and hasn't been demonstrated.
 
-**What's been factored quantumly.** The largest number factored by a genuine implementation of Shor's algorithm on a quantum computer is $21 = 3 \times 7$ (Martín-López et al., 2012, using photonic qubits). A separate experiment factored 15 using NMR (Vandersypen et al., 2001). Various claims of factoring larger numbers use compiled or problem-specific circuits that don't generalise — they exploit known structure of the answer, which defeats the purpose.
+**What's been factored quantumly.** The largest number factored by a genuine implementation of Shor's algorithm on a quantum computer is $21 = 3 \times 7$ (Martín-López et al., 2012, using photonic qubits). A separate experiment factored 15 using NMR (Vandersypen et al., 2001). Various claims of factoring larger numbers use compiled or problem-specific circuits that don't generalise; they exploit known structure of the answer, which defeats the purpose.
 
 In short: Shor's algorithm has never been run, at scale, on a number whose factors were unknown.
 
 **Resource estimates for RSA-2048.** Gidney and Ekerå (2021) estimated that factoring a 2,048-bit RSA key would require approximately **20 million noisy physical qubits** (assuming surface code error correction with a physical error rate of $10^{-3}$) and roughly **8 hours** of computation.
 
-That estimate has dropped dramatically. In February 2026, Webster, Berent, Chandra, and Hockings introduced the **Pinnacle architecture** (arXiv:2602.11457), which uses quantum LDPC codes instead of surface codes to reduce the cost of breaking RSA-2048 to under **100,000 physical qubits** — a 200× improvement. The largest quantum computers in 2026 have a few thousand physical qubits, so we're still short — but 100K qubits is within plausible reach of hardware roadmaps in the next 5–10 years. The threat timeline just got much shorter.
+That estimate has dropped dramatically. In February 2026, Webster, Berent, Chandra, and Hockings introduced the **Pinnacle architecture** (arXiv:2602.11457), which uses quantum LDPC codes instead of surface codes to reduce the cost of breaking RSA-2048 to under **100,000 physical qubits**; a 200× improvement. The largest quantum computers in 2026 have a few thousand physical qubits, so we're still short; but 100K qubits is within plausible reach of hardware roadmaps in the next 5–10 years. The threat timeline just got much shorter.
 
 On the elliptic curve side, Kim, Jang, et al. (ePrint 2026/106) designed new quantum circuits for ECDLP that reduce the total gate count by 52–54% compared to Roetteler et al., bringing the estimated time to break P-224 (comparable security to RSA-2048) down to minutes on a fault-tolerant machine.
 
@@ -227,17 +221,16 @@ The migration timeline is measured in decades, not years. Cryptographic infrastr
 
 **What's certain:** Shor's algorithm works. The mathematics is settled. The only question is when quantum hardware will be capable of running it at scale. The cryptography community has decided not to wait for the answer.
 
----
 
 ## Chef's Notes
 
-- **Superposition, interference, and phase kickback.** These three concepts — introduced here for the first time — are the engine of essentially every quantum speedup. Superposition lets you process many inputs at once. Interference lets you amplify the right answers. Phase kickback is the mechanism that converts function evaluations into phases that interference can act on. When you encounter these concepts in later units, you've already met them here.
+- **Superposition, interference, and phase kickback.** These three concepts; introduced here for the first time; are the engine of essentially every quantum speedup. Superposition lets you process many inputs at once. Interference lets you amplify the right answers. Phase kickback is the mechanism that converts function evaluations into phases that interference can act on. When you encounter these concepts in later units, you've already met them here.
 
-- **The QFT appears again in QPE** (Unit 7). Quantum Phase Estimation is essentially "Shor's period-finding subroutine applied to a unitary operator instead of modular exponentiation." If you understand why the QFT extracts periodicity, you understand QPE — and QPE is the most important subroutine in fault-tolerant quantum computing.
+- **The QFT appears again in QPE** (Unit 7). Quantum Phase Estimation is essentially "Shor's period-finding subroutine applied to a unitary operator instead of modular exponentiation." If you understand why the QFT extracts periodicity, you understand QPE; and QPE is the most important subroutine in fault-tolerant quantum computing.
 
 - **Shor's algorithm via amplitude estimation.** There's an elegant connection to Unit 5 (Finance): Shor's period-finding can be viewed as a special case of quantum phase estimation, which is itself related to amplitude estimation. The algorithms look different on the surface but share deep structural DNA.
 
-- **Why we don't start with Shor.** Most quantum computing textbooks open with Shor's algorithm because it's dramatic and historically important. We put it in Unit 2 (not Unit 1) because you need qubits and superposition from Unit 1 to understand it, and because the factoring problem — while economically critical — is less *relatable* than route optimisation. The UPS driver's $50M is visceral. RSA's factoring trapdoor requires setup to appreciate.
+- **Why we don't start with Shor.** Most quantum computing textbooks open with Shor's algorithm because it's dramatic and historically important. We put it in Unit 2 (not Unit 1) because you need qubits and superposition from Unit 1 to understand it, and because the factoring problem; while economically critical; is less *relatable* than route optimisation. The UPS driver's $50M is visceral. RSA's factoring trapdoor requires setup to appreciate.
 
 - **Further reading:**
     - Shor (1994). *Algorithms for Quantum Computation: Discrete Logarithms and Factoring.* [arXiv:quant-ph/9508027](https://arxiv.org/abs/quant-ph/9508027)
@@ -246,5 +239,5 @@ The migration timeline is measured in decades, not years. Cryptographic infrastr
     - Roetteler, Naehrig, Svore, Lauter (2017). *Quantum Resource Estimates for Computing Elliptic Curve Discrete Logarithms.* [arXiv:1706.06752](https://arxiv.org/abs/1706.06752)
     - Kim, Jang, Wang, Baksi, Song et al. (2026). *New Quantum Circuits for ECDLP: Breaking Prime Elliptic Curve Cryptography in Minutes.* [ePrint 2026/106](https://eprint.iacr.org/2026/106)
     - NIST (2024). *Post-Quantum Cryptography Standardization.* [csrc.nist.gov/projects/post-quantum-cryptography](https://csrc.nist.gov/projects/post-quantum-cryptography)
-    - Vandersypen et al. (2001). *Experimental realization of Shor's quantum factoring algorithm using nuclear magnetic resonance.* [Nature 414:883–887](https://doi.org/10.1038/414883a)
+    - Vandersypen et al. (2001). *Experimental realization of Shor's quantum factoring algorithm using nuclear magnetic resonance.* [Nature 414:883–887](https://doi.org/10.1038/414883a) ([arXiv:quant-ph/0112176](https://arxiv.org/abs/quant-ph/0112176))
     - Nielsen and Chuang (2000). *Quantum Computation and Quantum Information.* Chapter 5: The quantum Fourier transform and its applications.
