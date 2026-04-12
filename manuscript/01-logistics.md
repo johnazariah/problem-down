@@ -179,16 +179,9 @@ Three nodes, three edges: (0,1), (0,2), (1,2). Each node gets one qubit.
 
 $$C = \frac{1 - Z_0 Z_1}{2} + \frac{1 - Z_0 Z_2}{2} + \frac{1 - Z_1 Z_2}{2}$$
 
-### The circuit (depth $p = 1$)
+### What QAOA produces
 
-1. Apply $H$ to all three qubits → $|+\rangle^3$
-2. For each edge, apply the $ZZ$ interaction with angle $\gamma$
-3. Apply $R_X(2\beta)$ to each qubit
-4. Measure
-
-### Running it
-
-Using pre-optimised parameters $\gamma = \pi/4$, $\beta = \pi/8$ (these are close to optimal for the triangle), the circuit produces the following measurement distribution:
+Using pre-optimised parameters ($\gamma \approx \pi/4$, $\beta \approx \pi/8$), a single round of QAOA produces this measurement distribution:
 
 | Outcome | Cut value | Probability |
 |---------|-----------|-------------|
@@ -201,17 +194,9 @@ Using pre-optimised parameters $\gamma = \pi/4$, $\beta = \pi/8$ (these are clos
 | 110 | 2 | ~16% |
 | 111 | 0 | ~3% |
 
-The colourings with cut value 2 (all the ones with exactly one or two bits different from the others) are amplified. The "all same" colourings ($000$, $111$) are suppressed. QAOA has shifted probability mass toward the optimal solutions.
+The colourings with cut value 2 (the optimum for the triangle) are amplified. The "all same" colourings ($000$, $111$) are suppressed. QAOA has shifted probability mass toward the optimal solutions.
 
-For larger graphs, the companion notebook runs the full QAOA loop with classical parameter optimisation, comparing the quantum result with brute-force and random sampling.
-
-→ **See [notebook `01-logistics.ipynb`](../notebooks/01-logistics.ipynb) for the runnable version.**
-
-
-
-
-
-→ *Want to understand how the QAOA circuit is built, gate by gate? Read the next chapter.*
+→ *The next chapter builds this circuit gate by gate, runs it, and shows you the code.*
 
 ### Back to the trucks
 

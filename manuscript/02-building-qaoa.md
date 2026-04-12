@@ -110,9 +110,37 @@ For edge $(0, 1)$, this is the same CNOT sandwich shown above. Repeat for edges 
 
 > **Why does this work?** The CNOT "extracts" the parity into a single qubit, the $R_Z$ "acts" on that parity, and the second CNOT "puts it back." This is a general trick: whenever you need a gate that depends on the *relationship* between two qubits (same? different?), you can use a CNOT to compute that relationship, act on it, and undo the CNOT.
 
-### The mixer: exploring the neighbourhood
+### The mixer: where phases become probabilities
 
-After the problem unitary, the quantum state has different phases for different colourings, but the probabilities are still all equal ($1/8$ each). We need the mixer to convert phase differences into probability differences.
+After the problem unitary, the quantum state has different phases for different colourings, but the probabilities are still all equal ($1/8$ each). If you measured now, you'd get a uniformly random colouring — the phases are invisible to measurement. So what was the point?
+
+The point is that phases are *potential energy for interference*. The mixer is the step that unleashes it.
+
+Let's see this concretely. Before the mixer, our state looks like:
+
+$$\frac{1}{\sqrt{8}}\bigl(e^{i\phi_0}\lvert 000\rangle + e^{i\phi_1}\lvert 001\rangle + \cdots + e^{i\phi_7}\lvert 111\rangle\bigr)$$
+
+where each $\phi_x$ depends on the cut value of colouring $x$. Every amplitude has the same *magnitude* ($1/\sqrt{8}$) but a different *direction* (the phase $\phi_x$). If you think of amplitudes as arrows, they're all the same length but point in different directions.
+
+Now the mixer acts. It applies $R_X(2\beta)$ to each qubit, which mixes $\lvert 0\rangle$ and $\lvert 1\rangle$ within each qubit. The effect on the full state is that every colouring's amplitude gets contributions from *neighbouring* colourings — those that differ by a single bit flip. Each contribution arrives carrying the phase it picked up from the cost step.
+
+Here's the crucial point: when contributions arrive with *similar* phases, their arrows point roughly the same way and they add up (constructive interference). When they arrive with *different* phases, their arrows point in opposing directions and they partially cancel (destructive interference).
+
+Let's see this on our triangle. Take the good colouring $\lvert 001\rangle$ (cut = 2). Its three neighbours — the colourings one bit-flip away — are:
+
+![A good colouring (|001⟩, cut=2) and its three neighbours: two also have cut=2, one has cut=0](../figures/neighbours-good.png)
+
+Two out of three neighbours also have cut value 2 — the same as the original. They picked up similar phases from the cost step, so when their contributions arrive during mixing, the arrows point roughly the same way. Constructive interference: $\lvert 001\rangle$'s amplitude grows.
+
+Now take the poor colouring $\lvert 000\rangle$ (cut = 0). Its neighbours:
+
+![A poor colouring (|000⟩, cut=0) and its three neighbours: all three have cut=2](../figures/neighbours-poor.png)
+
+Every neighbour has cut value 2 — all *different* from the original's cut value of 0. They carry phases that are very different from $\lvert 000\rangle$'s phase, so the arriving contributions point in scattered directions. Destructive interference: $\lvert 000\rangle$'s amplitude shrinks.
+
+The result: after the mixer, the probabilities are no longer uniform. Good colourings have grown more likely; poor colourings have shrunk.
+
+This is the heart of QAOA. The cost phase *writes* information in the phases. The mixer *reads* it via interference. Neither step works alone — phases without mixing are invisible, and mixing without phases is just random stirring.
 
 The mixer Hamiltonian is $B = X_0 + X_1 + X_2$, and the mixer unitary is $e^{-i\beta B}$. Since X operators on different qubits commute, this factorises:
 
@@ -126,9 +154,7 @@ What does $R_X(\theta)$ do? It rotates the qubit's state around the X axis of th
 
 $$R_X(\theta)\lvert 0\rangle = \cos(\theta/2)\lvert 0\rangle - i\sin(\theta/2)\lvert 1\rangle$$
 
-At $\beta = 0$, the mixer does nothing ($R_X(0) = I$). At $\beta = \pi/2$, it flips every qubit ($R_X(\pi) = -iX$). In between, it partially "mixes"; allowing amplitude to flow between colourings that differ by one bit flip.
-
-This is the quantum analogue of the "flip one node" move in classical local search. But crucially, the mixing is *coherent*: it preserves the phase relationships that the problem unitary created. The phases *interfere* during mixing; colourings with low cost (large negative phase) tend to accumulate amplitude, while colourings with high cost tend to lose it.
+At $\beta = 0$, the mixer does nothing ($R_X(0) = I$). At $\beta = \pi/2$, it flips every qubit ($R_X(\pi) = -iX$). In between, it partially mixes — allowing amplitude to flow between colourings that differ by one bit flip. This is the quantum analogue of the "flip one node" move in classical local search, but done coherently so that the phases from the cost step drive the interference we described above.
 
 ### The full circuit, assembled
 
@@ -137,6 +163,14 @@ Putting it all together for the triangle, at depth $p = 1$:
 ![Complete QAOA circuit for MaxCut on a triangle: Hadamard initialisation, three ZZ cost unitaries (one per edge), Rx mixer, and measurement](../figures/qaoa-full-circuit.png)
 
 Gate count: 3 Hadamards + 6 CNOTs + 3 $R_Z$ + 3 $R_X$ + 3 measurements = **18 gates**, of which 6 are the expensive ones (CNOTs). For a general graph with $n$ nodes and $m$ edges at depth $p$: $n + p(2m \text{ CNOTs} + m \text{ }R_Z + n \text{ }R_X)$ gates.
+
+### Running it
+
+With pre-optimised parameters $\gamma \approx \pi/4$, $\beta \approx \pi/8$, the circuit produces the measurement distribution we previewed in Chapter 1: the six colourings with cut value 2 each appear with ~16% probability, while the two colourings with cut value 0 ($000$ and $111$) are suppressed to ~3% each. Interference has done its job.
+
+The companion notebook runs this circuit end-to-end — constructing the Hamiltonian, building the QAOA circuit, sweeping the parameter landscape, and comparing with brute-force and random sampling.
+
+→ **See [notebook `01-logistics.ipynb`](../notebooks/01-logistics.ipynb) for the runnable version.**
 
 ### Choosing $\gamma$ and $\beta$: the classical outer loop
 
