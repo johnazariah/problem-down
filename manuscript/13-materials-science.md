@@ -36,7 +36,7 @@ Two parameters: $t$ (the hopping amplitude — kinetic energy) and $U$ (the on-s
 
 The Hilbert space of $N$ electrons on $L$ sites with spin has dimension $\binom{2L}{N}$. For a modest $10 \times 10$ lattice with 100 electrons: $\binom{200}{100} \approx 10^{58}$. No classical computer can store or diagonalise a matrix of this size.
 
-**Density functional theory (DFT)** — the workhorse of solid-state physics — approximates the many-electron problem by working with the electron density rather than the full wavefunction (the same approach we met in Unit 3). It's a mean-field method: it handles weakly correlated materials well but *systematically fails* for strongly correlated systems. It cannot predict the Mott insulator transition.
+**Density functional theory (DFT)** — the workhorse of solid-state physics — approximates the many-electron problem by working with the electron density rather than the full wavefunction (the same approach we met in Unit 3). It's a mean-field method: it handles weakly correlated materials well but *systematically fails* for strongly correlated systems.
 
 **Quantum Monte Carlo (QMC)** — the best classical method for many-body quantum systems — works for bosons but suffers the **sign problem** for fermions: the antisymmetry of the fermionic wavefunction (the same minus sign that requires fermion-to-qubit encodings) causes Monte Carlo sampling to produce catastrophic cancellations, making the calculation exponentially expensive at low temperatures. Troyer and Wiese (2005) proved the sign problem is NP-hard in general.
 

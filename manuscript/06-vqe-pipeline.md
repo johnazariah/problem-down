@@ -146,7 +146,7 @@ The **ansatz** is the parameterised quantum circuit that prepares trial wavefunc
 
 ### Starting point: the Hartree-Fock state
 
-The simplest starting point is the **Hartree-Fock state** — the best approximation that treats each electron as independent (a single antisymmetric product of orbitals, called a **Slater determinant**). For H₂: two electrons in the two lowest spin-orbitals:
+The simplest starting point is the **Hartree-Fock state** — the best approximation that treats each electron as independent. For H₂: two electrons in the two lowest spin-orbitals:
 
 $$|\text{HF}\rangle = |1100\rangle$$
 
