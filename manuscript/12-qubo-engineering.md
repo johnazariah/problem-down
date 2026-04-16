@@ -39,17 +39,19 @@ This is quadratic in the binary variables; it fits QUBO form. The minimum (zero 
 
 **"No nurse works more than 3 shifts."**
 
-The constraint is $\sum_s x_{n,s} \leq 3$. Introduce **slack variables** $y_1, y_2, y_3$ (binary) to convert to equality:
+Equality constraints were clean: square the violation, get a quadratic penalty. Inequalities are trickier, because $\leq$ doesn't have a single "right answer" — any number from 0 to 3 is fine.
 
-$$\sum_s x_{n,s} + y_1 + y_2 + y_3 = 3 + |\text{max possible excess}|$$
+The simplest approach: **penalise every way the constraint can be violated.** If nurse $n$ works 4 or more shifts, *some* group of 4 shifts must all be assigned. So penalise every possible group of 4:
 
-That's getting complicated. A simpler approach for small bounds: enumerate the violations. For "at most 3":
+$$P \cdot \sum_{s_1 < s_2 < s_3 < s_4} x_{n,s_1} \, x_{n,s_2} \, x_{n,s_3} \, x_{n,s_4}$$
 
-$$P \cdot \sum_{s_1 < s_2 < s_3 < s_4} x_{n,s_1} x_{n,s_2} x_{n,s_3} x_{n,s_4}$$
+This penalty is zero when the nurse works 3 or fewer shifts (no group of 4 exists), and positive otherwise. It's conceptually clean — but there's a problem: it's a product of *four* variables. QUBO only allows products of *two*. We need everything to be quadratic.
 
-But this is a *quartic* term (four variables), not quadratic. Trick: introduce auxiliary variables to reduce higher-order terms to quadratic. Or use penalty functions that are quadratic approximations of the constraint.
+There are standard tricks to reduce higher-order terms to quadratic form (introducing extra binary variables that represent pairs), but they add complexity. For small scheduling problems, the overhead is manageable. For large problems, specialised tools like D-Wave's `dwavebinarycsp` handle the reduction automatically.
 
-> **The QUBO art:** formulating constraints as quadratic penalties is part engineering, part art. Simple constraints (equalities, pairwise exclusions) map cleanly. Complex constraints (inequality chains, conditional requirements) require creativity. Libraries like D-Wave's `dwavebinarycsp` automate common patterns.
+The honest takeaway: equality constraints map to QUBO naturally. Inequality constraints require more work, and this engineering — choosing the right penalty structure, managing the extra variables — is where practical QUBO formulation gets interesting. It's part of why operations researchers still have jobs.
+
+> **The QUBO art:** simple constraints (equalities, pairwise exclusions) map cleanly to quadratic penalties. Complex constraints (inequalities, conditional requirements) require auxiliary variables and careful penalty tuning. The penalty weight $P$ must be large enough to enforce the constraint, but not so large that it distorts the optimisation landscape.
 
 ### Soft constraints as linear costs
 
