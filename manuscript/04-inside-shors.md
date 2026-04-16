@@ -75,7 +75,7 @@ When we evaluate $f$ in superposition, the result sits in the output register as
 
 In QAOA, we faced a similar problem. The cost Hamiltonian didn't write "this colouring cuts 3 edges" into a register. Instead, it imprinted the cost as a *phase* on the quantum state — invisible to measurement but available for interference. Can we do the same thing with function evaluation?
 
-Yes. And the mechanism is beautifully simple.
+Yes. Here's how.
 
 ### The $|{-}\rangle$ trick
 
@@ -109,7 +109,7 @@ The output register returns to $|{-}\rangle$ in both cases — it's a catalyst, 
 
 Phase kickback isn't limited to single-bit functions. For the period-finding problem, $f(x) = a^x \bmod N$ produces multi-bit outputs. The mechanism is more general: instead of $(-1)^{f(x)}$, the phase encodes the *eigenvalue* of the oracle operator. (An eigenvalue is the factor by which an operator scales a particular state: if $U|v\rangle = \lambda|v\rangle$, then $\lambda$ is the eigenvalue and $|v\rangle$ is the eigenvector.) We'll see this in detail when we build the full period-finding circuit below.
 
-The pattern generalises beautifully. Deutsch-Jozsa, Bernstein-Vazirani, Simon's algorithm, Grover's search, and Shor's algorithm all use phase kickback. Master it once, and you've understood the engine of quantum speedup.
+The pattern generalises. Deutsch-Jozsa, Bernstein-Vazirani, Simon's algorithm, Grover's search, and Shor's algorithm all use phase kickback. Master it once, and you've understood the engine of quantum speedup.
 
 
 ## Oracles: packaging functions as gates

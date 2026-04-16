@@ -51,7 +51,7 @@ In circuit form:
 
 ![Hadamard gates applied to all 3 qubits](../figures/qaoa-hadamard-init.png)
 
-Three gates. That's all it takes to create a uniform superposition of 8 colourings. For $n$ qubits, it's $n$ Hadamard gates and $2^n$ terms in superposition. The exponential scaling is free; this is one of the few things quantum computers do that is genuinely magical.
+Three gates. That's all it takes to create a uniform superposition of 8 colourings. For $n$ qubits, it's $n$ Hadamard gates and $2^n$ terms in superposition. The exponential scaling is free.
 
 > **Common Mistake #1:** Students sometimes say "the quantum computer is trying all 8 colourings at once." This is misleading. All 8 colourings are *present* in the superposition, but you can only *read out* one of them (the one you measure). The power of QAOA is not parallel evaluation; it's *interference*: manipulating the amplitudes so that good colourings become more likely to be measured.
 

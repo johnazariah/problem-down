@@ -18,9 +18,9 @@ A quantum computer operates natively in an exponentially large space; the Hilber
 
 ## The Bottleneck
 
-The kernel trick is elegant: instead of mapping data into a high-dimensional space $\phi: x \mapsto \phi(x)$ and computing inner products $\langle \phi(x), \phi(x') \rangle$ explicitly, you compute $K(x, x') = \langle \phi(x), \phi(x') \rangle$ directly. The classifier never sees the high-dimensional representation; it only needs the kernel matrix $K_{ij} = K(x_i, x_j)$ over the training set.
+The kernel trick is effective: instead of mapping data into a high-dimensional space $\phi: x \mapsto \phi(x)$ and computing inner products $\langle \phi(x), \phi(x') \rangle$ explicitly, you compute $K(x, x') = \langle \phi(x), \phi(x') \rangle$ directly. The classifier never sees the high-dimensional representation; it only needs the kernel matrix $K_{ij} = K(x_i, x_j)$ over the training set.
 
-This works beautifully when $K$ is cheap to compute. But consider:
+The kernel trick works well when $K$ is cheap to compute. But consider:
 
 - A feature map into a space of dimension $2^n$ (exponential in the number of input features)
 - A kernel that requires sampling from a distribution that's hard to sample classically
@@ -35,7 +35,7 @@ The question becomes: **are there feature maps whose kernels are hard to compute
 
 ### The Hilbert space as a feature space
 
-Here's the key geometric insight. A quantum computer with $n$ qubits operates in a Hilbert space of dimension $2^n$. Preparing a quantum state $|\phi(x)\rangle$ from classical data $x$ is a **quantum feature map**; it maps data into an exponentially large space, natively.
+The key geometric insight. A quantum computer with $n$ qubits operates in a Hilbert space of dimension $2^n$. Preparing a quantum state $|\phi(x)\rangle$ from classical data $x$ is a **quantum feature map**; it maps data into an exponentially large space, natively.
 
 The inner product between two quantum states $|\phi(x)\rangle$ and $|\phi(x')\rangle$ is:
 

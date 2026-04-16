@@ -35,7 +35,7 @@ For a typical catalyst active site: 6 metal d-orbitals + 4–8 ligand orbitals =
 
 ### The mathematical framework
 
-DMET (Knizia and Chan, 2012) is the most elegant embedding approach. It works by recognising that the environment's effect on the fragment can be captured by a small **bath**; a set of orbitals that encode the entanglement between the fragment and the rest of the system.
+DMET (Knizia and Chan, 2012) is a clean embedding approach. It works by recognising that the environment's effect on the fragment can be captured by a small **bath**; a set of orbitals that encode the entanglement between the fragment and the rest of the system.
 
 The procedure:
 

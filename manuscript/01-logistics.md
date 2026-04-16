@@ -141,7 +141,7 @@ Read left to right. Initialise, then alternate between two boxes — Cost and Mi
 
 But here's the catch: phase changes alone are invisible to measurement. The *probabilities* haven't changed at all. If you measured right now, you'd still get a uniformly random colouring. The cost phase has written information in invisible ink: it tagged good solutions differently from bad ones, but the tags are hidden in the phases, and measurement only sees probabilities.
 
-So what good are the phases? This is where the real quantum magic enters.
+So what good are the phases? This is where interference enters.
 
 > **Interference.** Quantum amplitudes aren't just numbers — they have both a magnitude and a *direction* (technically, a complex phase). Think of them as arrows. When two arrows point the same way, they reinforce: their magnitudes add. When they point in opposite directions, they cancel: their magnitudes subtract. This is *interference*, and it's the mechanism that makes quantum computing fundamentally different from classical computing.
 >

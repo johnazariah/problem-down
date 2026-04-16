@@ -43,7 +43,7 @@ The constraint is $\sum_s x_{n,s} \leq 3$. Introduce **slack variables** $y_1, y
 
 $$\sum_s x_{n,s} + y_1 + y_2 + y_3 = 3 + |\text{max possible excess}|$$
 
-Wait; that's getting complicated. A simpler approach for small bounds: enumerate the violations. For "at most 3":
+That's getting complicated. A simpler approach for small bounds: enumerate the violations. For "at most 3":
 
 $$P \cdot \sum_{s_1 < s_2 < s_3 < s_4} x_{n,s_1} x_{n,s_2} x_{n,s_3} x_{n,s_4}$$
 

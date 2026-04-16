@@ -240,7 +240,7 @@ The migration timeline is measured in decades, not years. Cryptographic infrastr
 
 - **The QFT appears again in QPE** (Unit 7). Quantum Phase Estimation is essentially "Shor's period-finding subroutine applied to a unitary operator instead of modular exponentiation." If you understand why the QFT extracts periodicity, you understand QPE; and QPE is the most important subroutine in fault-tolerant quantum computing.
 
-- **Shor's algorithm via amplitude estimation.** There's an elegant connection to Unit 5 (Finance): Shor's period-finding can be viewed as a special case of quantum phase estimation, which is itself related to amplitude estimation. The algorithms look different on the surface but share deep structural DNA.
+- **Shor's algorithm via amplitude estimation.** There's a structural connection to Unit 5 (Finance): Shor's period-finding can be viewed as a special case of quantum phase estimation, which is itself related to amplitude estimation. The algorithms look different on the surface but share the same core: extract a number encoded in the phase of a quantum state.
 
 - **Why we don't start with Shor.** Most quantum computing textbooks open with Shor's algorithm because it's dramatic and historically important. We put it in Unit 2 (not Unit 1) because you need qubits and superposition from Unit 1 to understand it, and because the factoring problem; while economically critical; is less *relatable* than route optimisation. The UPS driver's $50M is visceral. RSA's factoring trapdoor requires setup to appreciate.
 
