@@ -1,17 +1,17 @@
 # Deep-Dive 2: Inside Shor's Algorithm
 
-_This chapter pairs with Chapter 3 (Cryptography), which explained why factoring breaks RSA and how period-finding solves factoring. Here we build the period-finding circuit from scratch._
+_This deep dive pairs with Unit 2 (Cryptography), which explained why factoring breaks RSA and how period-finding solves factoring. Here we build the period-finding circuit from scratch._
 
 ## In This Chapter
 
 - **What you'll learn:** How to extract the period of a function using a quantum circuit; the Quantum Fourier Transform, phase kickback, oracles, and why interference makes it all work.
-- **What you need:** From Chapter 2 (Building QAOA), you know what qubits are, how Hadamard creates superposition, and how CNOT entangles two qubits. We build everything else here.
+- **What you need:** From Deep-Dive 1 (Building QAOA), you know what qubits are, how Hadamard creates superposition, and how CNOT entangles two qubits. We build everything else here.
 - **Runnable version:** The companion notebook [`02-cryptography.ipynb`](../notebooks/02-cryptography.ipynb) factors 15 on a cloud Quokka.
 
 
 ## The problem we need to solve
 
-Chapter 3 showed that factoring $N$ reduces to finding the period $r$ of the function $f(x) = a^x \bmod N$. We need a circuit that:
+Unit 2 showed that factoring $N$ reduces to finding the period $r$ of the function $f(x) = a^x \bmod N$. We need a circuit that:
 
 1. Evaluates $f$ on all possible inputs simultaneously (superposition)
 2. Extracts the period $r$ from the results (without knowing which specific outputs appeared)
@@ -227,7 +227,7 @@ Apply Hadamard to 4 input qubits:
 
 $$|0000\rangle \xrightarrow{H^{\otimes 4}} \frac{1}{4}\sum_{x=0}^{15} |x\rangle$$
 
-We've created a superposition of 16 input values. This is identical to what we did in Chapter 2 for QAOA; the Hadamard creates uniform superposition.
+We've created a superposition of 16 input values. This is identical to what we did in Deep-Dive 1 for QAOA; the Hadamard creates uniform superposition.
 
 ### Step 2: Oracle (modular exponentiation)
 

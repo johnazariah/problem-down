@@ -1,11 +1,11 @@
 # Deep-Dive 8: Quantum Embedding Methods
 
-_This chapter pairs with Chapter 15 (Climate & Energy), which explained why catalyst design requires quantum accuracy for the active site and classical efficiency for the environment. Here we show how to combine both._
+_This deep dive pairs with Unit 8 (Climate & Energy), which explained why catalyst design requires quantum accuracy for the active site and classical efficiency for the environment. Here we show how to combine both._
 
 ## In This Chapter
 
 - **What you'll learn:** How to select an active space, embed it in a classical environment, solve the active space with VQE or QPE, and iterate to self-consistency.
-- **What you need:** This is the capstone deep dive. It draws on VQE (Chapter 6), QPE (Chapter 14), and fermion-to-qubit encodings (Chapter 6). If you've followed the deep dive path, you have everything you need.
+- **What you need:** This is the capstone deep dive. It draws on VQE (Deep-Dive 3), QPE (Deep-Dive 7), and fermion-to-qubit encodings (Deep-Dive 3). If you've followed the deep dive path, you have everything you need.
 - **Runnable version:** The companion notebook [`08-climate-energy.ipynb`](../notebooks/08-climate-energy.ipynb) demonstrates active-space VQE on a cloud Quokka.
 
 
@@ -17,7 +17,7 @@ A catalyst system has hundreds of orbitals; carbon scaffolding, solvent molecule
 
 **Strong correlation**; the kind that defeats classical methods; lives in these few orbitals. The rest are either doubly occupied (core electrons: inert, boring) or empty (high-energy virtual orbitals: irrelevant at normal temperatures). Classical methods handle these "boring" orbitals perfectly well.
 
-The strategy: **use a quantum computer only for the hard part.** Select the 10–50 orbitals where classical methods fail (the "active space"), and solve those exactly with VQE (Chapter 6) or QPE (Chapter 14). Let a classical computer handle the other 450 orbitals with standard DFT or Hartree-Fock.
+The strategy: **use a quantum computer only for the hard part.** Select the 10–50 orbitals where classical methods fail (the "active space"), and solve those exactly with VQE (Deep-Dive 3) or QPE (Deep-Dive 7). Let a classical computer handle the other 450 orbitals with standard DFT or Hartree-Fock.
 
 ### How to choose the active space
 
@@ -28,7 +28,7 @@ This is part science, part art:
 - **Natural orbital analysis.** Compute approximate natural orbital occupation numbers from a cheap classical calculation (CASSCF — Complete Active Space Self-Consistent Field, a classical method that optimises both orbitals and electron configurations within a small active space — or MP2, the perturbative correction from Unit 3's hierarchy). Orbitals with occupations significantly different from 0 or 2 are strongly correlated; include them.
 - **Entropy-based selection.** Compute the single-orbital entropy from an approximate wavefunction. High-entropy orbitals are strongly correlated.
 
-For a typical catalyst active site: 6 metal d-orbitals + 4–8 ligand orbitals = 10–14 active orbitals. After Jordan-Wigner encoding (Chapter 6): 20–28 qubits. After tapering (using point-group symmetry and particle-number conservation to reduce qubits): possibly 12–20 qubits. Feasible on near-term hardware.
+For a typical catalyst active site: 6 metal d-orbitals + 4–8 ligand orbitals = 10–14 active orbitals. After Jordan-Wigner encoding (Deep-Dive 3): 20–28 qubits. After tapering (using point-group symmetry and particle-number conservation to reduce qubits): possibly 12–20 qubits. Feasible on near-term hardware.
 
 
 ## DMET: Density Matrix Embedding Theory
@@ -45,7 +45,7 @@ The procedure:
 
 3. **Build the embedded Hamiltonian.** Project the full Hamiltonian onto the fragment + bath space. The result is a small Hamiltonian; 20 orbitals instead of 500; that includes the environment's effect as an effective potential.
 
-4. **Solve the embedded problem.** Run VQE (Chapter 6) or QPE (Chapter 14) on the 20-orbital embedded Hamiltonian. This gives the exact energy and density matrix for the fragment, in the presence of the environment.
+4. **Solve the embedded problem.** Run VQE (Deep-Dive 3) or QPE (Deep-Dive 7) on the 20-orbital embedded Hamiltonian. This gives the exact energy and density matrix for the fragment, in the presence of the environment.
 
 5. **Self-consistency.** Update the mean-field solution with the quantum result. The new mean-field changes the bath, which changes the embedded Hamiltonian, which changes the quantum solution. Iterate until convergence (typically 5–10 cycles).
 
@@ -75,7 +75,7 @@ The companion notebook demonstrates active-space VQE for a simplified catalyst m
 
 2. **DMET provides the framework.** It tells you how to build the bath, how to embed the fragment, and how to iterate to self-consistency. The quantum computer plugs in as the solver for the embedded problem.
 
-3. **Everything connects.** The qubit Hamiltonian comes from Chapter 6 (VQE pipeline). The solver is either VQE (Chapter 6) or QPE (Chapter 14). The ZZ gates are from Chapter 2 (QAOA). The QFT is from Chapter 4 (Shor). Phase kickback drives QPE. The cost Hamiltonian pattern from Chapter 2 reappears as the molecular Hamiltonian.
+3. **Everything connects.** The qubit Hamiltonian comes from Deep-Dive 3 (VQE pipeline). The solver is either VQE (Deep-Dive 3) or QPE (Deep-Dive 7). The ZZ gates are from Deep-Dive 1 (QAOA). The QFT is from Deep-Dive 2 (Shor). Phase kickback drives QPE. The cost Hamiltonian pattern from Unit 1 reappears as the molecular Hamiltonian.
 
 4. **This is the pipeline for quantum utility in chemistry.** Not toy demonstrations on H₂, but real catalyst screening on industrially relevant systems. The engineering target: 50 active orbitals → 100 qubits → $10^5$ physical qubits with error correction. Ambitious but concrete.
 

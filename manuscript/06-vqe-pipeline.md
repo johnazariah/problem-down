@@ -1,11 +1,11 @@
 # Deep-Dive 3: The VQE Pipeline
 
-_This chapter pairs with Chapter 5 (Drug Discovery), which explained why molecular simulation is hard and how VQE addresses it. Here we build the VQE pipeline from molecule to energy, step by step._
+_This deep dive pairs with Unit 3 (Drug Discovery), which explained why molecular simulation is hard and how VQE addresses it. Here we build the VQE pipeline from molecule to energy, step by step._
 
 ## In This Chapter
 
 - **What you'll learn:** How electrons become qubits; second quantisation, fermion-to-qubit encodings, Pauli-basis measurement, and the variational optimisation loop that finds the ground-state energy.
-- **What you need:** From Chapter 2, you know qubits, superposition, CNOT, and the variational optimisation loop (QAOA). From Chapter 4, you know phase kickback and the idea that quantum operations encode information in phases. Here we add new physics: fermions.
+- **What you need:** From Deep-Dive 1, you know qubits, superposition, CNOT, and the variational optimisation loop (QAOA). From Deep-Dive 2, you know phase kickback and the idea that quantum operations encode information in phases. Here we add new physics: fermions.
 - **Runnable version:** The companion notebook [`03-drug-discovery.ipynb`](../notebooks/03-drug-discovery.ipynb) runs H₂ VQE on a cloud Quokka.
 
 
@@ -142,7 +142,7 @@ Each distinct measurement basis requires a separate circuit execution. This is t
 
 ### What an ansatz is
 
-The **ansatz** is the parameterised quantum circuit that prepares trial wavefunctions. In QAOA (Chapter 2), the ansatz was the alternating problem/mixer layers with parameters $\gamma, \beta$. In VQE, the ansatz is motivated by chemistry.
+The **ansatz** is the parameterised quantum circuit that prepares trial wavefunctions. In QAOA (Deep-Dive 1), the ansatz was the alternating problem/mixer layers with parameters $\gamma, \beta$. In VQE, the ansatz is motivated by chemistry.
 
 ### Starting point: the Hartree-Fock state
 
@@ -175,7 +175,7 @@ One parameter $\theta$, one CNOT. The simplest possible VQE circuit; but it capt
 
 ## The classical optimiser
 
-The same variational loop from Chapter 2 (QAOA):
+The same variational loop from Deep-Dive 1 (QAOA):
 
 1. Choose parameters $\theta$
 2. Prepare $|\psi(\theta)\rangle$ on the quantum computer
@@ -215,6 +215,6 @@ The companion notebook runs the full H₂ pipeline end-to-end — computing mole
 
 4. **The ansatz encodes chemical intuition.** Good ansätze (like UCCSD) start from the Hartree-Fock state and apply physically motivated excitations. Bad ansätze miss the ground state or suffer from **barren plateaus** — regions where the energy landscape is exponentially flat and the optimiser has no useful gradient to follow.
 
-5. **VQE is the same variational loop as QAOA.** If you understood Chapter 2, you understand VQE's architecture. The difference is the cost function (molecular energy, not graph cuts) and the ansatz (chemistry-motivated, not graph-motivated).
+5. **VQE is the same variational loop as QAOA.** If you understood Deep-Dive 1, you understand VQE's architecture. The difference is the cost function (molecular energy, not graph cuts) and the ansatz (chemistry-motivated, not graph-motivated).
 
 6. **For the full encoding story,** see [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).

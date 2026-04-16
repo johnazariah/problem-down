@@ -1,6 +1,6 @@
 # Deep-Dive 5: Amplitude Estimation from Grover
 
-_This chapter pairs with Chapter 9 (Finance), which explained why Monte Carlo pricing is slow and how quantum amplitude estimation offers a quadratic speedup. Here we build the amplitude estimation circuit from Grover's algorithm._
+_This deep dive pairs with Unit 5 (Finance), which explained why Monte Carlo pricing is slow and how quantum amplitude estimation offers a quadratic speedup. Here we build the amplitude estimation circuit from Grover's algorithm._
 
 ## In This Chapter
 
@@ -33,7 +33,7 @@ where $\sin\theta = \sqrt{M/N}$. For $M \ll N$ (a needle in a haystack), $\theta
 
 The Grover iterator $G$ consists of two reflections:
 
-1. **Oracle reflection** $S_f$: flip the phase of marked states. $S_f|x\rangle = (-1)^{f(x)}|x\rangle$. This is phase kickback from Chapter 4; the oracle marks solutions by flipping their phase.
+1. **Oracle reflection** $S_f$: flip the phase of marked states. $S_f|x\rangle = (-1)^{f(x)}|x\rangle$. This is phase kickback from Deep-Dive 2; the oracle marks solutions by flipping their phase.
 
 2. **Diffusion** $S_0 = 2|s\rangle\langle s| - I$: reflect about the mean amplitude. Here $|s\rangle\langle s|$ is an **outer product** — it produces an operator (a matrix), not a number. Applied to any state $|\psi\rangle$, it gives $|s\rangle\langle s|\psi\rangle = \langle s|\psi\rangle \cdot |s\rangle$: project onto $|s\rangle$, scaled by the overlap. (The notation $\langle s|$ is called a **bra** — the row-vector partner of the ket $|s\rangle$, obtained by taking the adjoint.) So $2|s\rangle\langle s| - I$ doubles the component along $|s\rangle$ and subtracts the original — a reflection about $|s\rangle$. In circuit terms: $H^{\otimes n} \cdot (2|0\rangle\langle 0| - I) \cdot H^{\otimes n}$.
 
@@ -47,9 +47,9 @@ After $k_\text{opt} = \lfloor \pi / (4\theta) \rfloor$ iterations, the state is 
 
 ### The oracle circuit
 
-For the financial application (Chapter 9), the oracle marks states where the stock price exceeds the strike: $f(x) = 1$ if $\text{price}(x) > K$.
+For the financial application (Unit 5), the oracle marks states where the stock price exceeds the strike: $f(x) = 1$ if $\text{price}(x) > K$.
 
-This is a **comparator circuit**: given a quantum register encoding a discretised price, flip an ancilla if the price exceeds a threshold. The ancilla, prepared in $|{-}\rangle$, converts the flip to a phase via kickback; the same trick from Chapter 4.
+This is a **comparator circuit**: given a quantum register encoding a discretised price, flip an ancilla if the price exceeds a threshold. The ancilla, prepared in $|{-}\rangle$, converts the flip to a phase via kickback — the same trick from Deep-Dive 2.
 
 ### The diffusion circuit
 
@@ -111,6 +111,6 @@ The companion notebook runs amplitude estimation end-to-end — constructing the
 
 3. **The quadratic speedup is $1/\epsilon$ vs. $1/\epsilon^2$.** This transforms Monte Carlo from "days on a cluster" to "seconds on a quantum computer" for high-precision estimates.
 
-4. **Phase kickback appears again.** The oracle uses it (Chapter 4). The Grover iterator uses it. QPE uses it. It's the same mechanism at every level.
+4. **Phase kickback appears again.** The oracle uses it (Deep-Dive 2). The Grover iterator uses it. QPE uses it. It's the same mechanism at every level.
 
 5. **The circuit depth is the bottleneck.** QAE requires $O(1/\epsilon)$ sequential applications of the full Grover operator. Each application includes the oracle circuit. For useful precision, this means deep circuits; a fault-tolerant algorithm.

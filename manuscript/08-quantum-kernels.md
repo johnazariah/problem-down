@@ -1,6 +1,6 @@
 # Deep-Dive 4: Quantum Kernels in Detail
 
-_This chapter pairs with Chapter 7 (Machine Learning), which explained why quantum feature maps could provide computational advantage for classification. Here we build a quantum kernel classifier from scratch._
+_This deep dive pairs with Unit 4 (Machine Learning), which explained why quantum feature maps could provide computational advantage for classification. Here we build a quantum kernel classifier from scratch._
 
 ## In This Chapter
 
@@ -11,7 +11,7 @@ _This chapter pairs with Chapter 7 (Machine Learning), which explained why quant
 
 ## The geometric picture
 
-In Chapter 2, we encoded binary decisions as qubit states: red/blue → $|0\rangle$/$|1\rangle$. Here we encode *continuous* data; real-valued feature vectors; into qubit states. The quantum state space becomes a feature space for machine learning.
+In Unit 1, we encoded binary decisions as qubit states: red/blue → $|0\rangle$/$|1\rangle$. Here we encode *continuous* data; real-valued feature vectors; into qubit states. The quantum state space becomes a feature space for machine learning.
 
 A single qubit lives on the **Bloch sphere**; a 2D surface parameterised by two angles $(\theta, \phi)$. A data point $(x_1, x_2)$ can be encoded as a point on this sphere using rotation gates: $R_Y(x_1) R_Z(x_2) |0\rangle$.
 
@@ -38,7 +38,7 @@ Entanglement is what makes quantum feature maps non-classical. Add a CNOT and an
 
 ![ZZ feature map: Ry encoding + CNOT–Rz–CNOT entangling block](../figures/zz-feature-map.png)
 
-The $R_Z(x_1 \cdot x_2)$ gate, sandwiched between CNOTs, is exactly the ZZ interaction from Chapter 2 (QAOA). But here, instead of encoding a graph edge cost, it encodes a *nonlinear feature interaction*. The kernel now depends on products of features; it goes beyond what any linear or product encoding can represent.
+The $R_Z(x_1 \cdot x_2)$ gate, sandwiched between CNOTs, is exactly the ZZ interaction from Deep-Dive 1 (QAOA). But here, instead of encoding a graph edge cost, it encodes a *nonlinear feature interaction*. The kernel now depends on products of features; it goes beyond what any linear or product encoding can represent.
 
 > **Design principle:** The expressiveness of the feature map comes from *entanglement* and *nonlinear encoding*. More layers (repeated encoding + entanglement blocks) create richer feature spaces; but also deeper circuits and more noise.
 
@@ -98,7 +98,7 @@ The most promising near-term application may be **quantum data**; data that is a
 
 2. **The kernel is a measurement probability.** $K(x, x') = \Pr(|0\rangle^n)$ after applying $U_\phi(x)$ then $U_\phi(x')^\dagger$. The Born rule is the kernel evaluator.
 
-3. **Entanglement is the source of power.** Without entanglement, quantum feature maps reduce to classical ones. The CNOT + $R_Z$ interaction (the ZZ gate from Chapter 2) is reused here for a completely different purpose.
+3. **Entanglement is the source of power.** Without entanglement, quantum feature maps reduce to classical ones. The CNOT + $R_Z$ interaction (the ZZ gate from Deep-Dive 1) is reused here for a completely different purpose.
 
 4. **The quantum computer computes kernel values; everything else is classical.** SVM training, prediction, and interpretation use standard classical tools.
 

@@ -1,6 +1,6 @@
 # Deep-Dive 1: Building QAOA from Gates
 
-_This chapter teaches the QAOA algorithm at the circuit level; how every piece becomes concrete operations on qubits. It pairs with Chapter 1 (Logistics), which introduced the problem and the algorithm conceptually._
+_This deep dive teaches the QAOA algorithm at the circuit level — how every piece becomes concrete operations on qubits. It pairs with Unit 1 (Logistics), which introduced the problem and the algorithm conceptually._
 
 ## In This Chapter
 
@@ -166,7 +166,7 @@ Gate count: 3 Hadamards + 6 CNOTs + 3 $R_Z$ + 3 $R_X$ + 3 measurements = **18 ga
 
 ### Running it
 
-With pre-optimised parameters $\gamma \approx \pi/4$, $\beta \approx \pi/8$, the circuit produces the measurement distribution we previewed in Chapter 1: the six colourings with cut value 2 each appear with ~16% probability, while the two colourings with cut value 0 ($000$ and $111$) are suppressed to ~3% each. Interference has done its job.
+With pre-optimised parameters $\gamma \approx \pi/4$, $\beta \approx \pi/8$, the circuit produces the measurement distribution we previewed in Unit 1: the six colourings with cut value 2 each appear with ~16% probability, while the two colourings with cut value 0 ($000$ and $111$) are suppressed to ~3% each. Interference has done its job.
 
 The companion notebook runs this circuit end-to-end — constructing the Hamiltonian, building the QAOA circuit, sweeping the parameter landscape, and comparing with brute-force and random sampling.
 

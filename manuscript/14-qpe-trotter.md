@@ -1,11 +1,11 @@
 # Deep-Dive 7: QPE and Trotterisation
 
-_This chapter pairs with Chapter 13 (Materials Science), which explained why the Hubbard model defeats classical methods and how QPE could solve it. Here we build QPE and the Trotter time-evolution circuit from the components introduced in earlier chapters._
+_This deep dive pairs with Unit 7 (Materials Science), which explained why the Hubbard model defeats classical methods and how QPE could solve it. Here we build QPE and the Trotter time-evolution circuit from the components introduced in earlier deep dives._
 
 ## In This Chapter
 
 - **What you'll learn:** How QPE extracts exact energy eigenvalues, how Trotterisation approximates time evolution as a circuit, and how to estimate the resources needed for real materials simulation.
-- **What you need:** From Chapter 4 (Shor), you know the QFT and phase kickback. From Chapter 2 (QAOA), you know the ZZ gate and CNOT sandwich. Here we combine them for Hamiltonian simulation.
+- **What you need:** From Deep-Dive 2 (Shor), you know the QFT and phase kickback. From Deep-Dive 1 (QAOA), you know the ZZ gate and CNOT sandwich. Here we combine them for Hamiltonian simulation.
 - **Runnable version:** The companion notebook [`07-materials-science.ipynb`](../notebooks/07-materials-science.ipynb) runs QPE on a 2-site Hubbard model on a cloud Quokka.
 
 
@@ -28,7 +28,7 @@ QPE uses $m$ **ancilla qubits** — helper qubits used as a measurement instrume
 3. **Inverse QFT** on the ancillas → converts phases to a binary number
 4. **Measure** the ancillas → read out $\phi$
 
-Steps 1, 3, and 4 we've seen before. The inverse QFT is the QFT from Chapter 4, run backwards (swap the order of gates, negate the rotation angles). Step 2 is the new ingredient.
+Steps 1, 3, and 4 we've seen before. The inverse QFT is the QFT from Deep-Dive 2, run backwards (swap the order of gates, negate the rotation angles). Step 2 is the new ingredient.
 
 ### Controlled-$U^{2^k}$
 
@@ -42,7 +42,7 @@ $$\frac{1}{\sqrt{2^m}} \sum_{k=0}^{2^m-1} e^{2\pi i k \phi} |k\rangle$$
 
 This is exactly the QFT of $|\phi\rangle$. Applying the inverse QFT yields $\phi$ (or its best $m$-bit approximation).
 
-> **Connection to Shor:** In Chapter 4, QPE was implicit; the controlled modular exponentiation + QFT was QPE applied to the modular multiplication operator. Here we make it explicit and apply it to a physically motivated Hamiltonian.
+> **Connection to Shor:** In Deep-Dive 2, QPE was implicit — the controlled modular exponentiation + QFT was QPE applied to the modular multiplication operator. Here we make it explicit and apply it to a physically motivated Hamiltonian.
 
 
 ## Trotterisation: implementing $e^{-iHt}$
@@ -75,13 +75,13 @@ The error drops to $O(L^3 t^3 \Delta t^2)$; much better for the same circuit dep
 
 For the Hubbard model:
 
-**Hopping terms** $c_{i\sigma}^\dagger c_{j\sigma} + \text{h.c.}$: after Jordan-Wigner encoding (Chapter 6), these become $\frac{1}{2}(X_i X_j + Y_i Y_j) \cdot Z_\text{string}$. The time evolution under this term is:
+**Hopping terms** $c_{i\sigma}^\dagger c_{j\sigma} + \text{h.c.}$: after Jordan-Wigner encoding (Deep-Dive 3), these become $\frac{1}{2}(X_i X_j + Y_i Y_j) \cdot Z_\text{string}$. The time evolution under this term is:
 
 $$e^{-i\theta(X_i X_j + Y_i Y_j)/2}$$
 
-This requires 2 CNOTs mixed with single-qubit rotations; a known decomposition that generalises the ZZ sandwich from Chapter 2.
+This requires 2 CNOTs mixed with single-qubit rotations — a known decomposition that generalises the ZZ sandwich from Deep-Dive 1.
 
-**Interaction terms** $n_{i\uparrow} n_{i\downarrow}$: after encoding, each becomes $\frac{(1-Z_{i\uparrow})(1-Z_{i\downarrow})}{4}$. This is diagonal; the time evolution is a $ZZ$ phase gate, exactly the CNOT sandwich from Chapter 2:
+**Interaction terms** $n_{i\uparrow} n_{i\downarrow}$: after encoding, each becomes $\frac{(1-Z_{i\uparrow})(1-Z_{i\downarrow})}{4}$. This is diagonal; the time evolution is a $ZZ$ phase gate, exactly the CNOT sandwich from Deep-Dive 1:
 
 ![Trotter ZZ interaction term: CNOT–Rz(U·dt/2)–CNOT](../figures/trotter-zz-interaction.png)
 
@@ -105,24 +105,24 @@ For a $10 \times 10$ lattice with **chemical-precision** QPE ($m \approx 20$ bit
 
 ### Physical qubits
 
-With **surface code** error correction (the leading scheme from Chapter 3's Reality Check; physical error rate $10^{-3}$, **code distance** ~20 — the code distance controls how many physical errors can be corrected, with each logical qubit requiring roughly $2d^2 \approx 800$ physical qubits for distance $d = 20$): The $10 \times 10$ Hubbard model needs:
+With **surface code** error correction (the leading scheme from Unit 2's Reality Check; physical error rate $10^{-3}$, **code distance** ~20 — the code distance controls how many physical errors can be corrected, with each logical qubit requiring roughly $2d^2 \approx 800$ physical qubits for distance $d = 20$): The $10 \times 10$ Hubbard model needs:
 
 $$200 \text{ logical} \times 800 \text{ physical/logical} \approx 160{,}000 \text{ physical qubits}$$
 
-This is in the same ballpark as the Pinnacle architecture's estimate for RSA-2048 (Chapter 3: 100,000 physical qubits). Both are ambitious but plausible targets for the next decade of hardware development.
+This is in the same ballpark as the Pinnacle architecture's estimate for RSA-2048 (Unit 2: 100,000 physical qubits). Both are ambitious but plausible targets for the next decade of hardware development.
 
 
 ## What you should take away
 
-1. **QPE = controlled time evolution + inverse QFT.** It extracts energy eigenvalues to arbitrary precision. The QFT (from Chapter 4) and phase kickback (from Chapter 4) do the heavy lifting.
+1. **QPE = controlled time evolution + inverse QFT.** It extracts energy eigenvalues to arbitrary precision. The QFT (from Deep-Dive 2) and phase kickback (from Deep-Dive 2) do the heavy lifting.
 
-2. **Trotterisation is the bridge between Hamiltonians and circuits.** It breaks $e^{-iHt}$ into a product of simple operations; each implemented with the gates from Chapter 2 (ZZ sandwich for diagonal terms) and generalisations for off-diagonal terms.
+2. **Trotterisation is the bridge between Hamiltonians and circuits.** It breaks $e^{-iHt}$ into a product of simple operations — each implemented with the gates from Deep-Dive 1 (ZZ sandwich for diagonal terms) and generalisations for off-diagonal terms.
 
 3. **The circuit is deep but structured.** Every gate in a Trotter circuit has a physical meaning: it simulates one interaction in the Hamiltonian for one time step. More accuracy → more Trotter steps → deeper circuit.
 
 4. **Resource estimates are concrete.** For the 2D Hubbard model: ~200 qubits, ~$10^7$ gates, ~$10^5$ physical qubits with error correction. These numbers define the engineering targets.
 
-5. **Everything connects.** QPE reuses the QFT from Shor (Chapter 4). Trotterisation reuses the ZZ gate from QAOA (Chapter 2). The fermionic encoding comes from VQE (Chapter 6). This chapter is where the threads converge.
+5. **Everything connects.** QPE reuses the QFT from Deep-Dive 2 (Shor). Trotterisation reuses the ZZ gate from Deep-Dive 1 (QAOA). The fermionic encoding comes from Deep-Dive 3 (VQE). This is where the threads converge.
 
 
 ## Beyond Trotter: qubitization

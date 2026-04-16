@@ -1,11 +1,11 @@
 # Deep-Dive 6: QUBO Engineering
 
-_This chapter pairs with Chapter 11 (Supply Chains), which introduced nurse scheduling and constraint satisfaction. Here we show how to formulate real-world constraints as QUBO problems and solve them on quantum hardware._
+_This deep dive pairs with Unit 6 (Supply Chains), which introduced nurse scheduling and constraint satisfaction. Here we show how to formulate real-world constraints as QUBO problems and solve them on quantum hardware._
 
 ## In This Chapter
 
 - **What you'll learn:** How to turn constraints into penalty terms, convert QUBO to an Ising Hamiltonian, and why quantum annealing tunnels through barriers that classical methods can't climb.
-- **What you need:** From Chapter 2, you know cost Hamiltonians and the $ZZ$ gate. Here we extend the cost Hamiltonian concept to *constrained* problems; where not every binary string is a valid solution.
+- **What you need:** From Deep-Dive 1, you know cost Hamiltonians and the $ZZ$ gate. Here we extend the cost Hamiltonian concept to *constrained* problems — where not every binary string is a valid solution.
 - **Runnable version:** The companion notebook [`06-supply-chains.ipynb`](../notebooks/06-supply-chains.ipynb) solves a small scheduling QUBO on a cloud Quokka.
 
 
@@ -67,7 +67,7 @@ Once you have a QUBO cost function, turning it into a Hamiltonian is mechanical 
 $$x_i x_j = \frac{(1 - Z_i)(1 - Z_j)}{4} = \frac{1 - Z_i - Z_j + Z_i Z_j}{4}$$
 
 Every QUBO term becomes a combination of:
-- $Z_i Z_j$ terms (the same interactions as MaxCut in Chapter 2)
+- $Z_i Z_j$ terms (the same interactions as MaxCut in Unit 1)
 - $Z_i$ terms (local fields)
 - Constants (global energy offset)
 
@@ -87,7 +87,7 @@ The only difference from Deep-Dive 1 is scale: a QUBO with $n$ variables and $O(
 
 ### The adiabatic approach
 
-QAOA (Chapter 2) uses gate-based quantum computing: discrete operations applied in sequence. **Quantum annealing** takes a completely different approach: continuous time evolution.
+QAOA (Deep-Dive 1) uses gate-based quantum computing: discrete operations applied in sequence. **Quantum annealing** takes a completely different approach: continuous time evolution.
 
 Start in the ground state of a simple Hamiltonian $H_0$ (typically a **transverse field** $\sum_i X_i$ — an $X$ operator on every qubit — whose ground state is $|+\rangle^n$, which we already know how to prepare from Deep-Dive 1). Slowly interpolate to the problem Hamiltonian $H_1$:
 
@@ -120,7 +120,7 @@ For problems with many tall, narrow barriers: quantum annealing may explore the 
 
 2. **QUBO → Ising is mechanical.** The substitution $x_i = (1-Z_i)/2$ converts any QUBO to an Ising Hamiltonian that can be solved with QAOA or annealing.
 
-3. **The circuit is the same as Chapter 2, just bigger.** More variables → more qubits. More interactions → more ZZ gates. Same structure.
+3. **The circuit is the same as Deep-Dive 1, just bigger.** More variables → more qubits. More interactions → more ZZ gates. Same structure.
 
 4. **Annealing is a different paradigm.** Continuous time evolution instead of discrete gates. The adiabatic theorem provides the guarantee. Tunnelling provides the (potential) advantage.
 
