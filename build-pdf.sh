@@ -34,6 +34,7 @@ pandoc \
   manuscript/13-materials-science.md \
   manuscript/14-qpe-trotter.md \
   manuscript/15-climate-energy.md \
-  manuscript/16-quantum-embedding.md
+  manuscript/16-quantum-embedding.md \
+  manuscript/17-conclusion.md
 
 echo "Built manuscript.pdf ($(du -h manuscript.pdf | cut -f1))"
