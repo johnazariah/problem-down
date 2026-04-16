@@ -5,7 +5,7 @@ _This chapter pairs with Chapter 7 (Machine Learning), which explained why quant
 ## In This Chapter
 
 - **What you'll learn:** How to design a quantum feature map, compute kernel values from circuit measurements, build a kernel matrix, and train a classical SVM; the complete quantum kernel pipeline.
-- **What you need:** From Chapter 2, you know qubits, CNOT, parameterised rotations ($R_Y$, $R_Z$), and measurement. Here we use measurement in a new way: the probability of a specific outcome *is* the kernel value.
+- **What you need:** From the earlier units, you know qubits and measurement (Unit 1), parameterised rotations ($R_Y$, $R_Z$) and CNOT (Deep-Dive 1), and the variational loop (Units 1 and 3). Here we use measurement in a new way: the probability of a specific outcome *is* the kernel value.
 - **Runnable version:** The companion notebook [`04-machine-learning.ipynb`](../notebooks/04-machine-learning.ipynb) trains a quantum kernel SVM on a cloud Quokka.
 
 
@@ -30,7 +30,7 @@ Encode each feature independently:
 
 ![Product encoding: independent Ry rotations on each qubit](../figures/product-encoding.png)
 
-This produces a *product state*; no entanglement. The feature space is just two independent Bloch spheres. The kernel $K(x, x')$ is the product of two cosines; equivalent to a classical kernel. No quantum advantage.
+This produces a **product state** — a tensor product of independent single-qubit states — with no entanglement. The feature space is just two independent Bloch spheres. The kernel $K(x, x')$ is the product of two cosines; equivalent to a classical kernel. No quantum advantage.
 
 ### Adding entanglement: the ZZ feature map
 
@@ -72,7 +72,11 @@ If $x$ and $x'$ are very different: the states don't overlap much → $|00\rangl
 
 For $m$ training points, compute all $m^2$ pairwise kernel values (using the circuit above for each pair). This gives the **kernel matrix** $K_{ij}$. Then train a classical SVM with this precomputed kernel; `SVC(kernel='precomputed')` in scikit-learn.
 
-The quantum computer is only used for kernel evaluation. The SVM training, prediction, and cross-validation are entirely classical. This clean separation means quantum ML inherits all the theory and tooling of classical kernel methods.
+The quantum computer is only used for kernel evaluation. The SVM training, prediction, and cross-validation (testing the trained model on held-out data to estimate real-world accuracy) are entirely classical. This clean separation means quantum ML inherits all the theory and tooling of classical kernel methods.
+
+The companion notebook trains a quantum kernel SVM on a synthetic dataset end-to-end — defining the feature map, computing the kernel matrix, training the SVM, and comparing with a classical baseline.
+
+→ **See [notebook `04-machine-learning.ipynb`](../notebooks/04-machine-learning.ipynb) for the runnable version.**
 
 
 ## When does this actually help?
