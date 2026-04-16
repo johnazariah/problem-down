@@ -35,6 +35,7 @@ pandoc \
   manuscript/14-qpe-trotter.md \
   manuscript/15-climate-energy.md \
   manuscript/16-quantum-embedding.md \
+  manuscript/17a-error-correction.md \
   manuscript/17-conclusion.md
 
 echo "Built manuscript.pdf ($(du -h manuscript.pdf | cut -f1))"
