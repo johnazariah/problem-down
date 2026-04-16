@@ -58,6 +58,18 @@
 
 % === Links ===
 \usepackage{hyperref}
+
+% === Figure sizing: constrain all images to the text area ===
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>0.5\textheight 0.5\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+% Force figures to appear where declared, not float away
+\usepackage{float}
+\floatplacement{figure}{H}
 \hypersetup{
   colorlinks=true,
   linkcolor=darkpurple,
