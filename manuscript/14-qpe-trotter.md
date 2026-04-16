@@ -11,17 +11,25 @@ _This deep dive pairs with Unit 7 (Materials Science), which explained why the H
 
 ## QPE: from phases to eigenvalues
 
-### What we're after
+### Where we are
 
-In Deep-Dive 2, we used controlled powers of a unitary plus the inverse QFT to extract the period of $a^x \\bmod N$. That was QPE applied to modular exponentiation. Here we apply exactly the same pattern to a *physical* Hamiltonian — and the quantity it extracts is the energy of a material.
+Let's take stock of what we already have. From Deep-Dive 1, we know how to build cost Hamiltonians from ZZ gates and encode optimisation problems as quantum operators. From Deep-Dive 2, we know how to extract a hidden number from the phase of a quantum state — that's what the controlled-powers-plus-inverse-QFT pattern did for Shor's algorithm. From Deep-Dive 3, we know how to encode a molecular Hamiltonian as a sum of Pauli operators.
 
-Quantum Phase Estimation answers the question: given a unitary operator $U$ and one of its eigenstates $|\psi\rangle$ (with $U|\psi\rangle = e^{2\pi i \phi}|\psi\rangle$), what is the eigenvalue phase $\phi$?
+QPE puts these together. The question it answers: given a physical system described by a Hamiltonian $H$, what are its energy levels?
 
-For Hamiltonian simulation: $U = e^{-iHt}$ and the eigenvalue is $e^{-iEt}$, so $\phi = -Et/(2\pi)$. Measuring $\phi$ gives us the energy $E$.
+Here's the idea in words before we touch a formula. If you let a quantum system evolve under its Hamiltonian $H$ for time $t$, each energy eigenstate picks up a phase proportional to its energy — states with higher energy rotate faster. QPE measures that rotation speed. The QFT (from Deep-Dive 2) converts the rotation into a binary number you can read out. Phase kickback (from Deep-Dive 2) is the mechanism that transfers the phase information from the system to the measurement qubits.
+
+That's it. Same tools, new application. Let's see how they fit together.
+
+### The setup
+
+QPE involves two registers. The **system register** holds the quantum state whose energy we want to measure. The **ancilla register** — $m$ helper qubits used as a measurement instrument — will hold the answer.
+
+If the system is in an eigenstate $|\\psi\\rangle$ of the Hamiltonian with energy $E$, then time evolution gives $e^{-iHt}|\\psi\\rangle = e^{-iEt}|\\psi\\rangle$. The phase $\\phi = -Et/(2\\pi)$ encodes the energy. QPE extracts $\\phi$.
 
 ### The circuit
 
-QPE uses $m$ **ancilla qubits** — helper qubits used as a measurement instrument, separate from the system being studied — for $m$ bits of precision, along with one system register:
+The circuit has four steps — all of which reuse pieces you've seen before:
 
 1. **Hadamard** all ancillas → superposition
 2. **Controlled-$U^{2^k}$** for each ancilla qubit $k$ → phase accumulation
