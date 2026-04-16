@@ -121,3 +121,15 @@ This is in the same ballpark as the Pinnacle architecture's estimate for RSA-204
 4. **Resource estimates are concrete.** For the 2D Hubbard model: ~200 qubits, ~$10^7$ gates, ~$10^5$ physical qubits with error correction. These numbers define the engineering targets.
 
 5. **Everything connects.** QPE reuses the QFT from Shor (Chapter 4). Trotterisation reuses the ZZ gate from QAOA (Chapter 2). The fermionic encoding comes from VQE (Chapter 6). This chapter is where the threads converge.
+
+
+## Beyond Trotter: qubitization
+
+Trotterisation is not the only way to implement $e^{-iHt}$ for QPE. A fundamentally different approach called **qubitization** (Low and Chuang, 2019) avoids Trotter error entirely by encoding the Hamiltonian as a *block* of a larger unitary — a technique called a **block encoding**. Instead of approximating $e^{-iHt}$ with a product of simple gates (introducing Trotter error that must be controlled), qubitization constructs a unitary operator whose eigenvalues are *exact functions* of the Hamiltonian's eigenvalues.
+
+The practical consequence: qubitization-based algorithms like **quantum signal processing** (QSP) and **quantum singular value transformation** (QSVT) achieve optimal query complexity — they use the minimum number of oracle calls provably necessary to estimate eigenvalues to a given precision. For Hamiltonian simulation, this means asymptotically fewer gates than any Trotter formula.
+
+The tradeoff: qubitization requires more ancilla qubits and a more complex circuit structure (the block encoding of $H$). For near-term and early fault-tolerant devices, Trotterisation may still be more practical due to its simpler circuits. But for the long-term fault-tolerant regime, qubitization is the theoretically optimal approach.
+
+- Low and Chuang (2019). *Hamiltonian Simulation by Qubitization.* [Quantum 3:163](https://doi.org/10.22331/q-2019-07-12-163) ([arXiv:1610.06546](https://arxiv.org/abs/1610.06546))
+- Gilyen, Su, Low, Wiebe (2019). *Quantum singular value transformation and beyond: exponential improvements for quantum matrix arithmetics.* [STOC 2019](https://doi.org/10.1145/3313276.3316366) ([arXiv:1806.01838](https://arxiv.org/abs/1806.01838))

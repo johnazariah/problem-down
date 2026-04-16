@@ -108,4 +108,4 @@ The pipeline is identical. A more complex derivative has a more complex payoff f
     - Stamatopoulos, Egger, Sun, et al. (2020). *Option pricing using quantum computers.* [Quantum 4:291](https://doi.org/10.22331/q-2020-07-06-291)
     - Suzuki, Uno, Raymond, et al. (2020). *Amplitude estimation without phase estimation.* [Quantum Information Processing 19:75](https://doi.org/10.1007/s11128-019-2565-2)
     - Grover (1996). *A fast quantum mechanical algorithm for database search.* [arXiv:quant-ph/9605043](https://arxiv.org/abs/quant-ph/9605043)
-    - 3Blue1Brown (2023). *Grover's algorithm visually explained.* [youtube.com/watch?v=KeJqcnpPluc](https://www.youtube.com/watch?v=KeJqcnpPluc)
+    - 3Blue1Brown (2023). [*Grover's algorithm visually explained*](https://www.youtube.com/watch?v=KeJqcnpPluc) (YouTube video)
