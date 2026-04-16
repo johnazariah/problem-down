@@ -9,9 +9,11 @@ _This chapter pairs with Chapter 13 (Materials Science), which explained why the
 - **Runnable version:** The companion notebook [`07-materials-science.ipynb`](../notebooks/07-materials-science.ipynb) runs QPE on a 2-site Hubbard model on a cloud Quokka.
 
 
-## QPE: eigenvalue extraction
+## QPE: from phases to eigenvalues
 
-### The idea
+### What we're after
+
+In Deep-Dive 2, we used controlled powers of a unitary plus the inverse QFT to extract the period of $a^x \\bmod N$. That was QPE applied to modular exponentiation. Here we apply exactly the same pattern to a *physical* Hamiltonian — and the quantity it extracts is the energy of a material.
 
 Quantum Phase Estimation answers the question: given a unitary operator $U$ and one of its eigenstates $|\psi\rangle$ (with $U|\psi\rangle = e^{2\pi i \phi}|\psi\rangle$), what is the eigenvalue phase $\phi$?
 

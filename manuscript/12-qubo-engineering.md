@@ -11,13 +11,13 @@ _This chapter pairs with Chapter 11 (Supply Chains), which introduced nurse sche
 
 ## From constraints to energy
 
-### The QUBO pattern
+### Real problems have rules
 
-In Chapter 2 (QAOA), our cost function was simple: count the cut edges. Every binary string was a valid colouring; there were no constraints, just better and worse solutions.
+In Deep-Dive 1 (QAOA), our cost function was simple: count the cut edges. Every binary string was a valid colouring — there were no constraints, just better and worse solutions. Flip any node's colour, and you still have a colouring. Maybe a bad one, but a legal one.
 
-Real problems have constraints. "Each shift has exactly one nurse." "No nurse works more than 48 hours." "At least two ICU-certified nurses per night shift." Some constraints are negotiable (preferences); others are mandatory (regulations).
+Scheduling isn't like that. "Assign two nurses to the same shift" isn't a bad schedule — it's an *invalid* schedule. Real problems come with rules, and breaking a rule isn't just costly; it's forbidden.
 
-**QUBO** (Quadratic Unconstrained Binary Optimisation) handles constraints by converting them to **penalty terms**; large positive costs added whenever a constraint is violated. The optimisation becomes: minimise the total cost (objective + penalties). A solution with zero penalty satisfies all constraints.
+**QUBO** (Quadratic Unconstrained Binary Optimisation) handles this by a trick you've already seen: turn everything into energy. Hard constraints become **penalty terms** — large positive costs added whenever a rule is broken. Preferences become small costs. Then "find the best valid schedule" becomes "find the lowest-energy state" — exactly the ground-state search from Unit 1. A solution with zero penalty satisfies all rules.
 
 ### Encoding equality constraints
 
@@ -62,9 +62,7 @@ This priority structure; hard constraints as large penalties, soft preferences a
 
 ## From QUBO to Ising Hamiltonian
 
-### The substitution
-
-Once you have a QUBO cost function $C(x) = x^T Q x + c^T x + \text{const}$, the map to an Ising Hamiltonian is mechanical. Substitute $x_i = \frac{1 - Z_i}{2}$:
+Once you have a QUBO cost function, turning it into a Hamiltonian is mechanical — and it lands you right back in familiar territory. Substitute $x_i = \frac{1 - Z_i}{2}$ (so $x_i = 0$ when qubit $i$ is $|0\rangle$ and $x_i = 1$ when it's $|1\rangle$):
 
 $$x_i x_j = \frac{(1 - Z_i)(1 - Z_j)}{4} = \frac{1 - Z_i - Z_j + Z_i Z_j}{4}$$
 
@@ -73,16 +71,16 @@ Every QUBO term becomes a combination of:
 - $Z_i$ terms (local fields)
 - Constants (global energy offset)
 
-The resulting Ising Hamiltonian $H = \sum_{ij} J_{ij} Z_i Z_j + \sum_i h_i Z_i + \text{const}$ is exactly the kind of operator we can implement with QAOA (Chapter 2) or quantum annealing.
+The resulting Ising Hamiltonian $H = \sum_{ij} J_{ij} Z_i Z_j + \sum_i h_i Z_i + \text{const}$ is exactly the kind of operator we built QAOA circuits for in Deep-Dive 1. Same gates, same structure, just more terms.
 
-### The circuit connection
+### Same gates, bigger circuit
 
-The QAOA circuit for a QUBO problem uses the same building blocks as Chapter 2:
+The QAOA circuit for a QUBO problem uses the same building blocks as Deep-Dive 1:
 - $ZZ$ gates (CNOT sandwich) for the $J_{ij}$ terms
 - $R_Z$ rotations for the $h_i$ terms
 - $R_X$ mixer rotations
 
-The only difference is more terms; a QUBO with $n$ variables and $O(n^2)$ interactions needs $O(n^2)$ CNOT sandwiches per QAOA layer. The circuit is wider and deeper, but the structure is identical.
+The only difference from Deep-Dive 1 is scale: a QUBO with $n$ variables and $O(n^2)$ interactions needs $O(n^2)$ CNOT sandwiches per QAOA layer. The circuit is wider and deeper, but the structure is identical.
 
 
 ## Quantum annealing: a different paradigm
