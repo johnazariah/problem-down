@@ -19,7 +19,7 @@ For Hamiltonian simulation: $U = e^{-iHt}$ and the eigenvalue is $e^{-iEt}$, so 
 
 ### The circuit
 
-QPE uses $m$ ancilla qubits (for $m$ bits of precision) and one system register:
+QPE uses $m$ **ancilla qubits** — helper qubits used as a measurement instrument, separate from the system being studied — for $m$ bits of precision, along with one system register:
 
 1. **Hadamard** all ancillas → superposition
 2. **Controlled-$U^{2^k}$** for each ancilla qubit $k$ → phase accumulation
@@ -99,11 +99,11 @@ For an $L \times L$ Hubbard lattice with $2L^2$ spin-orbitals:
 | QFT (for QPE) | $O(m^2)$ controlled rotations |
 | Total | $O(m \cdot N_\text{Trotter} \cdot L^2)$ |
 
-For a $10 \times 10$ lattice with chemical-precision QPE ($m \approx 20$ bits, $N_\text{Trotter} \approx 10^3$): roughly $10^7$ gates on $\sim 200$ qubits.
+For a $10 \times 10$ lattice with **chemical-precision** QPE ($m \approx 20$ bits, giving ~1 milliHartree accuracy — the threshold from Unit 3 where energy differences become chemically meaningful, $N_\text{Trotter} \approx 10^3$): roughly $10^7$ gates on $\sim 200$ qubits.
 
 ### Physical qubits
 
-With surface code error correction (physical error rate $10^{-3}$, code distance $\sim 20$): each logical qubit requires $\sim 800$ physical qubits. The $10 \times 10$ Hubbard model needs:
+With **surface code** error correction (the leading scheme from Chapter 3's Reality Check; physical error rate $10^{-3}$, **code distance** ~20 — the code distance controls how many physical errors can be corrected, with each logical qubit requiring roughly $2d^2 \approx 800$ physical qubits for distance $d = 20$): The $10 \times 10$ Hubbard model needs:
 
 $$200 \text{ logical} \times 800 \text{ physical/logical} \approx 160{,}000 \text{ physical qubits}$$
 

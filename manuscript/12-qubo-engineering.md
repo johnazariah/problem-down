@@ -91,7 +91,7 @@ The only difference is more terms; a QUBO with $n$ variables and $O(n^2)$ intera
 
 QAOA (Chapter 2) uses gate-based quantum computing: discrete operations applied in sequence. **Quantum annealing** takes a completely different approach: continuous time evolution.
 
-Start in the ground state of a simple Hamiltonian $H_0$ (typically a transverse field, whose ground state is $|+\rangle^n$; which we already know how to prepare from Chapter 2). Slowly interpolate to the problem Hamiltonian $H_1$:
+Start in the ground state of a simple Hamiltonian $H_0$ (typically a **transverse field** $\sum_i X_i$ — an $X$ operator on every qubit — whose ground state is $|+\rangle^n$, which we already know how to prepare from Deep-Dive 1). Slowly interpolate to the problem Hamiltonian $H_1$:
 
 $$H(t) = \left(1 - \frac{t}{T}\right) H_0 + \frac{t}{T} H_1$$
 

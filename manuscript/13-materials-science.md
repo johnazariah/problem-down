@@ -11,7 +11,7 @@ If you could superconduct at room temperature, you could:
 - **Enable practical fusion reactors.** Tokamak fusion requires superconducting magnets to confine plasma. Room-temperature superconductors would simplify the engineering dramatically.
 - **Revolutionise computing.** Superconducting circuits (already the basis of most quantum computers) could operate without cryogenics.
 
-The problem is that we can't *predict* which materials will superconduct at high temperatures. The physics of superconductivity in complex materials involves **strongly correlated electrons**; quantum systems where the interactions between electrons are so strong that mean-field approximations fail completely. We can't simulate these systems classically.
+The problem is that we can't *predict* which materials will superconduct at high temperatures. The physics of superconductivity in complex materials involves **strongly correlated electrons** — quantum systems where the interactions between electrons are so strong that the **mean-field** approximation (treating each electron as if it moves in the average field of all the others — the same simplification we saw fail in Unit 3) breaks down completely. We can't simulate these systems classically.
 
 The **Hubbard model**; the simplest model that captures the essential physics of strongly correlated electrons; has been studied for over 60 years. Its phase diagram in two dimensions remains unsolved. We literally do not know whether the 2D Hubbard model supports high-temperature superconductivity. This is not a matter of computational effort; it's a matter of computational *impossibility* with classical methods.
 
@@ -20,11 +20,13 @@ The **Hubbard model**; the simplest model that captures the essential physics of
 
 ### The Hubbard model
 
-The Hubbard model describes electrons hopping on a lattice, with an energy cost for double occupation:
+The Hubbard model describes electrons hopping on a lattice, with an energy cost for double occupation. If you've read Deep-Dive 3 (VQE), the notation will be familiar — the same creation operators $c^\dagger$ and annihilation operators $c$ from the molecular Hamiltonian, now on a lattice:
 
 $$H = -t \sum_{\langle i,j \rangle, \sigma} (c_{i\sigma}^\dagger c_{j\sigma} + \text{h.c.}) + U \sum_i n_{i\uparrow} n_{i\downarrow}$$
 
-Two parameters: $t$ (the hopping amplitude; kinetic energy) and $U$ (the on-site repulsion; interaction energy). The ratio $U/t$ controls the physics:
+Here $c_{i\sigma}^\dagger$ creates an electron with spin $\sigma$ (up or down) at site $i$. The symbol $\langle i,j \rangle$ means the sum runs over neighbouring sites on the lattice. The notation "h.c." (Hermitian conjugate) means "add the dagger of the preceding term" — it ensures the Hamiltonian is physically valid. And $n_{i\sigma} = c_{i\sigma}^\dagger c_{i\sigma}$ is the **number operator** — it counts whether site $i$ is occupied by a spin-$\sigma$ electron (0 or 1).
+
+Two parameters: $t$ (the hopping amplitude — kinetic energy) and $U$ (the on-site repulsion — interaction energy). The ratio $U/t$ controls the physics:
 
 - **Small $U/t$:** electrons hop freely, metal
 - **Large $U/t$:** electrons localise to avoid repulsion, insulator (Mott insulator)
@@ -34,13 +36,13 @@ Two parameters: $t$ (the hopping amplitude; kinetic energy) and $U$ (the on-site
 
 The Hilbert space of $N$ electrons on $L$ sites with spin has dimension $\binom{2L}{N}$. For a modest $10 \times 10$ lattice with 100 electrons: $\binom{200}{100} \approx 10^{58}$. No classical computer can store or diagonalise a matrix of this size.
 
-**Density functional theory (DFT)**; the workhorse of solid-state physics; is a mean-field method. It handles weakly correlated materials well but *systematically fails* for strongly correlated systems. It cannot predict the Mott insulator transition.
+**Density functional theory (DFT)** — the workhorse of solid-state physics — approximates the many-electron problem by working with the electron density rather than the full wavefunction (the same approach we met in Unit 3). It's a mean-field method: it handles weakly correlated materials well but *systematically fails* for strongly correlated systems. It cannot predict the Mott insulator transition.
 
-**Quantum Monte Carlo (QMC)**; the best classical method for many-body quantum systems; works for bosons but suffers the **sign problem** for fermions. The sign problem makes QMC exponentially expensive for fermionic systems at low temperatures. There's a proof (Troyer and Wiese, 2005) that the sign problem is NP-hard in general.
+**Quantum Monte Carlo (QMC)** — the best classical method for many-body quantum systems — works for bosons but suffers the **sign problem** for fermions: the antisymmetry of the fermionic wavefunction (the same minus sign that requires fermion-to-qubit encodings) causes Monte Carlo sampling to produce catastrophic cancellations, making the calculation exponentially expensive at low temperatures. Troyer and Wiese (2005) proved the sign problem is NP-hard in general.
 
-**Exact diagonalisation**; exact but limited to $\sim 20$ sites. Physically relevant results require hundreds of sites.
+**Exact diagonalisation** — exact but limited to ~20 sites. Physically relevant results require hundreds of sites.
 
-**DMRG (Density Matrix Renormalization Group)**; excellent for 1D systems, struggles with 2D. The entanglement structure of 2D strongly correlated systems defeats DMRG's matrix product state ansatz.
+**DMRG (Density Matrix Renormalization Group)** — an approach that represents the wavefunction as a chain of tensors (a **matrix product state**), capturing correlations efficiently in one dimension. Excellent for 1D systems, but the entanglement structure of 2D strongly correlated systems exceeds what matrix product states can represent.
 
 The 2D Hubbard model at intermediate $U/t$ is in a computational no-man's land. No classical method can solve it reliably.
 
@@ -82,7 +84,9 @@ This is the critical question. Babbush et al. (2018) estimated the resources for
 | $8 \times 8$ | ~400 logical | $10^{11}$ | Hours |
 | $16 \times 16$ | ~1,600 logical | $10^{14}$ | Days |
 
-With surface code error correction at physical error rate $10^{-3}$, each logical qubit requires $\sim 1,000$ physical qubits. So the $8 \times 8$ lattice needs about 400,000 physical qubits; well beyond current hardware, but within the scope of what might be built in 10–15 years.
+(A **T-gate** is a specific rotation gate that, together with the Clifford gates, enables universal quantum computation. T-gates are the most expensive operation in fault-tolerant computing because they require resource-intensive distillation procedures, so the T-gate count is the standard cost metric.)
+
+With **surface code** error correction (the leading scheme, which encodes one logical qubit using ~1,000 physical qubits arranged on a 2D grid, at a physical error rate of $10^{-3}$), the $8 \times 8$ lattice needs about 400,000 physical qubits — well beyond current hardware, but within the scope of what might be built in 10–15 years.
 
 The Pinnacle architecture (Unit 2) could dramatically reduce these numbers if quantum LDPC codes prove applicable to Hamiltonian simulation.
 

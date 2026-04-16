@@ -67,11 +67,11 @@ There are two quantum approaches to finding the ground state of an Ising Hamilto
 
 $$H(t) = \left(1 - \frac{t}{T}\right) H_\text{init} + \frac{t}{T} H_\text{problem}$$
 
-The **adiabatic theorem** guarantees: if you go slowly enough (large $T$), the system stays in the ground state throughout. At the end ($t = T$), you're in the ground state of $H_\text{problem}$; the optimal schedule.
+The **adiabatic theorem** guarantees: if you change the Hamiltonian slowly enough (large $T$), the system stays in the ground state throughout — it continuously adapts to the changing energy landscape rather than getting excited. At the end ($t = T$), you're in the ground state of $H_\text{problem}$ — the optimal schedule.
 
 ### Why quantum annealing might help
 
-Classical simulated annealing explores the energy landscape by making random local moves, accepting uphill moves with decreasing probability as the "temperature" drops. It gets stuck when the optimal solution is separated from the current state by a tall energy barrier; it has to go *over* the barrier.
+Classical **simulated annealing** explores the energy landscape by making random local moves — flip one variable and check if the cost improves. It occasionally accepts *worse* moves (uphill steps) with a probability that decreases over time, mimicking a cooling process. This randomness helps escape local minima, but the method gets stuck when the optimal solution is separated from the current state by a tall energy barrier — it has to go *over* the barrier.
 
 Quantum annealing can tunnel *through* barriers. Quantum tunnelling; the same effect that allows radioactive decay; lets the quantum state traverse energy barriers without climbing them. Barriers that are tall but *narrow* are easy to tunnel through; barriers that are tall and *wide* are hard.
 

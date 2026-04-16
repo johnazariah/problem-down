@@ -25,7 +25,7 @@ This is part science, part art:
 
 - **The metal d-orbitals.** Transition metals (Fe, Cu, Mn, Co) have partially filled d-shells. These orbitals are close in energy and strongly coupled; the definition of strong correlation.
 - **The adsorbate frontier orbitals.** For CO₂ capture: the CO₂ $\pi^*$ orbital that accepts electrons from the metal.
-- **Natural orbital analysis.** Compute approximate natural orbital occupation numbers from a cheap classical calculation (CASSCF or MP2). Orbitals with occupations significantly different from 0 or 2 are strongly correlated; include them.
+- **Natural orbital analysis.** Compute approximate natural orbital occupation numbers from a cheap classical calculation (CASSCF — Complete Active Space Self-Consistent Field, a classical method that optimises both orbitals and electron configurations within a small active space — or MP2, the perturbative correction from Unit 3's hierarchy). Orbitals with occupations significantly different from 0 or 2 are strongly correlated; include them.
 - **Entropy-based selection.** Compute the single-orbital entropy from an approximate wavefunction. High-entropy orbitals are strongly correlated.
 
 For a typical catalyst active site: 6 metal d-orbitals + 4–8 ligand orbitals = 10–14 active orbitals. After Jordan-Wigner encoding (Chapter 6): 20–28 qubits. After tapering (using point-group symmetry and particle-number conservation to reduce qubits): possibly 12–20 qubits. Feasible on near-term hardware.
@@ -39,7 +39,7 @@ DMET (Knizia and Chan, 2012) is the most elegant embedding approach. It works by
 
 The procedure:
 
-1. **Solve the full system cheaply.** Run Hartree-Fock on all 500 orbitals. This gives a mean-field density matrix $\rho_\text{MF}$.
+1. **Solve the full system cheaply.** Run Hartree-Fock on all 500 orbitals. This gives a mean-field **density matrix** $\rho_\text{MF}$ — a mathematical object that describes the quantum state of a system in terms of probabilities and correlations (a generalisation of the outer product $|\psi\rangle\langle\psi|$ from Deep-Dive 5, extended to handle statistical mixtures of states).
 
 2. **Build the bath.** From $\rho_\text{MF}$, extract the entanglement between the fragment (active site) and the environment. The bath has the same number of orbitals as the fragment; so a 10-orbital fragment gets a 10-orbital bath. The 20-orbital *embedded problem* captures the fragment-environment entanglement exactly (at the mean-field level).
 
@@ -63,6 +63,10 @@ This chapter ties together every deep dive in the book:
 ![The complete quantum-classical embedding pipeline, showing NISQ and fault-tolerant paths with chapter cross-references](../figures/embedding-pipeline.png)
 
 Every box references a chapter where the concept was introduced. A reader who followed the deep dive path (Chapters 2 → 4 → 6 → 8 → 10 → 12 → 14 → 16) has the tools to understand every step. A reader who skipped the deep dives can see the pipeline and know where to look for details.
+
+The companion notebook demonstrates active-space VQE for a simplified catalyst model, running the full embed → solve → iterate pipeline.
+
+→ **See [notebook `08-climate-energy.ipynb`](../notebooks/08-climate-energy.ipynb) for the runnable version.**
 
 
 ## What you should take away

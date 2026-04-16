@@ -9,7 +9,7 @@ The bottleneck isn't engineering; it's chemistry. Every DAC process depends on a
 
 This is a quantum chemistry problem. The catalyst's active site; the few atoms where the CO₂ molecule actually binds and reacts; involves **strongly correlated electrons** (just like the Hubbard model in Unit 7) embedded in a much larger environment (the metal surface, the solvent, the substrate). You need quantum-level accuracy for the active site and classical efficiency for everything else.
 
-No classical method handles both simultaneously. DFT is fast but inaccurate for strongly correlated active sites. Coupled cluster is accurate but can't handle the environment. Full CI is exact but impossible at scale.
+No classical method handles both simultaneously. DFT is fast but inaccurate for strongly correlated active sites. **CCSD(T)** (the "gold standard" classical method from Unit 3, scaling as $O(N^7)$) is accurate but can't handle the full environment. **Full CI** (exact but exponentially expensive) is impossible at scale.
 
 This is where the quantum computing story comes together.
 
@@ -20,7 +20,7 @@ This is where the quantum computing story comes together.
 
 A realistic catalyst simulation involves three scales:
 
-1. **The active site** (~10–50 atoms, involving transition metals with partially filled d-orbitals): strongly correlated, requires quantum accuracy
+1. **The active site** (~10–50 atoms, involving transition metals with partially filled **d-orbitals** — the outermost electron orbitals of metals like iron and copper, which give these atoms their complex chemistry): strongly correlated, requires quantum accuracy
 2. **The local environment** (~50–200 atoms of the support material and nearby solvent): weakly correlated, treatable classically
 3. **The bulk** (the rest of the material): can be described by a mean-field or continuum model
 
@@ -28,8 +28,8 @@ The challenge is that the active site's electronic structure depends on the envi
 
 Classical methods pick one scale and approximate the others:
 - **DFT**: handles everything at the same (insufficient) level of accuracy
-- **Multiscale QM/MM**: quantum mechanics for the active site, molecular mechanics for the environment; but the QM part is still classical QM (DFT), which fails for strong correlation
-- **Embedded CCSD(T)**: classical high-accuracy method for the active site, DFT for the environment; better, but CCSD(T) still scales as $O(N^7)$ and breaks down for the open-shell, multi-reference states common in catalysis
+- **Multiscale QM/MM**: use quantum mechanics (QM) for the active site and classical molecular mechanics (MM, a ball-and-spring model) for the environment — but the QM part is still classical DFT, which fails for strong correlation
+- **Embedded CCSD(T)**: classical high-accuracy method for the active site, DFT for the environment — better, but CCSD(T) still scales as $O(N^7)$ and breaks down for **open-shell** systems (molecules with unpaired electrons) and **multi-reference** states (systems where no single electron arrangement dominates — multiple configurations contribute equally to the wavefunction), which are common in catalysis
 
 What we need: a method that gives quantum-accurate results for the active site while scaling efficiently with the total system size.
 
@@ -72,7 +72,7 @@ Active-space VQE for **CO adsorption on a small iron cluster** (a simplified mod
 
 Setup:
 - Fe₂O₃ cluster with CO adsorbate
-- Active space: 6 Fe d-orbitals + 4 CO π/π* orbitals = 10 active orbitals, 10 active electrons
+- Active space: 6 Fe d-orbitals + 4 CO **π/π\*** orbitals (the bonding and antibonding orbitals formed by sideways overlap of atomic p-orbitals) = 10 active orbitals, 10 active electrons
 - After Jordan-Wigner encoding: 20 qubits (or fewer with tapering)
 - Environment: remaining orbitals treated with DFT embedding
 
@@ -83,7 +83,7 @@ The notebook computes the binding energy of CO on the cluster using:
 
 The difference between DFT and active-space results is the **correlation energy** in the active site; the part that classical methods get wrong and quantum computers get right.
 
-→ **See [notebook `08-climate-energy.ipynb`](../notebooks/08-climate-energy.ipynb) for the runnable version.**
+→ *The next chapter builds the quantum embedding pipeline from scratch, and shows you the code.*
 
 
 
