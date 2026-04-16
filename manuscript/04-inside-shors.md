@@ -25,19 +25,32 @@ Let's build it up, starting from things you already know.
 
 ### A function you already know
 
-In Deep-Dive 1, we used CNOT to compute the *parity* of two qubits. Given qubits $q_0$ and $q_1$, applying $\text{CNOT}(q_0, q_1)$ computes $q_1 \oplus q_0$ (XOR) and stores the result in $q_1$. That's a function evaluation: the circuit takes an input ($q_0$) and writes the result into an output ($q_1$).
+In Deep-Dive 1, we used CNOT to compute the *parity* of two qubits as part of the ZZ gate. But CNOT does something simpler and more fundamental than we appreciated at the time: it computes **XOR**.
 
-Let's make this explicit. Define $f(x) = x$ (the identity function on a single bit). We can implement this with a CNOT:
+Here's the full truth table for CNOT, acting on an input qubit and an output qubit:
+
+| Input $|x\rangle$ | Output before | Output after | What happened |
+|:---:|:---:|:---:|:---|
+| $|0\rangle$ | $|0\rangle$ | $|0\rangle$ | $0 \oplus 0 = 0$ |
+| $|0\rangle$ | $|1\rangle$ | $|1\rangle$ | $1 \oplus 0 = 1$ |
+| $|1\rangle$ | $|0\rangle$ | $|1\rangle$ | $0 \oplus 1 = 1$ |
+| $|1\rangle$ | $|1\rangle$ | $|0\rangle$ | $1 \oplus 1 = 0$ |
+
+The input qubit is never changed. The output qubit gets XOR'd with the input: $|b\rangle \to |b \oplus x\rangle$. That $\oplus$ is just "add, then take the remainder modulo 2" — the same as flipping the output when the input is 1, which is exactly what CNOT does.
+
+When the output starts at $|0\rangle$, the XOR simply copies: $|0 \oplus x\rangle = |x\rangle$. So CNOT computes $f(x) = x$ (the identity function):
 
 $$\text{CNOT}|x\rangle|0\rangle = |x\rangle|x\rangle = |x\rangle|f(x)\rangle$$
 
-The input qubit is unchanged. The output qubit now holds $f(x)$. If $x = 0$, the output is $|0\rangle$. If $x = 1$, the output is $|1\rangle$.
+The input qubit is unchanged. The output qubit holds $f(x)$.
 
-This is the pattern for *all* quantum function evaluation: you have an input register holding $|x\rangle$, an output register initialised to $|0\rangle$, and a circuit $U_f$ that writes $f(x)$ into the output:
+This is the pattern for *all* quantum function evaluation: you have an input register holding $|x\rangle$, an output register initialised to $|0\rangle$, and a circuit $U_f$ that XORs $f(x)$ into the output:
 
-$$U_f|x\rangle|0\rangle = |x\rangle|f(x)\rangle$$
+$$U_f|x\rangle|0\rangle = |x\rangle|0 \oplus f(x)\rangle = |x\rangle|f(x)\rangle$$
 
-For the identity function, $U_f$ is a CNOT. For $f(x) = a^x \bmod N$, $U_f$ is a much larger circuit (we'll see how it's built later in this chapter). But the interface is always the same: input in, function value out, input unchanged.
+Why XOR and not just "write $f(x)$"? Because quantum operations must be *reversible* — you need to be able to undo them. Overwriting a register isn't reversible (the old value is lost). XOR is: apply $U_f$ twice and you get $|b \oplus f(x) \oplus f(x)\rangle = |b\rangle$, back to where you started. A single CNOT is the simplest oracle. Larger oracles — like the one that computes $a^x \bmod N$ — are built from networks of CNOTs and Toffoli gates, but they all follow this same XOR-into-the-output pattern.
+
+For the identity function, $U_f$ is a single CNOT. For $f(x) = a^x \bmod N$, $U_f$ is a much larger circuit (we'll see how it's built later in this chapter). But the interface is always the same: input in, function value XOR'd into the output, input unchanged.
 
 ### What happens in superposition
 
@@ -76,11 +89,9 @@ The output register doesn't change — it comes back as $|{-}\rangle$ every time
 
 ### Why does this happen?
 
-Let's trace it step by step. Remember, $U_f$ acts as $U_f|x\rangle|b\rangle = |x\rangle|b \oplus f(x)\rangle$, where $\oplus$ is XOR.
+Let's trace it. We established that $U_f$ XORs $f(x)$ into the output: $U_f|x\rangle|b\rangle = |x\rangle|b \oplus f(x)\rangle$. Now expand $|{-}\rangle$ and apply $U_f$ to each term:
 
 $$U_f|x\rangle|{-}\rangle = U_f|x\rangle \cdot \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$$
-
-$$= \frac{1}{\sqrt{2}}(U_f|x\rangle|0\rangle - U_f|x\rangle|1\rangle)$$
 
 $$= \frac{1}{\sqrt{2}}(|x\rangle|0 \oplus f(x)\rangle - |x\rangle|1 \oplus f(x)\rangle)$$
 
@@ -123,11 +134,23 @@ The circuit:
 4. Apply $H$ to the input qubit → interference
 5. Measure
 
-If $f$ is constant ($f(0) = f(1)$), both terms have the same phase, the Hadamard maps them back to $|0\rangle$, and you measure 0.
+Step 4 is where interference happens, so let's slow down and watch it. After the oracle, the input qubit is in:
 
-If $f$ is balanced ($f(0) \neq f(1)$), the terms have opposite phases, the Hadamard maps them to $|1\rangle$, and you measure 1.
+$$\frac{1}{\sqrt{2}}\bigl((-1)^{f(0)}|0\rangle + (-1)^{f(1)}|1\rangle\bigr)$$
 
-One query. The phase kickback converted the function's output into a phase, and the Hadamard converted the phase difference into a measurable bit. This is the template for everything that follows.
+Now recall what $H$ does to $|0\rangle$ and $|1\rangle$:
+
+$$H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle), \qquad H|1\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$$
+
+Applying $H$ to our state, each term produces a contribution to $|0\rangle$ and to $|1\rangle$:
+
+**If $f$ is constant** ($f(0) = f(1)$, so both phases are the same): the $|0\rangle$ contributions add up (both point the same way), while the $|1\rangle$ contributions cancel (one $+$, one $-$). Result: $|0\rangle$ with certainty. Constructive interference on $|0\rangle$, destructive on $|1\rangle$.
+
+**If $f$ is balanced** ($f(0) \neq f(1)$, so the phases are opposite): now the $|0\rangle$ contributions cancel and the $|1\rangle$ contributions reinforce. Result: $|1\rangle$ with certainty.
+
+This is interference in its purest form: two amplitudes arriving at the same state, either reinforcing or cancelling depending on their relative phase. The Hadamard is the "beam splitter" that makes them overlap so the phases can interact. Without it, the phases would sit on $|0\rangle$ and $|1\rangle$ separately, invisible to measurement. The Hadamard forces them to interfere — and the outcome tells you whether the phases were the same or different.
+
+One query. The phase kickback converted the function's output into a phase, and the Hadamard converted the phase difference into a measurable bit. This is the template for everything that follows — and the QFT generalises this from "same or different?" to "what's the period?"
 
 ### From one bit to $n$ bits
 
@@ -179,15 +202,19 @@ Gate count: $n$ Hadamards + $n(n-1)/2$ controlled rotations = $O(n^2)$ gates. Co
 
 ### Why the QFT "sees" the period: phase arrows
 
-The QFT works because of interference — the same mechanism we saw in Unit 1. Each output state $|k\rangle$ receives contributions from all the periodic input states, each carrying a phase $e^{2\pi i x k / 2^n}$. Whether these contributions reinforce or cancel depends on whether $k$ is a multiple of $2^n / r$.
+The QFT works because of interference — the same mechanism we just watched in Deutsch-Jozsa, scaled up. In Deutsch-Jozsa, we had two amplitudes arriving at $|0\rangle$, either reinforcing or cancelling. In Shor's, we have *many* amplitudes arriving at each output $|k\rangle$, and the question is: do their phases line up?
 
-For our $N = 15$ example (period $r = 4$, register size $2^n = 16$), the four periodic inputs $x = 0, 4, 8, 12$ each contribute a phase arrow:
+Each output state $|k\rangle$ receives contributions from all the periodic input states, each carrying a phase $e^{2\pi i x k / 2^n}$. Think of each contribution as an arrow on the unit circle, pointing in the direction given by its phase. The total amplitude at $|k\rangle$ is the sum of all these arrows.
+
+For our $N = 15$ example (period $r = 4$, register size $2^n = 16$), the four periodic inputs $x = 0, 4, 8, 12$ each contribute an arrow:
 
 ![Phase arrows: at k=4 (a multiple of 16/r), all four arrows align constructively; at k=3, they point in four different directions and cancel](../figures/phase-arrows-qft.png)
 
-At $k = 4$ (a multiple of $16/r = 4$), all four arrows point in the same direction. They add to a large resultant: high probability of measuring $k = 4$. At $k = 3$ (not a multiple), the arrows point at $0°$, $135°$, $270°$, and $45°$ — they cancel almost perfectly. Near-zero probability.
+**Left ($k = 4$):** The four arrows point at $0°$, $0°$, $0°$, $0°$. Why? Because the phase for input $x$ is $e^{2\pi i \cdot x \cdot 4/16} = e^{2\pi i \cdot x/4}$, and when $x$ is a multiple of 4, the exponent is a whole number of turns around the circle — every arrow lands back at $0°$. They all add up: constructive interference. High probability.
 
-This is the same constructive/destructive interference we saw in QAOA, but the mechanism is different. In QAOA, the mixer caused interference between neighbouring colourings. Here, the QFT causes interference across all frequency values, and the periodicity of the input determines which frequencies survive.
+**Right ($k = 3$):** The phase is $e^{2\pi i \cdot x \cdot 3/16}$. For $x = 0$: $0°$. For $x = 4$: $3/4$ of a full turn = $270°$. For $x = 8$: $3/2$ turns = $180°$. For $x = 12$: $9/4$ turns = $90°$. The arrows point in four different directions and cancel almost perfectly. Destructive interference. Near-zero probability.
+
+The pattern: when $k$ is a multiple of $2^n/r = 4$, the periodicity of the inputs guarantees all arrows align. For any other $k$, the arrows spread around the circle and cancel. This is Deutsch-Jozsa's "same phase = reinforce, different phase = cancel" principle, but now applied across $r$ contributions at each of $2^n$ frequency bins. The QFT is the multi-frequency generalisation of the Hadamard beam splitter.
 
 
 ## Assembling Shor's algorithm
