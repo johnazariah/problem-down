@@ -44,7 +44,9 @@ Classical computational chemistry has developed a remarkable hierarchy of approx
 | CCSD(T) | "Gold standard" | $O(N^7)$ | Systematically accounts for how pairs (and triples) of electrons interact |
 | Full CI | Exact (within basis) | $O(e^N)$ | Tries every possible electron arrangement — brute force |
 
-The pattern: more accuracy costs exponentially more computation. Hartree-Fock ignores **electron correlation** entirely — the way each electron's motion is influenced by the instantaneous positions of the others, not just their average (the **mean-field** approximation). Each step up the ladder captures more of this correlation but at drastically higher cost. Full Configuration Interaction (Full CI) is exact but exponential.
+The pattern: more accuracy costs exponentially more computation.
+
+The simplest method, Hartree-Fock, treats each electron as if it moves through the average field created by all the others — a **mean-field** approximation. This ignores the fact that electrons actively dodge each other: when one electron moves left, its neighbours respond instantly. The difference between this real, correlated dance and the mean-field approximation is called **electron correlation**. Hartree-Fock misses it entirely. Each step up the ladder captures more correlation, but at drastically higher cost. Full Configuration Interaction (Full CI) is exact but exponential.
 
 The gap between CCSD(T) (the best practical classical method, scaling as $N^7$) and Full CI (exact but exponential) is where quantum computing enters. For molecules with **strong electron correlation** — where the mean-field picture breaks down entirely, such as transition metal complexes (molecules with partially filled d-orbitals) and reaction transition states — CCSD(T) fails and Full CI is unaffordable. These are exactly the molecules that matter most for drug design.
 
