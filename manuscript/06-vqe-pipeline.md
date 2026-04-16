@@ -15,15 +15,15 @@ In Chapters 2 and 4, qubits were abstract binary variables; node colours in MaxC
 
 Electrons are different. They obey rules that qubits don't, and ignoring these rules gives wrong answers. The central rule is:
 
-**Electrons are fermions.** The wavefunction of a multi-electron system must be *antisymmetric*; swapping any two electrons flips the sign:
+**Electrons are fermions.** The wavefunction of a multi-electron system must be *antisymmetric* — swapping any two electrons flips the sign:
 
 $$\Psi(\ldots, \mathbf{r}_i, \ldots, \mathbf{r}_j, \ldots) = -\Psi(\ldots, \mathbf{r}_j, \ldots, \mathbf{r}_i, \ldots)$$
 
-This minus sign is the Pauli exclusion principle: two electrons can't be in the same state (if they were, swapping them would change nothing, but the minus sign says the wavefunction must flip; the only function equal to its own negative is zero).
+This minus sign *is* the Pauli exclusion principle: two electrons can't be in the same state (if they were, swapping them would change nothing, but the minus sign says the wavefunction must flip; the only function equal to its own negative is zero).
 
-Qubits don't have this rule. Swapping two qubits doesn't produce a minus sign. If we naively map electrons to qubits; electron in orbital $i$ → qubit $i$ is $|1\rangle$, not in orbital $i$ → qubit $i$ is $|0\rangle$; we get the right *occupations* but the wrong *phases*. The standard encoding produces correct energies for H₂, but for larger molecules the missing signs lead to completely wrong results.
+Qubits don't have this rule. Qubits are *distinguishable* — each one has a label, and swapping two labelled qubits doesn't produce a minus sign. If we naively map electrons to qubits; electron in orbital $i$ → qubit $i$ is $|1\rangle$, not in orbital $i$ → qubit $i$ is $|0\rangle$; we get the right *occupations* but the wrong *phases*. The standard encoding produces correct energies for H₂, but for larger molecules the missing signs lead to completely wrong results.
 
-> **Common Mistake #1:** "Qubits are quantum, electrons are quantum, so mapping is trivial." No. Qubits are *bosonic* (swapping produces no sign change). Electrons are *fermionic* (swapping produces a minus sign). The encoding must bridge this gap. This is the entire subject of the companion book [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).
+> **Common Mistake #1:** "Qubits are quantum, electrons are quantum, so mapping is trivial." No. Qubits are *distinguishable* (swapping produces no sign change). Electrons are *fermionic* (swapping produces a minus sign). The encoding must bridge this gap. This is the entire subject of the companion book [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).
 
 
 ## Second quantisation: the language of electrons
@@ -40,16 +40,18 @@ This looks like qubits! And it is: each orbital maps to one qubit, with $|1\rang
 
 ### Creation and annihilation operators
 
-The tools that respect antisymmetry are **creation** ($a_i^\dagger$) and **annihilation** ($a_i$) operators:
+The tools that respect antisymmetry are **creation** ($a_i^\dagger$) and **annihilation** ($a_i$) operators. The symbol $\dagger$ ("dagger") denotes the Hermitian conjugate — roughly, the quantum version of transposing and complex-conjugating a matrix:
 
-- $a_i^\dagger$ creates an electron in orbital $i$ (adds a $|1\rangle$ to position $i$)
-- $a_i$ removes an electron from orbital $i$ (changes $|1\rangle$ to $|0\rangle$)
+- $a_i^\dagger$ creates an electron in orbital $i$ (flips qubit $i$ from $|0\rangle$ to $|1\rangle$, with sign adjustments)
+- $a_i$ removes an electron from orbital $i$ (flips $|1\rangle$ to $|0\rangle$, with sign adjustments)
 
-The key property; the thing that encodes the minus sign; is the **anticommutation relation**:
+The key property — the thing that encodes the minus sign — is the **anticommutation relation**:
 
 $$\{a_i, a_j^\dagger\} \equiv a_i a_j^\dagger + a_j^\dagger a_i = \delta_{ij}$$
 
-This says: creating electron $j$ then destroying electron $i$ is *not the same* as destroying $i$ then creating $j$; they differ by a sign (unless $i = j$). This is the mathematical expression of the Pauli exclusion principle.
+The curly braces $\{A, B\} \equiv AB + BA$ denote the *anticommutator* — unlike the commutator $[A,B] = AB - BA$ you may know from Pauli algebra. And $\delta_{ij}$ is the Kronecker delta: 1 when $i = j$, 0 otherwise.
+
+What does this say? Creating electron $j$ then destroying electron $i$ is *not the same* as destroying $i$ then creating $j$ — they differ by a sign (unless $i = j$). This is the mathematical expression of the Pauli exclusion principle.
 
 ### The molecular Hamiltonian
 
@@ -57,9 +59,9 @@ In second quantisation, the molecular Hamiltonian is:
 
 $$H = \sum_{ij} h_{ij} \, a_i^\dagger a_j + \frac{1}{2} \sum_{ijkl} h_{ijkl} \, a_i^\dagger a_j^\dagger a_k a_l$$
 
-The first sum is the **one-electron terms** (kinetic energy + electron-nucleus attraction). The second sum is the **two-electron terms** (electron-electron repulsion). The coefficients $h_{ij}$ and $h_{ijkl}$ are called **molecular integrals**; they come from classical quantum chemistry computations and depend on the molecule's geometry and basis set.
+The first sum is the **one-electron terms** (kinetic energy + electron-nucleus attraction). The second sum is the **two-electron terms** (electron-electron repulsion). The coefficients $h_{ij}$ and $h_{ijkl}$ are called **molecular integrals** — they come from classical quantum chemistry computations and depend on the molecule's geometry and its **basis set** (the finite set of mathematical functions used to approximate orbitals, like choosing how many Fourier terms to keep in a series).
 
-For H₂ in STO-3G: there are about 15 unique molecular integrals. For a drug-sized molecule: millions. But the Hamiltonian always has this same structure; sums of products of creation and annihilation operators, weighted by integrals.
+For H₂ in STO-3G (a minimal basis set: 3 Gaussian functions per orbital): there are about 15 unique molecular integrals. For a drug-sized molecule: millions. But the Hamiltonian always has this same structure — sums of products of creation and annihilation operators, weighted by integrals.
 
 
 ## Fermion-to-qubit encodings
@@ -75,6 +77,8 @@ The **Jordan-Wigner** encoding (1928; older than quantum computing!) maps each o
 The creation operator becomes:
 
 $$a_i^\dagger \to \frac{1}{2}(X_i - iY_i) \otimes Z_{i-1} \otimes Z_{i-2} \otimes \cdots \otimes Z_0$$
+
+Here $\otimes$ is the **tensor product** — it combines operators on separate qubits into one multi-qubit operator. (The $Z_0 Z_1$ you saw in QAOA is shorthand for $Z_0 \otimes Z_1$.) The factor $\frac{1}{2}(X_i - iY_i)$ is called the **raising operator** — it flips $|0\rangle$ to $|1\rangle$ (creating an electron) while leaving $|1\rangle$ unchanged.
 
 The string of $Z$ operators is the price we pay for antisymmetry. Each $Z_k$ checks whether orbital $k$ is occupied; if it is, it contributes a minus sign. This enforces the rule that creating an electron "past" occupied orbitals picks up the right number of minus signs.
 
@@ -125,7 +129,7 @@ $$H X H = Z$$
 
 So: apply $H$ to both qubits, then measure in the computational basis. The result gives $\langle X_0 X_1 \rangle$.
 
-How do you measure $\langle Y_0 Y_1 \rangle$? Apply $S^\dagger H$ (where $S^\dagger$ is the inverse phase gate) to each qubit, then measure. This rotates $Y$ into $Z$:
+How do you measure $\langle Y_0 Y_1 \rangle$? Apply $S^\dagger H$ to each qubit, then measure. The $S$ gate adds a phase of $i$ to $|1\rangle$; its inverse $S^\dagger$ subtracts it. Together with $H$, this rotates the $Y$-measurement basis into the computational basis:
 
 $$S^\dagger H \cdot Y \cdot H S = Z$$
 
@@ -142,7 +146,7 @@ The **ansatz** is the parameterised quantum circuit that prepares trial wavefunc
 
 ### Starting point: the Hartree-Fock state
 
-The simplest starting point is the **Hartree-Fock state**; the best single-determinant approximation. For H₂: two electrons in the two lowest spin-orbitals:
+The simplest starting point is the **Hartree-Fock state** — the best approximation that treats each electron as independent (a single antisymmetric product of orbitals, called a **Slater determinant**). For H₂: two electrons in the two lowest spin-orbitals:
 
 $$|\text{HF}\rangle = |1100\rangle$$
 
@@ -156,11 +160,13 @@ A **single excitation** $a_i^\dagger a_j$ moves one electron from orbital $j$ to
 
 $$|\psi(\theta)\rangle = e^{\sum_{ij} \theta_{ij}^{(1)} (a_i^\dagger a_j - \text{h.c.})} \cdot e^{\sum_{ijkl} \theta_{ijkl}^{(2)} (a_i^\dagger a_j^\dagger a_k a_l - \text{h.c.})} |\text{HF}\rangle$$
 
+Here "h.c." stands for **Hermitian conjugate** — the dagger of the preceding term. Writing $A - \text{h.c.}$ means $A - A^\dagger$, which makes the exponent anti-Hermitian and ensures $e^{A - A^\dagger}$ is unitary (a valid quantum gate). The exponential of an operator is defined by its Taylor series: $e^A = I + A + A^2/2 + \cdots$
+
 After encoding, each excitation becomes a sequence of CNOTs and parameterised rotations.
 
 ### For H₂: one parameter
 
-H₂ has only one relevant double excitation (from the bonding to the antibonding orbital), so the entire ansatz is:
+H₂ has only one relevant double excitation — moving both electrons from the **bonding orbital** (lower energy, electron density concentrated between the two nuclei) to the **antibonding orbital** (higher energy, a node between the nuclei). So the entire ansatz is:
 
 ![H₂ VQE ansatz circuit: X gate for Hartree–Fock state, Ry(θ) rotation, and CNOT](../figures/h2-vqe-ansatz.png)
 
@@ -174,13 +180,16 @@ The same variational loop from Chapter 2 (QAOA):
 1. Choose parameters $\theta$
 2. Prepare $|\psi(\theta)\rangle$ on the quantum computer
 3. Measure each Pauli term → compute $\langle H \rangle$
-4. Feed $\langle H \rangle$ to a classical optimiser (COBYLA, L-BFGS, SPSA)
+4. Feed $\langle H \rangle$ to a classical optimiser:
+   - **COBYLA** (gradient-free — doesn't need derivatives)
+   - **L-BFGS** (gradient-based — faster when gradients are available)
+   - **SPSA** (stochastic gradient estimate — popular on noisy hardware because it needs only two circuit evaluations per step)
 5. Optimiser suggests new $\theta$
 6. Repeat until convergence
 
 The variational principle guarantees $\langle H \rangle \geq E_0$; every measurement is an upper bound. The optimiser's job is to tighten the bound.
 
-For H₂ (one parameter), the landscape is a smooth function of $\theta$; a simple 1D minimisation. For larger molecules with hundreds of parameters, the landscape is much rougher, and gradient-based optimisers need the **parameter-shift rule** to estimate gradients from circuit measurements.
+For H₂ (one parameter), the landscape is a smooth function of $\theta$ — a simple 1D minimisation. For larger molecules with hundreds of parameters, the landscape is much rougher, and gradient-based optimisers need the **parameter-shift rule** to estimate gradients from circuit measurements: evaluate the circuit at two shifted parameter values ($\theta + \pi/2$ and $\theta - \pi/2$) and take the difference.
 
 
 ## Putting it all together
@@ -191,6 +200,10 @@ The complete VQE pipeline:
 
 Every step is well-defined. The pipeline works for any molecule; only the integrals and the circuit size change. H₂ needs 2–4 qubits. Caffeine needs ~100. A drug-protein complex needs thousands; beyond current hardware but within the scope of fault-tolerant machines.
 
+The companion notebook runs the full H₂ pipeline end-to-end — computing molecular integrals, building the qubit Hamiltonian, constructing the VQE ansatz, and sweeping the bond length to produce the potential energy surface.
+
+→ **See [notebook `03-drug-discovery.ipynb`](../notebooks/03-drug-discovery.ipynb) for the runnable version.**
+
 
 ## What you should take away
 
@@ -200,7 +213,7 @@ Every step is well-defined. The pipeline works for any molecule; only the integr
 
 3. **Measurement has a cost.** Each distinct Pauli basis requires a separate circuit execution. For large molecules, the measurement overhead can dominate the total computation time.
 
-4. **The ansatz encodes chemical intuition.** Good ansätze (like UCCSD) start from the Hartree-Fock state and apply physically motivated excitations. Bad ansätze miss the ground state or have barren plateaus.
+4. **The ansatz encodes chemical intuition.** Good ansätze (like UCCSD) start from the Hartree-Fock state and apply physically motivated excitations. Bad ansätze miss the ground state or suffer from **barren plateaus** — regions where the energy landscape is exponentially flat and the optimiser has no useful gradient to follow.
 
 5. **VQE is the same variational loop as QAOA.** If you understood Chapter 2, you understand VQE's architecture. The difference is the cost function (molecular energy, not graph cuts) and the ansatz (chemistry-motivated, not graph-motivated).
 

@@ -19,7 +19,7 @@ In 1994, Peter Shor shattered this assumption.
 
 Shor showed that a quantum computer can factor $N$ in time *polynomial* in the number of digits; roughly $n^3$. Not sub-exponential. Not "somewhat faster." Polynomial. For a 2,000-digit number, the difference is between $10^{30}$ years and a few hours.
 
-Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** (which breaks Diffie-Hellman and elliptic curve cryptography). ECC; which was adopted precisely because its keys are shorter than RSA's for equivalent classical security; is in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~20 million noisy qubits needed for RSA-2048. Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
+Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** — given $g^x \bmod p = y$, find $x$ — which breaks Diffie-Hellman (the original public-key protocol) and **elliptic curve cryptography** (ECC), a modern alternative to RSA based on different mathematics. ECC was adopted precisely because its keys are shorter than RSA's for equivalent classical security, but it's in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~20 million noisy qubits needed for RSA-2048. (We'll define logical vs. physical qubits in the Reality Check.) Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
 
 Let's understand why; and how.
 
@@ -35,7 +35,7 @@ RSA works like this:
 1. Alice picks two large primes $p$ and $q$ and computes $N = pq$
 2. She publishes $N$ (her public key) and keeps $p, q$ secret (her private key)
 3. Bob encrypts a message using $N$; a fast operation
-4. Only Alice, who knows $p$ and $q$, can decrypt it; because decryption requires computing a modular inverse that depends on $(p-1)(q-1)$
+4. Only Alice, who knows $p$ and $q$, can decrypt it; because decryption requires a key derived from $(p-1)(q-1)$ — the count of integers less than $N$ that share no factor with $N$
 
 The security assumption: given $N$, nobody can find $p$ and $q$ efficiently. If they could, they could compute $(p-1)(q-1)$, derive the decryption key, and read everything.
 
@@ -43,13 +43,13 @@ The security assumption: given $N$, nobody can find $p$ and $q$ efficiently. If 
 
 The naive approach; try dividing $N$ by every number up to $\sqrt{N}$; takes $O(\sqrt{N})$ time. For a 2,000-digit $N$, that's $10^{1000}$ operations. Hopeless.
 
-The best classical algorithm, the General Number Field Sieve (GNFS), is far cleverer. It exploits algebraic number theory to find *relations* among smooth numbers modulo $N$. Its running time is:
+The best classical algorithm, the General Number Field Sieve (GNFS), is far cleverer. It exploits algebraic number theory to find special relationships between numbers modulo $N$. Its running time is roughly:
 
-$$L_N\left[\frac{1}{3}, \left(\frac{64}{9}\right)^{1/3}\right] \approx e^{1.923 \cdot n^{1/3} \cdot (\ln n)^{2/3}}$$
+$$e^{1.923 \cdot n^{1/3} \cdot (\ln n)^{2/3}}$$
 
-where $n = \log_2 N$. This is sub-exponential; faster than brute force, slower than polynomial. For RSA-2048 (a 617-digit number), the estimated classical effort is around $2^{112}$ operations; securely beyond reach for the foreseeable future.
+where $n$ is the number of bits in $N$. This is *sub-exponential* — faster than brute force, but still far slower than polynomial. For RSA-2048 (a 617-digit number), the estimated classical effort is around $2^{112}$ operations; securely beyond reach for the foreseeable future.
 
-The fundamental issue: factoring has no known *polynomial-time* classical algorithm. There's no proof that one doesn't exist (factoring is not known to be NP-complete), but decades of effort by the world's best mathematicians and computer scientists have failed to find one.
+The fundamental issue: factoring has no known *polynomial-time* classical algorithm. There's no proof that one doesn't exist (factoring is not known to be NP-complete — meaning it hasn't been proven to be among the "hardest of the hard" problems), but decades of effort by the world's best mathematicians and computer scientists have failed to find one.
 
 ### Factoring reduces to period-finding
 
@@ -59,15 +59,16 @@ Pick a random number $a < N$. Define the function:
 
 $$f(x) = a^x \bmod N$$
 
-This function is periodic. There exists some integer $r$ (the **order** of $a$ modulo $N$) such that $a^r \equiv 1 \pmod{N}$, and therefore $f(x + r) = f(x)$ for all $x$.
+The notation $\bmod N$ means "take the remainder after dividing by $N$." So $7^2 \bmod 15 = 49 \bmod 15 = 4$, because 49 divided by 15 leaves remainder 4.
 
-If you can find $r$, you can (with high probability) factor $N$. The connection is:
+This function is periodic. There exists some integer $r$ (called the **order** of $a$ modulo $N$) such that $a^r \bmod N = 1$, and therefore $f(x + r) = f(x)$ for all $x$. The notation $a^r \equiv 1 \pmod{N}$ says the same thing: $a^r$ and $1$ have the same remainder when divided by $N$.
 
-$$a^r \equiv 1 \pmod{N}$$
+If you can find $r$, you can (with high probability) factor $N$. The algebraic trick:
+
 $$a^r - 1 \equiv 0 \pmod{N}$$
 $$(a^{r/2} - 1)(a^{r/2} + 1) \equiv 0 \pmod{N}$$
 
-If $r$ is even and $a^{r/2} \not\equiv -1 \pmod{N}$, then $\gcd(a^{r/2} - 1, N)$ gives a non-trivial factor of $N$.
+If $r$ is even and $a^{r/2} \not\equiv -1 \pmod{N}$, then the **greatest common divisor** $\gcd(a^{r/2} - 1, N)$ — the largest number that divides both arguments — gives a non-trivial factor of $N$.
 
 So: **if you can find periods efficiently, you can factor efficiently.** Classically, finding the period of $f(x) = a^x \bmod N$ is at least as hard as factoring. Quantumly, it's not.
 
@@ -84,9 +85,9 @@ Shor's algorithm finds the period $r$ of $f(x) = a^x \bmod N$ using three quantu
 
 In Unit 1, we saw that qubits can be in superposition. Here we use it for something specific: *evaluating a function on all inputs in parallel*.
 
-Start with two quantum registers: an **input register** of $n$ qubits and an **output register** large enough to hold $f(x)$. Initialise both to $|0\rangle$.
+Start with two quantum **registers** — groups of qubits that together represent a single number, like how multiple bits form a byte in a classical computer. We need an **input register** of $n$ qubits (to hold $x$) and an **output register** large enough to hold $f(x)$. Initialise both to $|0\rangle$.
 
-Apply Hadamard gates to every qubit in the input register:
+Apply Hadamard gates to every qubit in the input register. The notation $H^{\otimes n}$ is shorthand for "apply $H$ to each of the $n$ qubits":
 
 $$|0\rangle^n \xrightarrow{H^{\otimes n}} \frac{1}{\sqrt{2^n}} \sum_{x=0}^{2^n - 1} |x\rangle$$
 
@@ -126,9 +127,15 @@ We don't actually need to measure the output register. The entanglement does the
 
 The QFT isn't magic; it's interference. Each output state $|k\rangle$ receives contributions from all input states $|x\rangle$, weighted by the complex phase $e^{2\pi i xk / 2^n}$. When $k$ is a multiple of $2^n / r$, the phases from the $r$ equally-spaced inputs align; they add constructively. When $k$ is not a multiple of $2^n / r$, the phases point in different directions and cancel; destructive interference.
 
-This is the same physics that makes light and dark fringes in a double-slit experiment. The QFT is a multi-slit experiment with $2^n$ slits, and the period $r$ determines which fringes are bright.
+This is the same physics that creates light and dark bands when light passes through narrow slits: waves that arrive in sync reinforce each other (bright band), waves that arrive out of sync cancel (dark band). The QFT is like a multi-slit experiment with $2^n$ slits, and the period $r$ determines which bands are bright.
 
 ### Putting it together
+
+Here is Shor's algorithm as a circuit, drawn at the same box level we used for QAOA in Unit 1:
+
+![Shor's algorithm circuit: Hadamard on input register, oracle Uᶠ spanning both registers, inverse QFT on input register, measurement](../figures/shor-box-circuit.png)
+
+Two registers. The top four wires are the input register; the bottom four are the output register. Read left to right: Hadamard creates superposition, the oracle $U_f$ evaluates $a^x \bmod N$ in superposition, the inverse QFT extracts the period, and measurement reads out a frequency. Only the input register is measured.
 
 Shor's algorithm:
 
@@ -137,7 +144,7 @@ Shor's algorithm:
 3. Compute $f(x) = a^x \bmod N$ in superposition
 4. Apply the QFT to the input register
 5. Measure the input register → get $k \approx j \cdot 2^n / r$
-6. Use the continued fractions algorithm to extract $r$ from $k / 2^n$
+6. Use the **continued fractions algorithm** — a classical method that finds the simplest fraction $j/r$ close to $k / 2^n$ — to extract $r$
 7. Compute $\gcd(a^{r/2} \pm 1, N)$ → factors of $N$
 
 Steps 1, 6, and 7 are classical. Steps 2–5 are quantum. The quantum part runs in $O(n^2 \log n)$ gates; polynomial in the number of digits.
@@ -193,12 +200,15 @@ And indeed: $15 = 3 \times 5$. $\blacksquare$
 
 This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially: factoring a 2,000-digit number requires roughly 4,000 logical qubits and $O(n^3)$ gates with $n \approx 6,600$ bits. The same algorithm, larger registers, more gates, same polynomial efficiency.
 
-→ **See [notebook `02-cryptography.ipynb`](../notebooks/02-cryptography.ipynb) for a runnable implementation.**
+→ *The next chapter builds the period-finding circuit from scratch, and shows you the code.*
 
+### Back to your browser
 
+We started with credit card numbers and the quiet miracle of public-key cryptography. We factored $15 = 3 \times 5$ on a toy quantum computer. What connects the two?
 
+Scale. The same algorithm that finds the period of $7^x \bmod 15$ can find the period of $a^x \bmod N$ for any $N$. For RSA-2048, $N$ has 617 digits, the input register has ~4,000 qubits, and the circuit has $\sim 10^{10}$ gates. But the structure is identical: superposition, oracle, QFT, measure, continued fractions, $\gcd$. The quantum computer doesn't know whether it's breaking a classroom exercise or a government cipher. It just finds periods.
 
-→ *Want to understand the algorithm in detail? Read the next chapter.*
+That's why the world's cryptographic infrastructure is being rebuilt. Not because a quantum computer has broken RSA — none has — but because the algorithm is ready and waiting. When the hardware catches up, it will work.
 
 
 ## Reality Check
@@ -209,9 +219,11 @@ Shor's algorithm is the most famous quantum algorithm, and its implications are 
 
 In short: Shor's algorithm has never been run, at scale, on a number whose factors were unknown.
 
-**Resource estimates for RSA-2048.** Gidney and Ekerå (2021) estimated that factoring a 2,048-bit RSA key would require approximately **20 million noisy physical qubits** (assuming surface code error correction with a physical error rate of $10^{-3}$) and roughly **8 hours** of computation.
+**Resource estimates for RSA-2048.** To make these estimates concrete, two terms matter: a **physical qubit** is one imperfect qubit on real hardware, and a **logical qubit** is an error-corrected qubit built from many physical qubits — hundreds or thousands, depending on the error-correction scheme. Today's machines have physical qubits; Shor's algorithm at scale needs logical ones. A **fault-tolerant** quantum computer is one that uses error correction to run arbitrarily long computations reliably, despite individual gates being imperfect.
 
-That estimate has dropped dramatically. In February 2026, Webster, Berent, Chandra, and Hockings introduced the **Pinnacle architecture** (arXiv:2602.11457), which uses quantum LDPC codes instead of surface codes to reduce the cost of breaking RSA-2048 to under **100,000 physical qubits**; a 200× improvement. The largest quantum computers in 2026 have a few thousand physical qubits, so we're still short; but 100K qubits is within plausible reach of hardware roadmaps in the next 5–10 years. The threat timeline just got much shorter.
+Gidney and Ekerå (2021) estimated that factoring a 2,048-bit RSA key would require approximately **20 million noisy physical qubits** (using the *surface code*, the leading error-correction scheme, with a gate error rate of $10^{-3}$) and roughly **8 hours** of computation.
+
+That estimate has dropped dramatically. In February 2026, Webster, Berent, Chandra, and Hockings introduced the **Pinnacle architecture** (arXiv:2602.11457), which uses *quantum LDPC codes* — a newer approach that packs more logical qubits per physical qubit — to reduce the cost of breaking RSA-2048 to under **100,000 physical qubits**; a 200× improvement. The largest quantum computers in 2026 have a few thousand physical qubits, so we're still short; but 100K qubits is within plausible reach of hardware roadmaps in the next 5–10 years. The threat timeline just got much shorter.
 
 On the elliptic curve side, Kim, Jang, et al. (ePrint 2026/106) designed new quantum circuits for ECDLP that reduce the total gate count by 52–54% compared to Roetteler et al., bringing the estimated time to break P-224 (comparable security to RSA-2048) down to minutes on a fault-tolerant machine.
 

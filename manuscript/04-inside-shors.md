@@ -40,7 +40,9 @@ This looks powerful; we've evaluated $f$ on $N$ inputs with one operation. But t
 
 Here's the key insight, and it's subtle. Instead of writing $f$'s output into the output register, we can arrange for $f$'s value to appear as a **phase** on the input register. The output register becomes a catalyst; it helps compute the phase but returns to its original state.
 
-How? Prepare the output register in a special state. If $f(x)$ is a single bit (0 or 1), prepare the output register in $|{-}\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$. Now:
+How? Prepare the output register in a special state. First, two useful shorthands: applying a Hadamard to $|0\rangle$ gives $|{+}\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$, and applying $X$ then $H$ to $|0\rangle$ gives $|{-}\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$. The only difference is the sign. That minus sign is about to do all the work.
+
+If $f(x)$ is a single bit (0 or 1), prepare the output register in $|{-}\rangle$. Now:
 
 $$U_f|x\rangle|{-}\rangle = (-1)^{f(x)}|x\rangle|{-}\rangle$$
 
@@ -54,6 +56,8 @@ $$= \frac{1}{\sqrt{2}}(U_f|x\rangle|0\rangle - U_f|x\rangle|1\rangle)$$
 
 $$= \frac{1}{\sqrt{2}}(|x\rangle|f(x)\rangle - |x\rangle|1 \oplus f(x)\rangle)$$
 
+Here $\oplus$ means XOR (addition modulo 2): $0 \oplus 0 = 0$, $0 \oplus 1 = 1$, $1 \oplus 0 = 1$, $1 \oplus 1 = 0$.
+
 If $f(x) = 0$: this is $\frac{1}{\sqrt{2}}(|x\rangle|0\rangle - |x\rangle|1\rangle) = |x\rangle|{-}\rangle$. Phase $= +1$.
 
 If $f(x) = 1$: this is $\frac{1}{\sqrt{2}}(|x\rangle|1\rangle - |x\rangle|0\rangle) = -|x\rangle|{-}\rangle$. Phase $= -1$.
@@ -64,7 +68,7 @@ The output register returns to $|{-}\rangle$ in both cases. The information abou
 
 ### Phase kickback for general functions
 
-Phase kickback isn't limited to single-bit functions. For the period-finding problem, $f(x) = a^x \bmod N$ produces multi-bit outputs. The mechanism is more general: instead of $(-1)^{f(x)}$, the phase encodes the *eigenvalue* of the oracle operator. We'll see this in detail when we build the full period-finding circuit below.
+Phase kickback isn't limited to single-bit functions. For the period-finding problem, $f(x) = a^x \bmod N$ produces multi-bit outputs. The mechanism is more general: instead of $(-1)^{f(x)}$, the phase encodes the *eigenvalue* of the oracle operator. (An eigenvalue is the factor by which an operator scales a particular state: if $U|v\rangle = \lambda|v\rangle$, then $\lambda$ is the eigenvalue and $|v\rangle$ is the eigenvector.) We'll see this in detail when we build the full period-finding circuit below.
 
 The pattern generalises beautifully. Deutsch-Jozsa, Bernstein-Vazirani, Simon's algorithm, Grover's search, and Shor's algorithm all use phase kickback. Master it once, and you've understood the engine of quantum speedup.
 
@@ -79,13 +83,13 @@ In Chapter 2 (QAOA), we didn't use oracles; the cost function was built directly
 
 ### The Deutsch-Jozsa pattern
 
-To see oracles and phase kickback in their simplest form, consider this problem: you're given a function $f:\{0,1\} \to \{0,1\}$, and you want to know if $f(0) = f(1)$ (constant) or $f(0) \neq f(1)$ (balanced). Classically: two queries. Quantumly: one.
+To see oracles and phase kickback in their simplest form, consider this problem: you're given a function $f:\{0,1\} \to \{0,1\}$ (meaning $f$ takes a single bit as input and returns a single bit), and you want to know if $f(0) = f(1)$ (constant) or $f(0) \neq f(1)$ (balanced). Classically: two queries. Quantumly: one.
 
 The circuit:
 
 ![Deutsch-Jozsa circuit](../figures/deutsch-jozsa-circuit.png)
 
-1. Prepare $|0\rangle|{-}\rangle$ (ancilla in $|{-}\rangle$ via $X$ then $H$)
+1. Prepare $|0\rangle|{-}\rangle$ (the second qubit — called an **ancilla**, a helper qubit used as scratch space — is set to $|{-}\rangle$ via $X$ then $H$)
 2. Apply $H$ to the input qubit → superposition $|{+}\rangle|{-}\rangle$
 3. Apply the oracle → phase kickback: $\frac{1}{\sqrt{2}}((-1)^{f(0)}|0\rangle + (-1)^{f(1)}|1\rangle)|{-}\rangle$
 4. Apply $H$ to the input qubit → interference
@@ -99,9 +103,9 @@ One query. The phase kickback converted the function's output into a phase, and 
 
 ### From one bit to $n$ bits
 
-The Deutsch-Jozsa algorithm generalises: for $f:\{0,1\}^n \to \{0,1\}$ promised to be constant or balanced, one quantum query suffices (vs. $2^{n-1}+1$ classically). The circuit is the same: $H^{\otimes n}$, oracle, $H^{\otimes n}$, measure; and the mechanism is the same: phase kickback + Hadamard interference.
+The Deutsch-Jozsa algorithm generalises: for $f:\{0,1\}^n \to \{0,1\}$ (a function that takes an $n$-bit string and returns a single bit), promised to be constant or balanced, one quantum query suffices (vs. $2^{n-1}+1$ classically). The circuit is the same: $H^{\otimes n}$, oracle, $H^{\otimes n}$, measure; and the mechanism is the same: phase kickback + Hadamard interference.
 
-Bernstein-Vazirani extends this: the oracle encodes a hidden string $s$, and the same circuit recovers all $n$ bits of $s$ in one query. Simon's algorithm goes further: for a function with a hidden period $s$ (where $f(x) = f(x \oplus s)$), $O(n)$ queries suffice quantumly vs. $O(2^{n/2})$ classically. Each of these is a stepping stone toward Shor's algorithm; they all use phase kickback and Fourier-type interference, applied to increasingly structured problems.
+Bernstein-Vazirani extends this: the oracle encodes a hidden string $s$, and the same circuit recovers all $n$ bits of $s$ in one query. Simon's algorithm goes further: for a function with a hidden period $s$ (where $f(x) = f(x \oplus s)$, with $\oplus$ meaning bitwise XOR), $O(n)$ queries suffice quantumly vs. $O(2^{n/2})$ classically. Each of these is a stepping stone toward Shor's algorithm — we won't detail them here, but they all use phase kickback and Fourier-type interference, applied to increasingly structured problems.
 
 
 ## The Quantum Fourier Transform
@@ -116,7 +120,7 @@ The Hadamard transform, which we used in Deutsch-Jozsa, is actually a 1-qubit Fo
 
 The classical Discrete Fourier Transform converts a sequence of numbers from the "time domain" to the "frequency domain." A periodic signal with period $r$ has energy concentrated at frequency $1/r$.
 
-The QFT does the same thing to quantum amplitudes:
+The QFT does the same thing to quantum amplitudes. The factor $e^{2\pi i \theta}$ is a complex number of magnitude 1 that encodes an angle $\theta$ — it's the mathematical language for phases:
 
 $$\text{QFT}|x\rangle = \frac{1}{\sqrt{2^n}} \sum_{k=0}^{2^n-1} e^{2\pi i x k / 2^n} |k\rangle$$
 
@@ -131,19 +135,31 @@ $$\text{QFT}|x\rangle = \bigotimes_{\ell=1}^{n} \frac{1}{\sqrt{2}} \left(|0\rang
 Each qubit in the output depends on the input through a phase $e^{2\pi i x / 2^\ell}$. This factorisation means the QFT can be built from:
 
 - **Hadamard gates** (creating the $\frac{1}{\sqrt{2}}(|0\rangle + e^{i\phi}|1\rangle)$ superpositions)
-- **Controlled phase gates** $R_k$ (adding the phase contributions from other qubits)
+- **Controlled phase gates** $R_k$: a **controlled gate** applies an operation to one qubit only when another qubit is $|1\rangle$ — CNOT is a controlled-$X$; here $R_k$ is a controlled rotation that adds a phase of $e^{2\pi i / 2^k}$
 
 For 3 qubits, the circuit is:
 
 ![3-qubit Quantum Fourier Transform circuit](../figures/qft-3qubit-circuit.png)
 
-where $R_k$ applies a controlled phase of $e^{2\pi i / 2^k}$. The QASM implementation (with bit-reversal swap) looks like:
+where $R_k$ applies a controlled phase of $e^{2\pi i / 2^k}$. The QFT naturally produces its output qubits in reverse order, so a final layer of SWAP gates puts them right:
 
 ![3-qubit QFT with bit-reversal swap](../figures/qft-3qubit-with-swap.png)
 
-Gate count: $n$ Hadamards + $n(n-1)/2$ controlled rotations = $O(n^2)$ gates. Compare with the classical FFT: $O(n \cdot 2^n)$ operations. The QFT is exponentially faster; but you can't read out the full Fourier transform (measurement collapses it to one value).
+Gate count: $n$ Hadamards + $n(n-1)/2$ controlled rotations = $O(n^2)$ gates. Compare with the classical Fast Fourier Transform (FFT): $O(n \cdot 2^n)$ operations. The QFT is exponentially faster; but you can't read out the full Fourier transform (measurement collapses it to one value).
 
 > **Common Mistake #1:** "The QFT gives an exponential speedup for Fourier transforms." Not exactly. The classical FFT transforms a vector of $2^n$ numbers and lets you read all of them. The QFT transforms $2^n$ amplitudes but only lets you *sample* one outcome. The speedup comes from the *combination* of QFT with specific problem structure (like periodicity), not from the QFT alone.
+
+### Why the QFT "sees" the period: phase arrows
+
+The QFT works because of interference — the same mechanism we saw in Unit 1. Each output state $|k\rangle$ receives contributions from all the periodic input states, each carrying a phase $e^{2\pi i x k / 2^n}$. Whether these contributions reinforce or cancel depends on whether $k$ is a multiple of $2^n / r$.
+
+For our $N = 15$ example (period $r = 4$, register size $2^n = 16$), the four periodic inputs $x = 0, 4, 8, 12$ each contribute a phase arrow:
+
+![Phase arrows: at k=4 (a multiple of 16/r), all four arrows align constructively; at k=3, they point in four different directions and cancel](../figures/phase-arrows-qft.png)
+
+At $k = 4$ (a multiple of $16/r = 4$), all four arrows point in the same direction. They add to a large resultant: high probability of measuring $k = 4$. At $k = 3$ (not a multiple), the arrows point at $0°$, $135°$, $270°$, and $45°$ — they cancel almost perfectly. Near-zero probability.
+
+This is the same constructive/destructive interference we saw in QAOA, but the mechanism is different. In QAOA, the mixer caused interference between neighbouring colourings. Here, the QFT causes interference across all frequency values, and the periodicity of the input determines which frequencies survive.
 
 
 ## Assembling Shor's algorithm
@@ -168,7 +184,7 @@ The output register creates entanglement between input values that produce the s
 
 ### Step 3: Inverse QFT
 
-Apply the inverse QFT to the input register. The periodic structure of the amplitudes (spacing = 4) becomes concentrated on frequency peaks (multiples of $16/4 = 4$).
+Apply the **inverse QFT** to the input register. Since every quantum gate is reversible, we can run the QFT backwards to convert the periodic structure of the amplitudes (spacing = 4) into concentrated frequency peaks (multiples of $16/4 = 4$).
 
 ### Step 4: Measure
 
@@ -192,6 +208,10 @@ $15 = 3 \times 5$. Done.
 
 For an $n$-bit number $N$: $O(n)$ qubits for the registers, $O(n^2)$ gates for the QFT, and $O(n^2 \log n)$ gates for the modular exponentiation (the expensive part). Total: **polynomial in $n$**; exponentially faster than the best classical factoring algorithm.
 
+The companion notebook runs this circuit end-to-end — factoring 15 on a cloud Quokka, stepping through the superposition, oracle, QFT, and classical post-processing.
+
+→ **See [notebook `02-cryptography.ipynb`](../notebooks/02-cryptography.ipynb) for the runnable version.**
+
 > **Common Mistake #2:** "Shor's algorithm finds factors by trying all possible factors simultaneously." No. It finds the *period* of a specific function, using the QFT to extract that period from a superposition. The period is then used *classically* (via $\gcd$) to find the factors. The quantum computer never "sees" the factors; it sees a frequency.
 
 
@@ -201,9 +221,11 @@ The QFT is elegant and compact ($O(n^2)$ gates). The modular exponentiation; com
 
 ### Repeated squaring
 
-$a^x \bmod N$ is computed using the binary expansion of $x = x_{n-1} 2^{n-1} + \cdots + x_0$:
+$a^x \bmod N$ is computed using the **binary expansion** of $x$. Any integer can be written as a sum of powers of 2: $x = x_{n-1} 2^{n-1} + \cdots + x_1 \cdot 2 + x_0$, where each $x_k$ is 0 or 1. This lets us decompose:
 
 $$a^x = a^{x_0 \cdot 1} \cdot a^{x_1 \cdot 2} \cdot a^{x_2 \cdot 4} \cdots a^{x_{n-1} \cdot 2^{n-1}} \pmod{N}$$
+
+We pre-compute $a^1, a^2, a^4, a^8, \ldots \pmod{N}$ by squaring at each step (hence "repeated squaring"), then multiply together only the terms where $x_k = 1$.
 
 Each factor is a **controlled multiplication**: if input bit $x_k = 1$, multiply the output register by $a^{2^k} \bmod N$; otherwise, do nothing. This is a controlled operation; controlled by qubit $k$ of the input register.
 
@@ -213,11 +235,11 @@ Multiplication modulo $N$ is built from:
 
 1. **Quantum adders** (Draper's QFT-based adder, Cuccaro's ripple-carry adder, or Gidney's optimised adder)
 2. **Modular reduction** (subtract $N$ if the result exceeds $N$, using a comparison and controlled subtraction)
-3. **Uncomputation** (reversibility requires undoing scratch computations to avoid creating garbage entanglement)
+3. **Uncomputation**: quantum operations must be reversible, so any scratch work must be run backwards after use. Leftover scratch qubits become entangled with the result — called *garbage entanglement* — which ruins interference.
 
-Each controlled multiplication costs $O(n^2)$ gates. There are $2n$ such multiplications (one per input qubit). Total: $O(n^3)$ gates for the naive version. Gidney and Ekerå (2021) brought this down to $O(n^2)$ Toffoli gates using windowed arithmetic.
+Each controlled multiplication costs $O(n^2)$ gates. There are $2n$ such multiplications (one per input qubit). Total: $O(n^3)$ gates for the naive version. Gidney and Ekerå (2021) brought this down to $O(n^2)$ **Toffoli gates** — a Toffoli flips a target qubit only when *two* control qubits are both $|1\rangle$, making it the quantum AND gate.
 
-For $N = 15$ (our toy example), the modular exponentiation is small enough to compile by hand. For RSA-2048, it's $\sim 10^{10}$ gates; feasible on a fault-tolerant machine, impossibly deep for NISQ.
+For $N = 15$ (our toy example), the modular exponentiation is small enough to compile by hand. For RSA-2048, it's $\sim 10^{10}$ gates; feasible on a fault-tolerant machine, far too deep for today's noisy hardware (sometimes called NISQ — Noisy Intermediate-Scale Quantum).
 
 
 ## What you should take away
@@ -231,9 +253,3 @@ For $N = 15$ (our toy example), the modular exponentiation is small enough to co
 4. **The cost is dominated by the oracle.** The QFT is cheap ($O(n^2)$). The modular exponentiation is expensive ($O(n^2)$ to $O(n^3)$). For practical factoring, the modular arithmetic is where all the engineering effort goes.
 
 5. **Shor's algorithm is not trying all factors.** It's using interference to extract a number-theoretic property (the period) that happens to reveal the factors. The quantum computer sees frequencies, not factors.
-
-- **What you'll learn:** How Shor's algorithm works at the gate level; the QFT, modular exponentiation, continued fractions, and why period-finding breaks RSA.
-- **What you need:** This chapter builds on Chapter 2 (QAOA deep dive), where we introduced qubits, superposition, and the CNOT gate. Here we add phase kickback, the Quantum Fourier Transform, and oracles; the machinery that makes Shor's algorithm tick.
-
-
-*Coming soon. This chapter will follow the pedagogical model established in Chapter 2 (Building QAOA): start from the concepts the reader already has, build new ones organically, with concrete examples, common mistakes, and a complete working circuit by the end.*
