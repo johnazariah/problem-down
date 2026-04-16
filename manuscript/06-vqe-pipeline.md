@@ -21,9 +21,9 @@ $$\Psi(\ldots, \mathbf{r}_i, \ldots, \mathbf{r}_j, \ldots) = -\Psi(\ldots, \math
 
 This minus sign *is* the Pauli exclusion principle: two electrons can't be in the same state (if they were, swapping them would change nothing, but the minus sign says the wavefunction must flip; the only function equal to its own negative is zero).
 
-Qubits don't have this rule. Qubits are *distinguishable* — each one has a label, and swapping two labelled qubits doesn't produce a minus sign. If we naively map electrons to qubits; electron in orbital $i$ → qubit $i$ is $|1\rangle$, not in orbital $i$ → qubit $i$ is $|0\rangle$; we get the right *occupations* but the wrong *phases*. The standard encoding produces correct energies for H₂, but for larger molecules the missing signs lead to completely wrong results.
+Qubits don't have this rule. If you swap two qubits, no minus sign appears — the state is unchanged. If we naively map electrons to qubits — electron in orbital $i$ → qubit $i$ is $|1\rangle$, not in orbital $i$ → qubit $i$ is $|0\rangle$ — we get the right *occupations* but the wrong *phases*. The standard encoding produces correct energies for H₂, but for larger molecules the missing signs lead to completely wrong results.
 
-> **Common Mistake #1:** "Qubits are quantum, electrons are quantum, so mapping is trivial." No. Qubits are *distinguishable* (swapping produces no sign change). Electrons are *fermionic* (swapping produces a minus sign). The encoding must bridge this gap. This is the entire subject of the companion book [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).
+> **Common Mistake #1:** "Qubits are quantum, electrons are quantum, so mapping is trivial." No. Swapping two qubits produces no sign change. Swapping two electrons produces a minus sign. The encoding must bridge this gap. This is the entire subject of the companion book [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).
 
 
 ## Second quantisation: the language of electrons

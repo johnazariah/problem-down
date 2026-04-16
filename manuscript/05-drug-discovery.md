@@ -30,7 +30,7 @@ In the language of quantum mechanics, the ground-state energy is the smallest ei
 
 There's a crucial complication. Electrons are **fermions** — particles that obey the Pauli exclusion principle: no two electrons can occupy the same quantum state. This means the wavefunction must be *antisymmetric*: swapping any two electrons flips the sign of $|\Psi\rangle$. (This is why atoms have shells and chemistry exists — if electrons could pile into the same state, every atom would behave the same.)
 
-This is different from qubits, which are *distinguishable* — swapping two labelled qubits doesn't change the sign. A quantum computer built from qubits doesn't natively enforce fermionic antisymmetry. To simulate electrons on qubits, you need a **fermion-to-qubit encoding** — a mathematical map that translates between the language of electrons and the language of qubits, preserving the crucial minus signs.
+This is different from qubits. If you swap two qubits on a quantum computer, nothing special happens — no minus sign appears. A quantum computer built from qubits doesn't natively enforce fermionic antisymmetry. To simulate electrons on qubits, you need a **fermion-to-qubit encoding** — a mathematical map that translates between the language of electrons and the language of qubits, preserving the crucial minus signs.
 
 ### The classical approximation hierarchy
 
