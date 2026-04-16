@@ -141,7 +141,7 @@ The practical strategy, which we'll develop fully in Unit 8, is to use a classic
 
 - **Fermion-to-qubit encodings are a deep topic.** We've given the 30-second version (Jordan-Wigner, Bravyi-Kitaev). For the full story; including parity encoding, ternary tree encoding, tapering, and the algebraic structure behind all of them; see our companion book: [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book).
 
-- **H₂ is the "Hello World" of quantum chemistry.** Just as the Bell state is the simplest interesting quantum circuit, H₂ is the simplest interesting molecular simulation. It's small enough to verify classically, rich enough to show the full pipeline, and pedagogically indispensable. Our encodings book uses H₂ throughout for the same reason.
+- **H₂ is the "Hello World" of quantum chemistry.** It's the simplest molecule with a non-trivial electronic structure — small enough to verify classically, rich enough to show the full VQE pipeline, and pedagogically indispensable. Our encodings book uses H₂ throughout for the same reason.
 
 - **The path from here to real drug discovery** runs through Unit 8 (Climate & Energy), where we'll use quantum embedding methods to handle realistic molecular sizes; computing the active-site electrons quantumly and the environment classically.
 
