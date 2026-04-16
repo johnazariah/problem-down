@@ -3,9 +3,9 @@
 
 ## The Hook
 
-In 2008, the financial crisis taught the world that mispriced derivatives can destroy economies. At the heart of the crisis were *exotic options*; financial instruments so complex that even the banks selling them couldn't price them accurately.
+In 2008, the financial crisis taught the world that mispriced **derivatives** — financial contracts whose value derives from an underlying asset like a stock, a bond, or an interest rate — can destroy economies. At the heart of the crisis were *exotic options*: contracts that give the holder the right to buy or sell an asset at a fixed price on a future date, but with complex conditions that make them hard to value.
 
-Pricing a derivative means answering one question: **what is the expected payoff?** For a simple European call option, there's an analytical formula (Black-Scholes). For exotic options; path-dependent, multi-asset, with early exercise features; there is no formula. The standard method is **Monte Carlo simulation**: generate millions of random market scenarios, compute the payoff for each, and take the average.
+Pricing a derivative means answering one question: **what is the expected payoff** — the profit (if any) the contract delivers at maturity? For a simple **European call option** (the right to buy a stock at a fixed price, exercisable only at maturity), there's an analytical formula (Black-Scholes, 1973). For exotic options — path-dependent, multi-asset, with early exercise features — there is no formula. The standard method is **Monte Carlo simulation**: generate millions of random market scenarios, compute the payoff for each, and take the average.
 
 Monte Carlo works, but it's slow. The statistical error (the uncertainty in your price estimate) shrinks as $1/\sqrt{N}$ where $N$ is the number of samples. To get one more digit of accuracy, you need **100 times more samples**. For complex derivatives that take seconds per sample, this translates to hours or days of computation. Banks run massive compute clusters to price their portfolios overnight. Goldman Sachs reportedly runs over a billion Monte Carlo simulations *per day*.
 
@@ -16,13 +16,13 @@ Unless you're quantum.
 
 ## The Bottleneck
 
-The mathematical structure is clean. You have a random variable $X$ (the derivative's payoff under some market model) with expected value $\mu = \mathbb{E}[X]$. You want to estimate $\mu$.
+The mathematical structure is clean. You have a **random variable** $X$ — a quantity whose value depends on a random outcome; here, the derivative's payoff under a randomly sampled market scenario — with expected value $\mu = \mathbb{E}[X]$ (the probability-weighted average of all possible outcomes). You want to estimate $\mu$.
 
-Classical Monte Carlo: draw $N$ independent samples $X_1, \ldots, X_N$ and compute the sample mean $\bar{X} = \frac{1}{N}\sum_i X_i$. By the central limit theorem:
+Classical Monte Carlo: draw $N$ independent samples $X_1, \ldots, X_N$ and compute the sample mean $\bar{X} = \frac{1}{N}\sum_i X_i$. The error in this estimate shrinks as:
 
 $$|\bar{X} - \mu| \sim \frac{\sigma}{\sqrt{N}}$$
 
-where $\sigma$ is the standard deviation. To halve the error, quadruple $N$. To gain a factor of 10 in precision, multiply $N$ by 100. This is inescapable for any estimator based on independent classical samples.
+where $\sigma$ is the **standard deviation** (a measure of how spread out the payoff values are). To halve the error, quadruple $N$. To gain a factor of 10 in precision, multiply $N$ by 100. This $1/\sqrt{N}$ convergence rate is a mathematical theorem, not a software limitation — for any estimator based on independent classical samples, you *cannot* do better.
 
 For a derivative that needs 6 digits of accuracy ($10^{-6}$ relative error) with $\sigma \sim 1$: you need $N \sim 10^{12}$ samples. At 1 microsecond per sample, that's 12 days.
 
@@ -35,7 +35,7 @@ Before we get to financial pricing, we need the tool that makes it possible: **a
 
 Grover's algorithm (1996) solves unstructured search: given a function $f:\{0,1\}^n \to \{0,1\}$ with $M$ solutions among $N = 2^n$ inputs, find a solution. Classically: $O(N/M)$ queries. Quantumly: $O(\sqrt{N/M})$ queries. A quadratic speedup.
 
-The key operation is the **Grover iterator** $G = -AS_0A^{-1}S_f$, where $S_f$ flips the phase of solutions and $S_0$ flips the phase of $|0\rangle$. Geometrically, $G$ is a rotation in the 2D subspace spanned by "solutions" and "non-solutions." Each application rotates the state vector by an angle $2\theta$ toward the solution space, where $\sin\theta = \sqrt{M/N}$.
+The key operation is the **Grover iterator** $G = S_0 \cdot S_f$, where $S_f$ flips the phase of solutions and $S_0$ reflects about the initial superposition. Geometrically, $G$ is a rotation in the 2D subspace spanned by "solutions" and "non-solutions." Each application rotates the state vector by an angle $2\theta$ toward the solution space, where $\sin\theta = \sqrt{M/N}$.
 
 After $k = O(\sqrt{N/M})$ iterations, the overlap with the solution space is close to 1. Measure, and you get a solution with high probability.
 
@@ -43,7 +43,7 @@ After $k = O(\sqrt{N/M})$ iterations, the overlap with the solution space is clo
 
 Now the key insight: the *angle* $\theta$ encodes $M/N$; the fraction of inputs that are solutions. If you can measure $\theta$ precisely, you can estimate $M/N$ without ever finding a specific solution.
 
-**Quantum Amplitude Estimation** (QAE) does exactly this. It applies quantum phase estimation (from Unit 2) to the Grover iterator $G$. The eigenvalues of $G$ are $e^{\pm 2i\theta}$, and QPE extracts $\theta$ with precision $O(1/N_{\text{queries}})$; that's $1/N$, not $1/\sqrt{N}$.
+**Quantum Amplitude Estimation** (QAE) does exactly this. It uses the same controlled-powers-plus-inverse-QFT pattern we built in Deep-Dive 2 for period-finding — that pattern is called **Quantum Phase Estimation** (QPE), and it works for *any* unitary operator, not just the modular exponentiation oracle from Shor's algorithm. Here we apply QPE to the Grover iterator $G$. The eigenvalues of $G$ are $e^{\pm 2i\theta}$, and QPE extracts $\theta$ with precision $O(1/N_{\text{queries}})$ — that's $1/N$, not $1/\sqrt{N}$.
 
 Applied to Monte Carlo:
 
@@ -67,17 +67,19 @@ A quadratic speedup sounds modest compared to Shor's exponential speedup. But fo
 Price a European call option using quantum amplitude estimation. Compare the convergence rate with classical Monte Carlo.
 
 Setup:
-- Stock price $S_0 = 100$, strike $K = 105$, volatility $\sigma = 20\%$, maturity $T = 1$ year, risk-free rate $r = 5\%$
+- Stock price $S_0 = 100$, strike price $K = 105$ (the fixed price at which the option can be exercised), volatility $\sigma = 20\%$ (the annualised standard deviation of the stock's returns — how wildly the price swings), maturity $T = 1$ year (the date when the option expires), risk-free rate $r = 5\%$ (the return on a riskless investment, like a government bond)
 - Payoff: $\max(S_T - K, 0)$
 - Black-Scholes analytical price: ~$8.02
 
-We discretise the stock price into $2^n$ bins, encode the log-normal distribution as a quantum state, and use the Grover oracle to mark states where $S_T > K$.
+We discretise the stock price into $2^n$ bins, encode the **log-normal distribution** (stock prices are modelled so that their logarithm follows a normal distribution, ensuring prices can't go negative) as a quantum state, and use the Grover oracle to mark states where $S_T > K$.
 
-→ **See [notebook `05-finance.ipynb`](../notebooks/05-finance.ipynb) for the runnable version.**
+→ *The next chapter builds the amplitude estimation circuit from Grover's algorithm, and shows you the code.*
 
+### Back to the trading floor
 
+We priced a European call option — the simplest derivative there is. How does this help Goldman Sachs price exotic instruments?
 
-→ *Want to understand the algorithm in detail? Read the next chapter.*
+The pipeline is identical. A more complex derivative has a more complex payoff function (path-dependent, multi-asset, with barriers and early exercise), but the quantum algorithm doesn't care: it just needs an oracle that marks states where the payoff exceeds a threshold, and QAE estimates the probability. The quadratic speedup applies regardless of the payoff's complexity. For Goldman's billion-simulation-per-day workload, the gap between $10^{12}$ classical samples and $10^6$ quantum queries is the gap between a compute cluster and a single machine.
 
 
 ## Reality Check

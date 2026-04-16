@@ -5,7 +5,7 @@ _This chapter pairs with Chapter 9 (Finance), which explained why Monte Carlo pr
 ## In This Chapter
 
 - **What you'll learn:** How Grover's algorithm works geometrically, how quantum amplitude estimation extracts probabilities, and why the quadratic speedup matters for Monte Carlo.
-- **What you need:** From Chapter 4, you know phase kickback and the QFT. Here we add a new geometric picture: Grover's algorithm as a rotation in a 2D plane.
+- **What you need:** From Deep-Dive 2, you know the controlled-powers-plus-inverse-QFT pattern that extracts eigenvalues from a unitary operator (that pattern is called **Quantum Phase Estimation**, or QPE). Here we apply QPE to a new operator — the Grover iterator — and the eigenvalue it extracts encodes a probability rather than a period.
 - **Runnable version:** The companion notebook [`05-finance.ipynb`](../notebooks/05-finance.ipynb) demonstrates amplitude estimation on a cloud Quokka.
 
 
@@ -35,7 +35,7 @@ The Grover iterator $G$ consists of two reflections:
 
 1. **Oracle reflection** $S_f$: flip the phase of marked states. $S_f|x\rangle = (-1)^{f(x)}|x\rangle$. This is phase kickback from Chapter 4; the oracle marks solutions by flipping their phase.
 
-2. **Diffusion** $S_0 = 2|s\rangle\langle s| - I$: reflect about the mean amplitude. In circuit terms: $H^{\otimes n} \cdot (2|0\rangle\langle 0| - I) \cdot H^{\otimes n}$.
+2. **Diffusion** $S_0 = 2|s\rangle\langle s| - I$: reflect about the mean amplitude. Here $|s\rangle\langle s|$ is an **outer product** — it produces an operator (a matrix), not a number. Applied to any state $|\psi\rangle$, it gives $|s\rangle\langle s|\psi\rangle = \langle s|\psi\rangle \cdot |s\rangle$: project onto $|s\rangle$, scaled by the overlap. (The notation $\langle s|$ is called a **bra** — the row-vector partner of the ket $|s\rangle$, obtained by taking the adjoint.) So $2|s\rangle\langle s| - I$ doubles the component along $|s\rangle$ and subtracts the original — a reflection about $|s\rangle$. In circuit terms: $H^{\otimes n} \cdot (2|0\rangle\langle 0| - I) \cdot H^{\otimes n}$.
 
 Two reflections make a rotation. $G = S_0 \cdot S_f$ rotates the state by angle $2\theta$ toward $|\text{good}\rangle$ in the 2D plane:
 
@@ -57,7 +57,7 @@ The diffusion operator $2|s\rangle\langle s| - I$ is implemented as:
 
 ![Grover diffusion circuit for 4 qubits](../figures/grover-diffusion-circuit.png)
 
-The pattern is: Hadamard all qubits, flip all qubits ($X$), apply a multi-controlled $Z$ (decomposed as $H$ + multi-controlled $X$ + $H$ on the last qubit), then undo the $X$ and $H$ layers. This is the most gate-intensive part of Grover's algorithm, but it's a fixed overhead per iteration.
+The pattern is: Hadamard all qubits, flip all qubits ($X$), apply a **multi-controlled $Z$** (which flips the phase only when all qubits are $|1\rangle$ — decomposed as $H$ + multi-controlled $X$ + $H$ on the last qubit), then undo the $X$ and $H$ layers. This is the most gate-intensive part of Grover's algorithm, but it's a fixed overhead per iteration.
 
 
 ## From Grover to amplitude estimation
@@ -70,7 +70,9 @@ Grover's algorithm uses $G$ to *find* marked items. But the angle $\theta$; whic
 
 ### QPE on the Grover operator
 
-The Grover iterator $G$ has eigenvalues $e^{\pm 2i\theta}$. Quantum Phase Estimation (Chapter 4) extracts eigenvalues. Apply QPE to $G$:
+In Deep-Dive 2, we used a pattern — controlled powers of a unitary, followed by the inverse QFT — to extract the period of $a^x \bmod N$. That pattern is **Quantum Phase Estimation** (QPE), and it works for any unitary operator: if $U|v\rangle = e^{i\phi}|v\rangle$, QPE extracts $\phi$.
+
+Here we apply QPE to the Grover iterator $G$, which has eigenvalues $e^{\pm 2i\theta}$. The recipe is identical:
 
 1. Prepare ancilla qubits in $|+\rangle$ (via Hadamard)
 2. Apply controlled-$G^{2^k}$ operations (controlled by ancilla qubit $k$)
@@ -95,6 +97,10 @@ The quadratic advantage: same accuracy, quadratically fewer queries.
 | $10^{-1}$ | 100 | 10 | 10× |
 | $10^{-3}$ | $10^6$ | $10^3$ | 1,000× |
 | $10^{-6}$ | $10^{12}$ | $10^6$ | $10^6$× |
+
+The companion notebook runs amplitude estimation end-to-end — constructing the Grover oracle for option pricing, applying QPE, and comparing convergence against classical Monte Carlo.
+
+→ **See [notebook `05-finance.ipynb`](../notebooks/05-finance.ipynb) for the runnable version.**
 
 
 ## What you should take away
