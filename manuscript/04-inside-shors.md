@@ -16,55 +16,83 @@ Chapter 3 showed that factoring $N$ reduces to finding the period $r$ of the fun
 1. Evaluates $f$ on all possible inputs simultaneously (superposition)
 2. Extracts the period $r$ from the results (without knowing which specific outputs appeared)
 
-The first part is straightforward; we saw in Chapter 2 how Hadamard creates superposition. The second part is the hard part, and it requires a new tool: the **Quantum Fourier Transform**.
+In Deep-Dive 1, we built QAOA from gates. The cost Hamiltonian imprinted phases on the quantum state — different colourings got different phases — and then the mixer caused interference that amplified good solutions. Shor's algorithm has exactly the same shape: a function imprints phases, and interference (via the QFT) extracts the answer. The details are different, but the architecture is the same.
 
-But before we get to the QFT, we need to understand the mechanism that makes quantum function evaluation useful. It's called **phase kickback**, and it's the most important trick in quantum computing.
+Let's build it up, starting from things you already know.
+
+
+## From CNOT to function evaluation
+
+### A function you already know
+
+In Deep-Dive 1, we used CNOT to compute the *parity* of two qubits. Given qubits $q_0$ and $q_1$, applying $\text{CNOT}(q_0, q_1)$ computes $q_1 \oplus q_0$ (XOR) and stores the result in $q_1$. That's a function evaluation: the circuit takes an input ($q_0$) and writes the result into an output ($q_1$).
+
+Let's make this explicit. Define $f(x) = x$ (the identity function on a single bit). We can implement this with a CNOT:
+
+$$\text{CNOT}|x\rangle|0\rangle = |x\rangle|x\rangle = |x\rangle|f(x)\rangle$$
+
+The input qubit is unchanged. The output qubit now holds $f(x)$. If $x = 0$, the output is $|0\rangle$. If $x = 1$, the output is $|1\rangle$.
+
+This is the pattern for *all* quantum function evaluation: you have an input register holding $|x\rangle$, an output register initialised to $|0\rangle$, and a circuit $U_f$ that writes $f(x)$ into the output:
+
+$$U_f|x\rangle|0\rangle = |x\rangle|f(x)\rangle$$
+
+For the identity function, $U_f$ is a CNOT. For $f(x) = a^x \bmod N$, $U_f$ is a much larger circuit (we'll see how it's built later in this chapter). But the interface is always the same: input in, function value out, input unchanged.
+
+### What happens in superposition
+
+Now put the input in superposition. Apply Hadamard to the input qubit before the CNOT:
+
+$$H|0\rangle \otimes |0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)|0\rangle$$
+
+Then apply $U_f$ (the CNOT):
+
+$$\frac{1}{\sqrt{2}}(|0\rangle|f(0)\rangle + |1\rangle|f(1)\rangle) = \frac{1}{\sqrt{2}}(|0\rangle|0\rangle + |1\rangle|1\rangle)$$
+
+We've evaluated $f$ on both inputs with one operation. But if we measure, we get one random pair: either $(0, 0)$ or $(1, 1)$. No speedup. The information is there — both answers are in the superposition — but measurement destroys it.
+
+This is the fundamental challenge: superposition lets you evaluate $f$ on all inputs at once, but measurement gives you only one answer. The trick is to extract *structural information* about $f$ (like its period) without looking at individual values. That trick is called **phase kickback**.
 
 
 ## Phase kickback: the trick behind everything
 
-### The setup
+### The problem with reading the output
 
-Imagine you have a function $f(x)$ that you can evaluate as a quantum operation. The standard way to implement $f$ on a quantum computer uses two registers:
+When we evaluate $f$ in superposition, the result sits in the output register as a computational basis state — a "classical" value that we could read out. But reading it gives us one random answer. We need a way to extract information about the *pattern* of all the answers at once.
 
-- An **input register** holding $|x\rangle$
-- An **output register** that gets $|f(x)\rangle$
+In QAOA, we faced a similar problem. The cost Hamiltonian didn't write "this colouring cuts 3 edges" into a register. Instead, it imprinted the cost as a *phase* on the quantum state — invisible to measurement but available for interference. Can we do the same thing with function evaluation?
 
-The operation $U_f$ acts as: $U_f|x\rangle|0\rangle = |x\rangle|f(x)\rangle$. If the input is in superposition, $f$ gets evaluated on all inputs:
+Yes. And the mechanism is beautifully simple.
 
-$$U_f \left(\frac{1}{\sqrt{N}}\sum_x |x\rangle\right)|0\rangle = \frac{1}{\sqrt{N}}\sum_x |x\rangle|f(x)\rangle$$
+### The $|{-}\rangle$ trick
 
-This looks powerful; we've evaluated $f$ on $N$ inputs with one operation. But there's a catch: if we measure, we get one random pair $(x, f(x))$. No speedup.
+First, two useful shorthands. Applying a Hadamard to $|0\rangle$ gives $|{+}\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$ — equal superposition with a plus sign. Applying $X$ then $H$ to $|0\rangle$ gives $|{-}\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$ — equal superposition with a minus sign. The only difference between $|{+}\rangle$ and $|{-}\rangle$ is one sign. That sign is about to do all the work.
 
-### The trick
-
-Here's the key insight, and it's subtle. Instead of writing $f$'s output into the output register, we can arrange for $f$'s value to appear as a **phase** on the input register. The output register becomes a catalyst; it helps compute the phase but returns to its original state.
-
-How? Prepare the output register in a special state. First, two useful shorthands: applying a Hadamard to $|0\rangle$ gives $|{+}\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$, and applying $X$ then $H$ to $|0\rangle$ gives $|{-}\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$. The only difference is the sign. That minus sign is about to do all the work.
-
-If $f(x)$ is a single bit (0 or 1), prepare the output register in $|{-}\rangle$. Now:
+Instead of initialising the output register to $|0\rangle$, initialise it to $|{-}\rangle$. Now watch what happens when we apply $U_f$ (for a single-bit function $f$):
 
 $$U_f|x\rangle|{-}\rangle = (-1)^{f(x)}|x\rangle|{-}\rangle$$
 
-The output register doesn't change. The value $f(x)$ has been "kicked back" as a phase $(-1)^{f(x)}$ on the *input* register.
+The output register doesn't change — it comes back as $|{-}\rangle$ every time. But the *input register* picks up a phase of $(-1)^{f(x)}$: a plus sign when $f(x) = 0$, a minus sign when $f(x) = 1$. The function value has been "kicked back" from the output register into the phase of the input register.
 
-Why does this happen? Let's trace it carefully:
+### Why does this happen?
+
+Let's trace it step by step. Remember, $U_f$ acts as $U_f|x\rangle|b\rangle = |x\rangle|b \oplus f(x)\rangle$, where $\oplus$ is XOR.
 
 $$U_f|x\rangle|{-}\rangle = U_f|x\rangle \cdot \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$$
 
 $$= \frac{1}{\sqrt{2}}(U_f|x\rangle|0\rangle - U_f|x\rangle|1\rangle)$$
 
-$$= \frac{1}{\sqrt{2}}(|x\rangle|f(x)\rangle - |x\rangle|1 \oplus f(x)\rangle)$$
+$$= \frac{1}{\sqrt{2}}(|x\rangle|0 \oplus f(x)\rangle - |x\rangle|1 \oplus f(x)\rangle)$$
 
 Here $\oplus$ means XOR (addition modulo 2): $0 \oplus 0 = 0$, $0 \oplus 1 = 1$, $1 \oplus 0 = 1$, $1 \oplus 1 = 0$.
 
-If $f(x) = 0$: this is $\frac{1}{\sqrt{2}}(|x\rangle|0\rangle - |x\rangle|1\rangle) = |x\rangle|{-}\rangle$. Phase $= +1$.
+**If $f(x) = 0$:** XOR with 0 changes nothing. We get $\frac{1}{\sqrt{2}}(|x\rangle|0\rangle - |x\rangle|1\rangle) = |x\rangle|{-}\rangle$. Phase $= +1$.
 
-If $f(x) = 1$: this is $\frac{1}{\sqrt{2}}(|x\rangle|1\rangle - |x\rangle|0\rangle) = -|x\rangle|{-}\rangle$. Phase $= -1$.
+**If $f(x) = 1$:** XOR with 1 flips both bits. We get $\frac{1}{\sqrt{2}}(|x\rangle|1\rangle - |x\rangle|0\rangle) = -|x\rangle|{-}\rangle$. Phase $= -1$.
 
-The output register returns to $|{-}\rangle$ in both cases. The information about $f(x)$ lives entirely in the phase. This is phase kickback.
+The output register returns to $|{-}\rangle$ in both cases — it's a catalyst, not a container. The information about $f(x)$ lives entirely in the phase of the input register. This is **phase kickback**.
 
-> **Why this matters:** Phases are invisible if you measure immediately: $|+1|^2 = |-1|^2 = 1$. But phases *interfere*. If we apply the right transformation after the phase kickback, different phases will add constructively (amplifying some states) or destructively (suppressing others). This is how quantum algorithms extract information that's hidden in the phases.
+> **Why this matters:** Phases are invisible if you measure immediately: $|+1|^2 = |-1|^2 = 1$. But phases *interfere*. If we apply the right transformation after the phase kickback, different phases will add constructively (amplifying some states) or destructively (suppressing others). This is how quantum algorithms extract information that's hidden in the phases. It's the same principle as QAOA — the cost phase was invisible until the mixer turned phase differences into probability differences.
 
 ### Phase kickback for general functions
 
@@ -73,17 +101,17 @@ Phase kickback isn't limited to single-bit functions. For the period-finding pro
 The pattern generalises beautifully. Deutsch-Jozsa, Bernstein-Vazirani, Simon's algorithm, Grover's search, and Shor's algorithm all use phase kickback. Master it once, and you've understood the engine of quantum speedup.
 
 
-## Oracles: asking quantum questions
+## Oracles: packaging functions as gates
 
 ### What an oracle is
 
-An **oracle** is a black box that computes a function $f$ reversibly. You don't know (or don't care) how it works internally; you only know what it computes. In circuit terms, an oracle is a unitary $U_f$ that encodes $f$ somehow.
+We've been calling the function-evaluating circuit $U_f$. In quantum computing, this is called an **oracle** — a black box that computes a function $f$ reversibly. You don't need to know how it works internally; you only need to know what it computes.
 
-In Chapter 2 (QAOA), we didn't use oracles; the cost function was built directly as a sum of $ZZ$ interactions. In period-finding, the function $f(x) = a^x \bmod N$ is the oracle. The quantum algorithm doesn't need to know *how* modular exponentiation is implemented; it just needs to call $U_f$ and exploit phase kickback.
+In Deep-Dive 1 (QAOA), we didn't use oracles — the cost function was built directly as a sum of ZZ interactions, gate by gate. In period-finding, the function $f(x) = a^x \bmod N$ is packaged as an oracle $U_f$. The quantum algorithm doesn't need to know *how* modular exponentiation is implemented; it just calls $U_f$ and exploits phase kickback.
 
 ### The Deutsch-Jozsa pattern
 
-To see oracles and phase kickback in their simplest form, consider this problem: you're given a function $f:\{0,1\} \to \{0,1\}$ (meaning $f$ takes a single bit as input and returns a single bit), and you want to know if $f(0) = f(1)$ (constant) or $f(0) \neq f(1)$ (balanced). Classically: two queries. Quantumly: one.
+To see phase kickback in its simplest complete form, consider this problem: you're given a function $f:\{0,1\} \to \{0,1\}$ (meaning $f$ takes a single bit as input and returns a single bit), and you want to know if $f(0) = f(1)$ (constant) or $f(0) \neq f(1)$ (balanced). Classically: two queries. Quantumly: one.
 
 The circuit:
 
