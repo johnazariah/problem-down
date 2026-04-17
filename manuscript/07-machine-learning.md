@@ -83,7 +83,7 @@ We build a quantum kernel classifier for a synthetic 2D dataset: two classes arr
 4. Train a classical SVM with the quantum kernel
 5. Compare the decision boundary with a classical RBF (radial basis function) kernel, which measures similarity as a Gaussian that decays with distance: $K(x,x') = e^{-\gamma\|x - x'\|^2}$
 
-On this dataset, the quantum kernel achieves ~95% classification accuracy — comparable to the classical RBF kernel. The decision boundaries look similar, which is the honest result: for this toy 2D problem, both kernels have enough expressive power. The quantum kernel's potential advantage would emerge in higher dimensions, where the feature space structure differs from anything a classical kernel can efficiently represent.
+On this dataset, the quantum kernel achieves ~95% classification accuracy — comparable to the classical RBF kernel. The decision boundaries look similar, which is the honest result: for this toy 2D problem, both kernels have enough expressive power. Whether a quantum kernel could outperform in higher dimensions depends on whether the data has structure that lives naturally in the entangled quantum feature space — and whether the encoding remains feasible. That's the open question the Reality Check addresses.
 
 → *The next chapter builds the quantum kernel pipeline from scratch, and shows you the code.*
 
@@ -119,7 +119,7 @@ The more likely near-term path is smaller, harder problems: classifying outputs 
 
 - **Connection to Unit 5 (Finance).** Quantum sampling; preparing and measuring quantum states to sample from hard distributions; appears in both quantum ML (generative models) and quantum finance (Monte Carlo). The underlying resource is the same: quantum mechanics lets you sample from distributions that are classically intractable.
 
-- **The SPEC.md open question.** Whether to keep this unit was flagged as an open question. We keep it; with strong caveats; because (a) ML is what most readers will want to hear about, (b) the theoretical framework is honest and rigorous, and (c) the Reality Check is where we earn trust by *not* overpromising. A book that dodges ML looks like it's hiding something.
+- **Why we include this unit despite the uncertainty.** ML is what most readers will want to hear about. The theoretical framework is honest and rigorous, and the Reality Check is where we earn trust by *not* overpromising. A book that dodges quantum ML looks like it's hiding something.
 
 - **Further reading:**
     - Havlíček, Córcoles, Temme, et al. (2019). *Supervised learning with quantum-enhanced feature spaces.* [Nature 567:209–212](https://doi.org/10.1038/s41586-019-0980-2) ([arXiv:1804.11326](https://arxiv.org/abs/1804.11326))
