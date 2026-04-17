@@ -58,12 +58,14 @@ Two **syndrome measurements**:
 
 The pair of outcomes — the **syndrome** — tells you exactly which qubit flipped:
 
-- $(+1, +1)$: no error
-- $(-1, +1)$: qubit 1 flipped → apply $X_1$ to correct
-- $(-1, -1)$: qubit 2 flipped → apply $X_2$ to correct
-- $(+1, -1)$: qubit 3 flipped → apply $X_3$ to correct
+- $(+1, +1)$: no error — do nothing
+- $(-1, +1)$: qubit 1 flipped → apply $X_1$ to flip it back
+- $(-1, -1)$: qubit 2 flipped → apply $X_2$ to flip it back
+- $(+1, -1)$: qubit 3 flipped → apply $X_3$ to flip it back
 
-The crucial point: $Z_1 Z_2$ measures whether qubits 1 and 2 *agree*, not what they are. It returns $+1$ for both $|00\rangle$ and $|11\rangle$, and $-1$ for both $|01\rangle$ and $|10\rangle$. The superposition $\alpha|000\rangle + \beta|111\rangle$ gives $+1$ on both checks because all three qubits agree — and the measurement reveals nothing about $\alpha$ or $\beta$.
+The correction is just an $X$ gate — the same Pauli-$X$ (bit flip) from Unit 1 — applied to the qubit the syndrome identified. The error was an unwanted $X$; the correction is a deliberate $X$; and $X \cdot X = I$ (applying a bit flip twice returns to the original state). The entire cycle is: **encode → (error happens) → measure syndrome → apply corrective $X$ → state restored.**
+
+Notice that at no point did we learn $\alpha$ or $\beta$. The syndrome told us *where* the error was, not *what the state is*. This is the deep trick: error correction extracts information about the error while remaining ignorant of the encoded data.
 
 This is the same $Z_i Z_j$ operator from the MaxCut Hamiltonian in Unit 1 — but now it's playing a completely different role. In QAOA, it encoded a cost function. Here, it detects errors. Same operator, new purpose.
 
@@ -80,9 +82,24 @@ The phase-flip code is the bit-flip code in a different basis. Instead of encodi
 
 $$|0\rangle_L = |{+}{+}{+}\rangle, \qquad |1\rangle_L = |{-}{-}{-}\rangle$$
 
-Now a phase flip on one qubit ($Z$ error) flips that qubit from $|+\rangle$ to $|{-}\rangle$ (or vice versa) — which is a *bit flip in the Hadamard basis*. The syndrome measurements are $X_1 X_2$ and $X_2 X_3$ instead of $Z_1 Z_2$ and $Z_2 Z_3$.
+Now a phase flip on one qubit ($Z$ error) flips that qubit from $|+\rangle$ to $|{-}\rangle$ (or vice versa) — which is a *bit flip in the Hadamard basis*. The syndrome measurements become $X_1 X_2$ and $X_2 X_3$ instead of $Z_1 Z_2$ and $Z_2 Z_3$, and the correction is a $Z$ gate on the identified qubit (since $Z \cdot Z = I$, just like $X \cdot X = I$).
 
-The two codes are related by Hadamard: apply $H$ to every qubit, and the bit-flip code becomes the phase-flip code. This is a deep symmetry — $X$ and $Z$ errors are related by a basis change.
+### The $X$/$Z$/Hadamard duality
+
+This is not a coincidence. There is a deep symmetry at work:
+
+| Bit-flip code | Phase-flip code | Connected by |
+|:---|:---|:---:|
+| Encodes in $|0\rangle$, $|1\rangle$ | Encodes in $|+\rangle$, $|{-}\rangle$ | $H$ |
+| Detects $X$ errors | Detects $Z$ errors | $H$ |
+| Syndrome uses $Z_i Z_j$ | Syndrome uses $X_i X_j$ | $H$ |
+| Corrects with $X$ | Corrects with $Z$ | $H$ |
+
+The Hadamard gate $H$ swaps the $X$ and $Z$ operators: $HXH = Z$ and $HZH = X$. So *everything* about bit-flip correction transforms into phase-flip correction under $H$, and vice versa. Apply $H$ to every qubit in the bit-flip code, and you get the phase-flip code. Apply $H$ to the syndrome measurements, and $Z_i Z_j$ becomes $X_i X_j$.
+
+This duality runs deeper than error correction. It's the same symmetry that relates the computational basis to the Hadamard basis throughout quantum computing — the QFT generalises it, and phase kickback exploits it. Here, it tells us that bit errors and phase errors are the *same problem in different bases*. Any code that handles one can handle the other by conjugating with $H$.
+
+The Shor code exploits this: it concatenates one code inside the other, catching both error types simultaneously.
 
 
 ## The Shor code: correcting everything
@@ -177,3 +194,22 @@ This is why algorithms are optimised to minimise T-gate count. And it's why the 
 5. **T-gates are expensive because universality conflicts with transversality.** Magic state distillation is the workaround, and it dominates the physical cost of fault-tolerant computation.
 
 6. **Every resource estimate in this book is ultimately a statement about error correction.** The number of logical qubits times the per-qubit overhead of the code times the number of T-gates times the distillation cost — that's the real hardware bill.
+
+
+## Beyond stabiliser codes: the frontier
+
+Everything in this chapter — the bit-flip code, the Shor code, the surface code — belongs to the family of **stabiliser codes**, the best-understood and most widely studied class of quantum error-correcting codes. But stabiliser codes are not the end of the story. Quantum error correction is one of the few areas of quantum computing where the *mathematics* is still generating fundamentally new approaches, not just optimising existing ones.
+
+A few directions worth knowing about:
+
+**Quantum LDPC codes** push the overhead down. The surface code uses $O(d^2)$ physical qubits per logical qubit, which means the overhead grows with the protection level. Quantum LDPC codes — the family behind the Pinnacle architecture from Unit 2 — can in principle achieve *constant* overhead: a fixed number of physical qubits per logical qubit, independent of code distance. The tradeoff is connectivity: they require non-local qubit interactions that are harder to build in hardware.
+
+**Colour codes** offer an alternative to surface codes with different transversal gate sets and potentially easier implementation of certain logical operations. They use a three-colourable lattice instead of the surface code's checkerboard.
+
+**Floquet codes** (Hastings and Haah, 2021) use time-varying stabiliser measurements — the code itself changes from one measurement round to the next, but the logical information is preserved. This is a genuinely new idea with no classical analogue.
+
+**Quantum error correction with constant space overhead** (Gottesman, 2014; Fawzi, Grospellier, Leverrier, 2018) establishes that fault-tolerant quantum computation is possible with only a constant factor more physical qubits than logical ones, asymptotically. Realising this in practice is an open engineering challenge.
+
+**Bosonic codes** (cat codes, GKP codes, binomial codes) encode a logical qubit into a single *oscillator mode* rather than into many physical qubits. These are particularly natural for superconducting hardware, where quantum information is stored in microwave cavities.
+
+The field is active and accelerating. New code families are being discovered, new decoders are being designed, and the interplay between codes and hardware architectures is becoming one of the central engineering challenges of quantum computing. The mathematics of quantum error correction — drawing on algebra, topology, combinatorics, and information theory — is richer than any single chapter can convey. What we've covered here is the foundation; the frontier is wide open.
