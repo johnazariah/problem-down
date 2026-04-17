@@ -200,7 +200,7 @@ And indeed: $15 = 3 \times 5$. $\blacksquare$
 
 This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially. For RSA-2048 (a 617-digit, 2,048-bit number), Shor's algorithm requires roughly 6,000 logical qubits and $O(n^3)$ gates with $n = 2{,}048$. The same algorithm, larger registers, more gates, same polynomial efficiency.
 
-→ *The next chapter builds the period-finding circuit from scratch, and shows you the code.*
+→ *The next chapter builds the period-finding circuit from scratch, and the companion notebook shows the runnable compiled-toy version honestly.*
 
 ### Back to your browser
 

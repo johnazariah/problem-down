@@ -194,6 +194,7 @@ Notebook work should only be pulled back into this main plan if it forces one of
 
 ### Tasks
 
+- Rename GitHub repo from `problem-down` to `quantum-bottleneck` and update all internal references (manuscript, notebooks, copilot-instructions, README, conclusion).
 - Build the site and PDF from the final text.
 - Read the output artifacts, not just the markdown sources.
 - Check navigation, headings, typography, KaTeX, links, notebook embeds, captions, and page breaks.

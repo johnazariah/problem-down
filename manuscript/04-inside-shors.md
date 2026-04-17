@@ -6,7 +6,7 @@ _This deep dive pairs with Unit 2 (Cryptography), which explained why factoring 
 
 - **What you'll learn:** How to extract the period of a function using a quantum circuit; the Quantum Fourier Transform, phase kickback, oracles, and why interference makes it all work.
 - **What you need:** From Deep-Dive 1 (Building QAOA), you know what qubits are, how Hadamard creates superposition, and how CNOT entangles two qubits. We build everything else here.
-- **Runnable version:** The companion notebook [`02-cryptography.ipynb`](../notebooks/02-cryptography.ipynb) factors 15 on a cloud Quokka.
+- **Runnable version:** The companion notebook [`02-cryptography.ipynb`](../notebooks/02-cryptography.ipynb) keeps the classical factoring reduction exact and runs a compiled period-finding toy for $N = 15$ on a cloud Quokka.
 
 
 ## The problem we need to solve
@@ -265,7 +265,7 @@ $15 = 3 \times 5$. Done.
 
 For an $n$-bit number $N$: $O(n)$ qubits for the registers, $O(n^2)$ gates for the QFT, and $O(n^2 \log n)$ gates for the modular exponentiation (the expensive part). Total: **polynomial in $n$**; exponentially faster than the best classical factoring algorithm.
 
-The companion notebook runs this circuit end-to-end — factoring 15 on a cloud Quokka, stepping through the superposition, oracle, QFT, and classical post-processing.
+The companion notebook does **not** implement general modular exponentiation end-to-end. It keeps the classical reduction exact, then runs a compiled period-finding toy for one eigenphase branch of the $r = 4$ problem, followed by the same continued-fractions and $\\gcd$ post-processing.
 
 → **See [notebook `02-cryptography.ipynb`](../notebooks/02-cryptography.ipynb) for the runnable version.**
 

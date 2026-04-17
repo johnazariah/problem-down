@@ -45,6 +45,11 @@ def smoke_unit_1() -> None:
 def smoke_unit_2() -> None:
     ns = exec_code_cells(NOTEBOOKS / "02-cryptography.ipynb", [1, 2, 3, 4, 5])
     assert_counts(ns["results"], min_total=1000)
+    assert ns["best_outcome"] == ns["expected_peak"], (
+        f"Unexpected dominant crypto phase peak: {ns['best_outcome']} != {ns['expected_peak']}"
+    )
+    assert ns["peak_probability"] >= 0.6, f"Crypto peak too diffuse: {ns['peak_probability']:.3f}"
+    assert ns["r"] == 4, f"Unexpected recovered period: {ns['r']}"
 
 
 def smoke_unit_3() -> None:

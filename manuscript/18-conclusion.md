@@ -1,6 +1,6 @@
 # What Quantum Computers Are Actually For
 
-We started with a UPS driver and 20 stops. We end with a catalyst and 50 orbitals. Between them, eight problems — and one recurring pattern.
+We started with a UPS driver and 20 stops. We end with a catalyst and 50 orbitals. Between them, eight problems — eight bottlenecks — and one recurring pattern.
 
 Every quantum algorithm in this book does the same thing: it encodes a hard problem as a quantum operator, manipulates phases through interference, and extracts the answer through measurement. The operator changes — a cost Hamiltonian in Unit 1, a modular exponentiation oracle in Unit 2, a molecular Hamiltonian in Unit 3, a Grover iterator in Unit 5, a lattice Hamiltonian in Unit 7. The interference mechanism changes — the QAOA mixer, the QFT, the VQE ansatz, Grover's diffusion operator. But the architecture is always the same three acts: encode, interfere, measure.
 
