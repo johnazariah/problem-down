@@ -6,7 +6,7 @@ _This deep dive pairs with Unit 8 (Climate & Energy), which explained why cataly
 
 - **What you'll learn:** How to select an active space, embed it in a classical environment, solve the active space with VQE or QPE, and iterate to self-consistency.
 - **What you need:** This is the capstone deep dive. It draws on VQE (Deep-Dive 3), QPE (Deep-Dive 7), and fermion-to-qubit encodings (Deep-Dive 3). If you've followed the deep dive path, you have everything you need.
-- **Runnable version:** The companion notebook [`08-climate-energy.ipynb`](../notebooks/08-climate-energy.ipynb) demonstrates active-space VQE on a cloud Quokka.
+- **Runnable version:** The companion notebook [`08-climate-energy.ipynb`](../notebooks/08-climate-energy.ipynb) illustrates the embedded VQE solve step on a cloud Quokka using a precomputed toy Hamiltonian.
 
 
 ## The active space idea
@@ -64,11 +64,16 @@ The pipeline is solver-agnostic. Today, use VQE on NISQ hardware. Tomorrow, use 
 
 This chapter ties together every deep dive in the book:
 
-![The complete quantum-classical embedding pipeline, showing NISQ and fault-tolerant paths with chapter cross-references](../figures/embedding-pipeline.png)
+```{figure} ../figures/embedding-pipeline.png
+:name: fig-embedding-pipeline
+:alt: Quantum-classical embedding pipeline showing NISQ and fault-tolerant paths with chapter cross-references.
+
+Embedding keeps the quantum computer on the small fragment where strong correlation lives and leaves the environment to the classical solver.
+```
 
 Every box references a chapter where the concept was introduced. A reader who followed the deep dive path (Chapters 2 → 4 → 6 → 8 → 10 → 12 → 14 → 16) has the tools to understand every step. A reader who skipped the deep dives can see the pipeline and know where to look for details.
 
-The companion notebook demonstrates active-space VQE for a simplified catalyst model, running the full embed → solve → iterate pipeline.
+The companion notebook is narrower than the full theory in this chapter. It starts from a precomputed embedded Hamiltonian for a 2-qubit toy active space, runs one VQE solve step on Quokka, and uses that runnable fragment to show where the quantum subroutine lives in the larger select → embed → solve → iterate pipeline.
 
 → **See [notebook `08-climate-energy.ipynb`](../notebooks/08-climate-energy.ipynb) for the runnable version.**
 

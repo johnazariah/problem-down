@@ -77,6 +77,13 @@ The alternative: **variational quantum ML** (parameterised quantum circuits trai
 
 We build a quantum kernel classifier for a synthetic 2D dataset: two classes arranged in a pattern (two interleaved half-moons) that's separable by a quantum feature map but not by a linear classifier.
 
+```{figure} ../figures/kernel-decision-boundary.png
+:name: fig-kernel-decision-boundary
+:alt: Two interleaved half-moon classes with a straight boundary on the left and a curved boundary on the right.
+
+The point of a kernel is geometric: the classes are not linearly separable in the raw coordinates, but a richer feature space can make the boundary simple.
+```
+
 1. Generate synthetic data (two interleaved half-moons, 40 points)
 2. Define a quantum feature map: encode each 2D point $(x_1, x_2)$ into a 2-qubit state using parameterised rotations and entanglement
 3. Compute the quantum kernel matrix by running circuits on Quokka

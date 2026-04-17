@@ -49,7 +49,12 @@ $$H\lvert 0\rangle \otimes H\lvert 0\rangle \otimes H\lvert 0\rangle = \frac{1}{
 
 In circuit form:
 
-![Hadamard gates applied to all 3 qubits](../figures/qaoa-hadamard-init.png)
+```{figure} ../figures/qaoa-hadamard-init.png
+:name: fig-qaoa-hadamard-init
+:alt: Hadamard gates applied to all three qubits.
+
+A layer of Hadamards puts all eight triangle colourings into superposition before the optimisation logic begins.
+```
 
 Three gates. That's all it takes to create a uniform superposition of 8 colourings. For $n$ qubits, it's $n$ Hadamard gates and $2^n$ terms in superposition. The exponential scaling is free.
 
@@ -94,7 +99,12 @@ So $e^{i\gamma Z_0 Z_1 / 2}$ applies phase $e^{i\gamma/2}$ when the qubits agree
 
 How do we build this from standard gates? The trick is the **CNOT sandwich**:
 
-![ZZ gate implemented as a CNOT sandwich](../figures/zz-gate-cnot-sandwich.png)
+```{figure} ../figures/zz-gate-cnot-sandwich.png
+:name: fig-zz-gate-cnot-sandwich
+:alt: ZZ gate implemented as a CNOT sandwich with an Rz rotation between the two CNOTs.
+
+The CNOT sandwich computes edge parity, rotates on that parity, then uncomputes it, which is why one graph edge becomes one ZZ cost term.
+```
 
 Here's what happens step by step:
 
@@ -128,13 +138,23 @@ Here's the crucial point: when contributions arrive with *similar* phases, their
 
 Let's see this on our triangle. Take the good colouring $\lvert 001\rangle$ (cut = 2). Its three neighbours — the colourings one bit-flip away — are:
 
-![A good colouring (|001⟩, cut=2) and its three neighbours: two also have cut=2, one has cut=0](../figures/neighbours-good.png)
+```{figure} ../figures/neighbours-good.png
+:name: fig-neighbours-good
+:alt: A good colouring with cut value 2 and its three one-bit-flip neighbours.
+
+Good colourings are surrounded by neighbours with similar cut values, so the mixer tends to reinforce them after the cost phase tags each colouring.
+```
 
 Two out of three neighbours also have cut value 2 — the same as the original. They picked up similar phases from the cost step, so when their contributions arrive during mixing, the arrows point roughly the same way. Constructive interference: $\lvert 001\rangle$'s amplitude grows.
 
 Now take the poor colouring $\lvert 000\rangle$ (cut = 0). Its neighbours:
 
-![A poor colouring (|000⟩, cut=0) and its three neighbours: all three have cut=2](../figures/neighbours-poor.png)
+```{figure} ../figures/neighbours-poor.png
+:name: fig-neighbours-poor
+:alt: A poor colouring with cut value 0 and its three one-bit-flip neighbours.
+
+Poor colourings receive amplitude from neighbours with very different phases, so interference suppresses them.
+```
 
 Every neighbour has cut value 2 — all *different* from the original's cut value of 0. They carry phases that are very different from $\lvert 000\rangle$'s phase, so the arriving contributions point in scattered directions. Destructive interference: $\lvert 000\rangle$'s amplitude shrinks.
 
@@ -148,7 +168,12 @@ $$e^{-i\beta B} = e^{-i\beta X_0} \cdot e^{-i\beta X_1} \cdot e^{-i\beta X_2}$$
 
 Each factor is just an $R_X$ rotation: $e^{-i\beta X} = R_X(2\beta)$:
 
-![Mixer: Rx(2β) applied to each qubit](../figures/qaoa-mixer.png)
+```{figure} ../figures/qaoa-mixer.png
+:name: fig-qaoa-mixer
+:alt: Mixer layer with Rx rotations applied to each qubit.
+
+The mixer is just local $R_X$ rotations, but applied after the cost phase it turns hidden phase information into changed measurement probabilities.
+```
 
 What does $R_X(\theta)$ do? It rotates the qubit's state around the X axis of the **Bloch sphere** — a geometric picture where a single qubit's state is a point on a sphere, with $\lvert 0\rangle$ at the north pole, $\lvert 1\rangle$ at the south pole, and superpositions on the surface between. In the computational basis, $R_X$ mixes $\lvert 0\rangle$ and $\lvert 1\rangle$:
 
@@ -160,7 +185,12 @@ At $\beta = 0$, the mixer does nothing ($R_X(0) = I$). At $\beta = \pi/2$, it fl
 
 Putting it all together for the triangle, at depth $p = 1$:
 
-![Complete QAOA circuit for MaxCut on a triangle: Hadamard initialisation, three ZZ cost unitaries (one per edge), Rx mixer, and measurement](../figures/qaoa-full-circuit.png)
+```{figure} ../figures/qaoa-full-circuit.png
+:name: fig-qaoa-full-circuit
+:alt: Complete QAOA circuit for MaxCut on a triangle, with initial Hadamards, three ZZ cost unitaries, a mixer layer, and measurement.
+
+At depth $p=1$, the triangle example is already the full algorithm: superposition, one ZZ block per edge, a mixer layer, then measurement.
+```
 
 Gate count: 3 Hadamards + 6 CNOTs + 3 $R_Z$ + 3 $R_X$ + 3 measurements = **18 gates**, of which 6 are the expensive ones (CNOTs). For a general graph with $n$ nodes and $m$ edges at depth $p$: $n + p(2m \text{ CNOTs} + m \text{ }R_Z + n \text{ }R_X)$ gates.
 

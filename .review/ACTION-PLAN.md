@@ -1,10 +1,19 @@
 # Production Plan — The Best Version of the Book
 
 **Date:** 2026-04-17
-**Status:** Live plan
+**Status:** Live plan. Phases 1-3 closed; Phase 4 active.
 **Scope:** Take the manuscript from a reviewed draft to a publishable web-first, print-capable book.
 
 Historical note: this file previously tracked the T0 / T0.5 / T1 / T2 review backlog. That review work is now captured in the addenda to `.review/2026-04-16-correctness-audit.md`. This file is now the forward-looking production plan.
+
+## Current Production Snapshot
+
+| Phase | Status | Notes |
+|---|---|---|
+| 1. Structure Freeze | Closed | Title/subtitle, README landing page, and conclusion now describe the same book object. |
+| 2. Final Editorial Pass | Closed | The preface, Unit 4, the capstone, and the conclusion now read as one book rather than as mismatched artifacts. |
+| 3. Figure Program | Closed | The mandatory figure set is in place, the inventory lives in this file, and manuscript figures now use one caption style. |
+| 4. Notebook and Worked-Example Integrity | Active | The remaining live work is notebook truth-in-labelling, semantic assertions, and final alignment, tracked in `.review/NOTEBOOK-PLAN.md`. |
 
 ---
 
@@ -37,6 +46,8 @@ The book is ready for release when all of the following are true:
 
 **Goal:** lock the architecture in a single decision session so all downstream work proceeds from a stable base.
 
+**Status:** Closed on 2026-04-17.
+
 ### Decisions to lock (30-minute session)
 
 - Confirm the current title/subtitle in `myst.yml`: **The Quantum Bottleneck** / **Real Problems and their Quantum Solutions**.
@@ -61,6 +72,8 @@ The book is ready for release when all of the following are true:
 ## Phase 2 — Final Editorial Pass
 
 **Goal:** make the manuscript read like one book written with one pedagogical contract.
+
+**Status:** Closed on 2026-04-17.
 
 ### Editorial rule set
 
@@ -100,7 +113,9 @@ For every chapter, verify the following:
 
 **Goal:** add the minimum figure set that reduces cognitive load and strengthens memory.
 
-**Timing:** The figure *inventory* should be created during Phase 2 so the editorial pass can reference figures that will exist. Figure *production* runs in parallel with the later stages of Phase 2.
+**Status:** Closed on 2026-04-17.
+
+**Timing:** The figure *inventory* was created during the editorial pass and is kept in this file so the production plan and figure program do not drift apart.
 
 ### Figure principles
 
@@ -127,6 +142,27 @@ For every chapter, verify the following:
 - Final captions in a consistent style.
 - All final artwork stored under `figures/`.
 
+### Figure inventory
+
+| Chapter | Figure file | Figure type | Teaching job |
+|---|---|---|---|
+| Preface | `book-zoom-rhythm.png` | workflow schematic | Make the book's wide → narrow → quantum → code → wide rhythm visible before the reader starts Unit 1. |
+| Unit 1 | `cost-landscape.png` | landscape sketch | Show why local search stalls on combinatorial optimisation problems. |
+| Unit 2 | `fourier-peaks.png` | frequency sketch | Make period-finding concrete by showing how a periodic support pattern becomes Fourier peaks. |
+| Unit 3 | `h2-potential-energy.png` | chemistry benchmark plot | Show that molecular simulation is a curve over geometry, not a single isolated number. |
+| Unit 4 | `kernel-decision-boundary.png` | comparison figure | Show why a richer feature map can make a nonlinear boundary easy. |
+| Unit 5 | `qae-scaling.png` | scaling plot | Make the $1/\sqrt{N}$ versus $1/N$ convergence story visible at a glance. |
+| Unit 6 | `qubo-landscape.png` | landscape schematic | Show how penalty terms create barriers and why tunnelling is the claimed annealing advantage. |
+| Unit 7 | `hubbard-crossover.png` | benchmark plot | Show the crossover from delocalised to localised behaviour as $U/t$ increases. |
+| Unit 8 | `climate-pipeline.png` | pipeline diagram | Show the full catalyst-screening workflow and how earlier units feed into it. |
+| Deep-Dive 1 | `qaoa-full-circuit.png` | circuit anatomy | Show one complete QAOA layer at gate level. |
+| Deep-Dive 2 | `qft-3qubit-circuit.png` | circuit anatomy | Show how the QFT factorises into Hadamards and controlled phase rotations. |
+| Deep-Dive 3 | `h2-vqe-ansatz.png` | circuit anatomy | Show the smallest chemistry ansatz that still captures correlated behaviour. |
+| Deep-Dive 4 | `kernel-circuit.png` | circuit anatomy | Show that kernel evaluation is an overlap test, not a full classifier living on the quantum chip. |
+| Deep-Dive 5 | `grover-diffusion-circuit.png` | circuit anatomy | Show the oracle-plus-diffusion pattern that Grover and QAE reuse. |
+| Deep-Dive 7 | `trotter-zz-interaction.png` | circuit anatomy | Show how a Hubbard interaction term decomposes into the familiar ZZ phase gadget. |
+| Deep-Dive 8 | `embedding-pipeline.png` | pipeline diagram | Show exactly where the quantum fragment solve sits inside the larger embedding loop. |
+
 ### Exit criteria
 
 - A reader can skim the figures and recover the book's structure.
@@ -137,6 +173,8 @@ For every chapter, verify the following:
 ## Phase 4 — Notebook and Worked-Example Integrity
 
 **Goal:** make the notebooks executable, honest about scope, and aligned with the surrounding worked examples.
+
+**Status:** Active.
 
 The notebook track now has its own operational source of truth in `.review/NOTEBOOK-PLAN.md`.
 That separate document is agent-owned and is expected to change faster than this top-level production plan.
@@ -188,7 +226,7 @@ Notebook work should only be pulled back into this main plan if it forces one of
 
 ---
 
-## Phase 5 — Production Polish
+## Phase 6 — Production Polish
 
 **Goal:** turn a strong manuscript into a finished book object.
 
@@ -208,7 +246,7 @@ Notebook work should only be pulled back into this main plan if it forces one of
 
 ---
 
-## Phase 6 — External Reader Passes
+## Phase 7 — External Reader Passes
 
 **Goal:** get targeted feedback from the right kinds of readers.
 
@@ -236,7 +274,7 @@ Allow **10 calendar days** for reader feedback. After that, triage what you have
 
 ---
 
-## Phase 7 — Release Candidate
+## Phase 8 — Release Candidate
 
 **Goal:** freeze scope and ship.
 
@@ -259,18 +297,15 @@ Allow **10 calendar days** for reader feedback. After that, triage what you have
 
 ### Week 1
 
-- Lock structure (30-minute decision session).
-- Complete the anchor editorial pass on the preface, Unit 4, Deep Dive 8, and the conclusion.
-- Build the figure inventory.
-- Start figure production for figures whose source text is stable.
-- Rewrite `README.md` as a reader-facing landing page.
+- Finish the notebook program, especially the remaining amber notebooks and semantic assertions.
+- Start the citation and quantitative-claim sweep.
+- Build the site and PDF from the now-stable manuscript and capture output defects.
 
 ### Week 2
 
-- Complete the manuscript-wide editorial pass.
-- Run the citation and quantitative-claim sweep.
-- Finish figure production.
-- Run full site/PDF builds and capture production issues.
+- Close the citation pass.
+- Fix output-form issues: captions, links, navigation, notebook embeds, and PDF layout.
+- Prepare the external-reader packet and questions.
 
 ### Week 3
 
@@ -282,11 +317,10 @@ Allow **10 calendar days** for reader feedback. After that, triage what you have
 
 ## Immediate Next Moves
 
-1. Lock the current title/subtitle, TOC, and `17-error-correction` placement.
-2. Start the final editorial pass with the preface, Unit 4, Deep Dive 8, and the conclusion.
-3. Create the figure inventory before producing any art.
-4. Rewrite `README.md` as a reader-facing landing page.
-5. Treat the website as the primary artifact and the PDF as a derivative that must still read cleanly.
+1. Finish the remaining notebook truth-in-labelling work in `.review/NOTEBOOK-PLAN.md`.
+2. Run the citation and quantitative-claim sweep.
+3. Build the website and PDF as production artifacts and fix what only appears in output form.
+4. Prepare the external-reader pass and hold the line on release-candidate scope.
 
 ## Anti-Churn Rules
 

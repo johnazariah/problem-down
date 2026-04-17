@@ -113,7 +113,12 @@ The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, rep
 - At $U/t \gg 1$: the benchmark ground state becomes more localised, one electron per site
 - The notebook's QPE step is a **toy phase-readout demonstration**, not a full controlled-$e^{-iHt}$ Hubbard simulation
 
-![2-site Hubbard model: ground-state energy as a function of U/t, showing the crossover from metallic to insulating behaviour](../figures/hubbard-crossover.png)
+```{figure} ../figures/hubbard-crossover.png
+:name: fig-hubbard-crossover
+:alt: Ground-state energy of the two-site Hubbard model as a function of U over t.
+
+Even the 2-site dimer shows the qualitative story: as $U/t$ grows, localisation wins over delocalisation, though the true phase transition belongs to larger lattices.
+```
 
 → *The next chapter builds QPE and the Trotter circuit from the components introduced in earlier deep dives, and the companion notebook shows the phase-readout part honestly on a compiled toy.*
 

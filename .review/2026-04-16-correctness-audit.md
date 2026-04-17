@@ -395,3 +395,97 @@ The previously flagged consistency issues now read as satisfactorily addressed:
 The manuscript now feels more stylistically unified than it did in the previous whole-book pass. The application chapters share a clearer common template, the unit-to-deep-dive handoff pattern is cleaner, and the deep-dive layer ends on a chapter that now reads like a capstone rather than a sudden mode shift.
 
 Residual note: Deep-Dive 8 is still naturally denser than the earlier deep dives, but at this point that reads as an intentional consequence of its capstone role rather than as a breach of the book's pedagogical contract.
+
+## Phase 1-3 production-plan review - 2026-04-17
+
+I reviewed the current repo state against the first three phases of `.review/ACTION-PLAN.md`.
+
+### Overall assessment
+
+I would **not** mark the full Phase 1-3 bundle complete.
+
+- **Phase 1 (Structure Freeze): partially complete, not closed.**
+- **Phase 2 (Final Editorial Pass): mostly complete on the sampled anchors I checked.**
+- **Phase 3 (Figure Program): not complete.**
+
+The strongest blockers are one remaining book-identity drift in the conclusion, an overclaim in the README relative to the active notebook program, and multiple unmet Phase 3 deliverables.
+
+### Findings
+
+1. **Phase 1 is not fully closed because the book identity still drifts in the conclusion.**
+
+   The top-level identity looks aligned in `README.md` and `myst.yml`, which now use **The Quantum Bottleneck**. But `manuscript/18-conclusion.md` still opens with the old book title, `# What Quantum Computers Are Actually For`.
+
+   I would not call the structure freeze complete while one of the canonical front/back matter files still carries the previous title.
+
+2. **The README currently overclaims notebook fidelity relative to the repo's own notebook source of truth.**
+
+   `README.md` says: "Every unit has a Jupyter notebook that runs the algorithm on a real quantum backend. These are the same algorithms described in the text, shrunk to a size that fits on current hardware."
+
+   That promise is stronger than the active notebook plan. `.review/NOTEBOOK-PLAN.md` explicitly says the mission is to classify each notebook as a **faithful worked example**, **toy demonstration**, or **pipeline illustration**, and it also states that runtime reliability does **not** prove honesty or fidelity. The program board still marks four notebooks as **Amber**, and several of the green notebooks are intentionally classified as **toy demonstrations** rather than faithful implementations.
+
+   So Phase 4 may be underway and healthier than before, but the landing page is still outrunning the currently documented notebook truth.
+
+3. **Phase 3 is not complete as specified in the production plan.**
+
+   The repo now has many figure assets and several chapters do embed them. This is not a "no figures exist" problem. For example, `manuscript/16-quantum-embedding.md` includes the capstone embedding pipeline figure.
+
+   But the specific Phase 3 deliverables in `.review/ACTION-PLAN.md` are not all present:
+
+   - the required **book-level zoom-in / zoom-out framework figure for the preface** is still missing from `manuscript/00-preface.md`;
+   - the required **decision-boundary or kernel-matrix figure for Unit 4** does not appear to exist in `figures/`, and `manuscript/07-machine-learning.md` still has no image reference;
+   - I do not see the promised **figure inventory with one named purpose per figure** anywhere under `.review/`; and
+   - I do not see evidence that the promised **final captions in a consistent style** have landed as a system rather than as plain image embeds.
+
+   On that last point, the manuscript currently uses plain Markdown image syntax in multiple chapters (for example `manuscript/01-logistics.md`, `manuscript/08-quantum-kernels.md`, and `manuscript/16-quantum-embedding.md`), and the built-site content I spot-checked still materialises these as image nodes rather than as a clearly captioned figure program.
+
+4. **Phase 2 looks largely landed on the anchors I checked, but that does not rescue the Phase 1-3 bundle.**
+
+   The preface, the revised Unit 4 prose, and the capstone deep dive all look materially stronger than in the earlier review cycle. I did not find a comparable Phase 2 blocker in the sampled chapters.
+
+   But even if Phase 2 is treated as effectively complete, the bundle still cannot honestly be described as "Phases 1-3 done" while Findings 1-3 remain true.
+
+### Current assessment
+
+If you want the strict answer: **Phase 1-3 are not done yet.**
+
+More precisely:
+
+- **Phase 1** needs one final identity sweep in the conclusion.
+- **Phase 2** is in the best shape of the three.
+- **Phase 3** still needs to be treated as open work, not historical fact.
+
+## Phase 1-3 closure verification addendum - 2026-04-17
+
+I reviewed the subsequent implementation pass that was intended to close the Phase 1-3 findings above.
+
+### Result
+
+**No remaining findings for Phase 1-3.**
+
+The previously open items are now resolved in the repo state I checked:
+
+- `README.md` no longer overclaims notebook fidelity; it now describes the notebooks as a mixed companion set rather than implying that every one is already a faithful industrial-scale implementation.
+- `manuscript/18-conclusion.md` now aligns with the current book identity instead of carrying the previous title.
+- the missing Phase 3 application-layer figures have landed: the preface now has the book-level rhythm figure, Unit 2 now has a Fourier-peaks figure, Unit 3 now uses the H₂ potential-energy curve, Unit 4 now has a decision-boundary figure, and Unit 6 now has a QUBO / energy-landscape figure.
+- `.review/ACTION-PLAN.md` now contains the figure inventory directly, which satisfies the earlier "inventory exists nowhere" gap without creating review-file sprawl.
+- the manuscript's figure treatment is now materially more coherent: the earlier plain image embeds have been converted to figure directives with explanatory captions, so the figure program reads like part of the book rather than a loose collection of assets.
+
+### Build verification
+
+I also verified the production artifacts rather than stopping at source review:
+
+- the HTML build passes via `HOST=127.0.0.1 jupyter-book build --html --force`; and
+- the PDF build passes via `bash build-pdf.sh`.
+
+The HTML build emits one non-blocking warning about `myst.yml` using a non-SPDX `license` value. That is worth cleaning up later, but it is **not** a Phase 1-3 blocker.
+
+### Current assessment
+
+At this point, I am comfortable treating **Phase 1, Phase 2, and Phase 3 as closed**.
+
+The live production work is now correctly concentrated in:
+
+- Phase 4 notebook integrity;
+- Phase 5 citation / quantitative-claim verification; and
+- the later output-polish and external-reader phases.

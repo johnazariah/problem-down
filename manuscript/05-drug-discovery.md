@@ -95,25 +95,30 @@ There's a catch. The molecular Hamiltonian, after encoding, becomes a sum of man
 
 ## Worked Example
 
-Let's compute the ground-state energy of **H₂**; the hydrogen molecule; at various bond lengths, building the potential energy surface.
+Let's keep the runnable example honest: take **H₂** at a single bond length, reduce it to a 2-qubit Hamiltonian with precomputed coefficients, and run the VQE loop on that fixed geometry.
 
-H₂ has 2 electrons and (in a minimal basis) 4 spin-orbitals → 4 qubits after Jordan-Wigner encoding. This is small enough to run on any quantum computer (or simulator), but large enough to show the real VQE pipeline.
+The full minimal-basis H₂ problem starts with 4 spin-orbitals and 4 qubits before symmetry reduction. The companion notebook works one level down from that: it starts from a reduced 2-qubit Hamiltonian at $R = 0.735$ Å, then shows the measurement and optimisation loop cleanly on cloud hardware.
 
 ### The pipeline
 
-1. **Compute molecular integrals** ($h_{ij}$, $h_{ijkl}$) using a classical chemistry package
-2. **Build the qubit Hamiltonian** via Jordan-Wigner encoding
-3. **Choose an ansatz** (UCCSD or hardware-efficient)
-4. **Run VQE**; optimise parameters to minimise energy
-5. **Sweep the bond length** from 0.2 Å to 2.5 Å and plot the potential energy surface
+1. **Start from a reduced Hamiltonian** for H₂ at one geometry
+2. **Prepare the Hartree-Fock reference** and a one-parameter entangling ansatz
+3. **Measure the Pauli terms directly** in the $Z$, $XX$, and $YY$ bases
+4. **Run the variational loop**; sweep $\theta$ and estimate the energy at each point
+5. **Benchmark against exact diagonalisation** of the same reduced Hamiltonian
 
-The equilibrium bond length (the minimum of the potential energy curve) is where H₂ is stable. The dissociation limit (large bond length) is where it breaks into two hydrogen atoms. Getting this curve right; especially the shape near the minimum; is the test of a good quantum chemistry method.
+This is not yet a potential-energy-surface calculation. To build the full H₂ curve, you would repeat the classical reduction at each bond length and rerun the VQE loop for each resulting Hamiltonian.
 
-VQE with a 4-qubit UCCSD ansatz reproduces the exact Full CI result for H₂ to **chemical accuracy** (1.6 milliHartree ≈ 1 kcal/mol — the threshold at which energy differences become chemically meaningful; the Hartree is the atomic unit of energy, roughly 27.2 eV). At the equilibrium bond length (~0.74 Å, where 1 Å = $10^{-10}$ m), the computed energy matches the exact value to several decimal places. As we stretch the bond toward dissociation, the correlation between the two electrons grows stronger, and this is precisely where VQE outperforms Hartree-Fock.
+```{figure} ../figures/h2-potential-energy.png
+:name: fig-h2-potential-energy
+:alt: Ground-state energy of H2 as a function of bond length.
 
-![H₂ potential energy surface: the exact curve versus Hartree-Fock, showing where classical mean-field methods fail at large bond lengths](../figures/h2-potential-energy.png)
+A chemistry calculation is not one number but a curve: as bond length changes, the ground-state energy traces a potential-energy surface whose minimum marks the stable molecular geometry.
+```
 
-→ *The next chapter builds the full VQE pipeline — from molecular integrals to circuit to energy — and shows you the code.*
+Even at this reduced scale, the structure is the same as the larger chemistry story: a Hamiltonian decomposed into Pauli terms, a trial state prepared on the quantum device, repeated measurements, and a classical search for the lowest energy. The notebook's direct $XX$ and $YY$ measurements matter because they expose the real measurement overhead rather than hiding it in an analytic shortcut.
+
+→ *The next chapter builds the full molecule-to-qubit pipeline behind this reduced demo — from fermionic Hamiltonian to Pauli measurements to variational optimisation.*
 
 ### Back to the pharmacy
 

@@ -29,7 +29,7 @@ Each unit opens with an industry problem — a dollar figure, a bottleneck, a hu
 
 ## Companion notebooks
 
-Every unit has a Jupyter notebook that runs the algorithm on a real quantum backend. These are the same algorithms described in the text, shrunk to a size that fits on current hardware.
+Every unit has a companion Jupyter notebook. Some are faithful worked examples; others are toy demonstrations or pipeline illustrations where that is the honest way to show the idea at runnable scale. All are there to teach the algorithmic structure without pretending current hardware can already support the full industrial version.
 
 ## Companion books
 
@@ -43,7 +43,7 @@ Every unit has a Jupyter notebook that runs the algorithm on a real quantum back
 bash build-pdf.sh
 
 # Website
-myst build --html
+HOST=127.0.0.1 jupyter-book build --html --force
 ```
 
 ## License

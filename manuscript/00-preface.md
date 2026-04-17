@@ -18,6 +18,13 @@ The book is organised into eight **units**, each built around one industry probl
 
 - The **deep-dive chapter** teaches the algorithm at the circuit level. It introduces quantum concepts (qubits, gates, interference, entanglement) organically, as the algorithm needs them. These chapters are more technical, but they build everything from scratch.
 
+```{figure} ../figures/book-zoom-rhythm.png
+:name: fig-book-zoom-rhythm
+:alt: The book zooms from industry stakes to bottlenecks, the quantum angle, a worked example, and a reality check.
+
+This is the book's recurring teaching move: start wide with stakes, zoom into the bottleneck, introduce only the quantum machinery the chapter has earned, show a runnable toy example, then zoom back out for an honest reality check.
+```
+
 ## Two ways to read this book
 
 **The fast path.** Read only the application chapters (Units 1 through 8). You'll understand what quantum computers could do for logistics, cryptography, drug discovery, machine learning, finance, supply chains, materials science, and climate. You'll know which applications are close to practical and which are speculative. You'll be able to hold your own in any conversation about quantum computing's real-world impact.

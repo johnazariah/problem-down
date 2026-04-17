@@ -6,7 +6,7 @@ _This deep dive pairs with Unit 3 (Drug Discovery), which explained why molecula
 
 - **What you'll learn:** How electrons become qubits; second quantisation, fermion-to-qubit encodings, Pauli-basis measurement, and the variational optimisation loop that finds the ground-state energy.
 - **What you need:** From Deep-Dive 1, you know qubits, superposition, CNOT, and the variational optimisation loop (QAOA). From Deep-Dive 2, you know phase kickback and the idea that quantum operations encode information in phases. Here we add new physics: fermions.
-- **Runnable version:** The companion notebook [`03-drug-discovery.ipynb`](../notebooks/03-drug-discovery.ipynb) runs H₂ VQE on a cloud Quokka.
+- **Runnable version:** The companion notebook [`03-drug-discovery.ipynb`](../notebooks/03-drug-discovery.ipynb) runs a single-geometry, reduced-Hamiltonian H₂ VQE demo on a cloud Quokka.
 
 
 ## Why electrons aren't qubits
@@ -166,7 +166,12 @@ After encoding, each excitation becomes a sequence of CNOTs and parameterised ro
 
 H₂ has only one relevant double excitation — moving both electrons from the **bonding orbital** (lower energy, electron density concentrated between the two nuclei) to the **antibonding orbital** (higher energy, a node between the nuclei). So the entire ansatz is:
 
-![H₂ VQE ansatz circuit: X gate for Hartree–Fock state, Ry(θ) rotation, and CNOT](../figures/h2-vqe-ansatz.png)
+```{figure} ../figures/h2-vqe-ansatz.png
+:name: fig-h2-vqe-ansatz
+:alt: H2 VQE ansatz circuit with an X gate for the Hartree-Fock state, an Ry rotation, and a CNOT.
+
+For H$_2$, the ansatz is intentionally tiny: one parameter is enough to interpolate between the Hartree-Fock reference and the correlated ground state.
+```
 
 One parameter $\theta$, one CNOT. The simplest possible VQE circuit; but it captures the essential physics: at the optimal $\theta$, the energy matches the exact result to chemical accuracy.
 
@@ -194,11 +199,16 @@ For H₂ (one parameter), the landscape is a smooth function of $\theta$ — a s
 
 The complete VQE pipeline:
 
-![The VQE pipeline: from molecule to ground-state energy via a quantum–classical optimisation loop](../figures/vqe-pipeline.png)
+```{figure} ../figures/vqe-pipeline.png
+:name: fig-vqe-pipeline
+:alt: The VQE pipeline from molecular Hamiltonian to ground-state energy through a quantum-classical optimisation loop.
+
+VQE is useful because the quantum computer only evaluates expectation values; the chemistry integrals, outer optimisation loop, and convergence logic stay classical.
+```
 
 Every step is well-defined. The pipeline works for any molecule; only the integrals and the circuit size change. H₂ needs 2–4 qubits. Caffeine needs ~100. A drug-protein complex needs thousands; beyond current hardware but within the scope of fault-tolerant machines.
 
-The companion notebook runs the full H₂ pipeline end-to-end — computing molecular integrals, building the qubit Hamiltonian, constructing the VQE ansatz, and sweeping the bond length to produce the potential energy surface.
+The companion notebook keeps the runnable example narrower than the full theory in this chapter. It starts from a precomputed reduced H₂ Hamiltonian at one geometry, measures the $Z$, $XX$, and $YY$ terms directly on Quokka, and compares the VQE minimum against exact diagonalisation of that same reduced model.
 
 → **See [notebook `03-drug-discovery.ipynb`](../notebooks/03-drug-discovery.ipynb) for the runnable version.**
 

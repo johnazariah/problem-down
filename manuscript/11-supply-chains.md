@@ -77,34 +77,45 @@ Quantum annealing can tunnel *through* barriers. Quantum tunnelling; the same ef
 
 This gives quantum annealing a structural advantage for problems with specific landscape properties: many tall, narrow barriers. Whether real-world scheduling problems have this property is an empirical question; and a contested one.
 
+```{figure} ../figures/qubo-landscape.png
+:name: fig-qubo-landscape
+:alt: A rugged scheduling cost landscape with a local minimum, a better global minimum, and a narrow barrier between them.
+
+QUBO penalties create basins and barriers; annealing is only attractive when the barrier blocking the better schedule is tall but narrow enough that tunnelling could matter.
+```
+
 
 ## Worked Example
 
-Schedule 8 nurses across 4 shifts (Mon-day, Mon-night, Tue-day, Tue-night) in 2 wards, with constraints:
+To keep the runnable circuit honest and readable, the companion notebook uses a **2-nurse, 2-shift micro-example**:
 
-- Each shift/ward needs exactly 1 nurse
-- No nurse works consecutive shifts (11-hour rest)
-- Nurse preferences: 3 nurses prefer day shifts, 2 prefer nights
+- Nurse A and Nurse B must cover Mon-day and Mon-night
+- Hard constraint: Nurse A must take exactly one of the two shifts, so Nurse B takes the other
+- Soft constraint: Nurse A prefers the day shift, so the night assignment carries a small penalty
 
-Formulate as QUBO: 8 nurses × 8 shift-slots = 64 binary variables $x_{n,s}$ (1 if nurse $n$ takes shift-slot $s$, 0 otherwise).
+This gives a two-variable QUBO with binary variables $x_0$ and $x_1$, where $x_0 = 1$ means Nurse A takes Mon-day and $x_1 = 1$ means Nurse A takes Mon-night.
 
 ### Building the penalties
 
-Take the first constraint: "shift-slot $s$ needs exactly 1 nurse." The penalty is:
+The hard constraint is "Nurse A takes exactly one of the two shifts." The penalty is:
 
-$$P \cdot \left(\sum_n x_{n,s} - 1\right)^2$$
+$$P \cdot (x_0 + x_1 - 1)^2$$
 
-If exactly one nurse is assigned, the sum is 1, the penalty is zero. If zero or two nurses are assigned, the penalty is $P$ or $4P$. Sum this over all 8 shift-slots, add similar penalties for the rest constraint (no consecutive shifts), and small preference costs for day/night wishes. The result is a QUBO with ~200 quadratic terms.
+If exactly one shift is assigned to Nurse A, the penalty is zero. If Nurse A takes neither shift or both shifts, the penalty is positive. Add a small preference term $w x_1$ for the undesired night assignment and the full micro-example cost becomes:
+
+$$C(x_0, x_1) = P \cdot (x_0 + x_1 - 1)^2 + w x_1$$
+
+The notebook writes this cost exactly, converts it to a two-qubit Ising Hamiltonian, and checks all four assignments classically before running QAOA.
 
 ### What QAOA produces
 
-With simulated annealing (classical baseline), the solver finds a valid schedule in milliseconds — the problem is small enough to be easy classically. A depth-1 QAOA circuit on the same QUBO finds a valid schedule roughly 40% of the time (the rest of the samples violate at least one constraint). At depth 2, the success rate improves. The point isn't that QAOA beats classical here — it's that the same formulation scales to thousands of nurses where classical solvers struggle.
+The classical optimum is the day-shift assignment for Nurse A. A classically tuned depth-1 QAOA circuit on the same two-qubit Ising Hamiltonian puts almost all of its probability mass on the **feasible** schedules, while slightly favouring the lower-cost day assignment. The point is not performance — the micro-example is trivial classically — but transparency: the penalties, Ising map, and circuit can all be inspected line by line.
 
 ### Back to the hospital
 
-We started with the NHS spending £3 billion a year on agency nurses because schedules are hard to optimise. The QUBO formulation handles the same constraints — shift coverage, rest periods, qualifications, preferences — at any scale. The 8-nurse example is a toy; a real hospital with 200 nurses and 50 shift types produces a QUBO with tens of thousands of variables. That's where quantum annealing's thousands of qubits, or QAOA on fault-tolerant hardware, could make a difference.
+We started with the NHS spending £3 billion a year on agency nurses because schedules are hard to optimise. The notebook's 2-nurse micro-example is tiny on purpose, but the algebraic pattern is the same one used in larger scheduling QUBOs: hard coverage constraints become large penalties, preferences become smaller penalties, and the whole schedule becomes a ground-state search problem. A real hospital with 200 nurses and 50 shift types would still use the same recipe; it would just produce a Hamiltonian with thousands or tens of thousands of binary variables.
 
-→ *The next chapter shows how to formulate constraints as QUBO penalties and build the annealing circuit, with runnable code.*
+→ *The next chapter shows how to formulate constraints as QUBO penalties and build the annealing circuit, and the companion notebook keeps the runnable version at an honest micro-example scale.*
 
 
 ## Reality Check

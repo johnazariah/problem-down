@@ -53,7 +53,12 @@ This approach — embedding a quantum-solved active space inside a classically-s
 
 This unit is the culmination of the book. The complete quantum simulation pipeline draws on everything we've built:
 
-![The complete quantum simulation pipeline for catalyst modelling, with cross-references to earlier units](../figures/climate-pipeline.png)
+```{figure} ../figures/climate-pipeline.png
+:name: fig-climate-pipeline
+:alt: Quantum simulation pipeline for catalyst modelling with cross-references to earlier units.
+
+The capstone workflow is mostly classical plumbing around one hard quantum subproblem: solve the correlated active space, then feed that result back into the embedding loop.
+```
 
 Every step in this pipeline has been introduced in an earlier unit. This chapter shows how they connect into a single, end-to-end workflow.
 
@@ -68,22 +73,19 @@ The key point: **you don't need to simulate the whole surface.** The quantum com
 
 ## Worked Example
 
-Active-space VQE for **CO adsorption on a small iron cluster** (a simplified model of an iron oxide catalyst surface).
+To keep the capstone notebook runnable and honest, the companion notebook uses a **precomputed 2-qubit embedded Hamiltonian** for a toy catalyst active site rather than a full Fe₂O₃ cluster calculation.
 
-Setup:
-- Fe₂O₃ cluster with CO adsorbate
-- Active space: 6 Fe d-orbitals + 4 CO **π/π\*** orbitals (the bonding and antibonding orbitals formed by sideways overlap of atomic p-orbitals) = 10 active orbitals, 10 active electrons
-- After Jordan-Wigner encoding: 20 qubits (or fewer with tapering)
-- Environment: remaining orbitals treated with DFT embedding
+What the notebook actually does:
+1. starts from a classical embedding baseline and a precomputed reduced Hamiltonian;
+2. runs one active-space VQE solve step on that reduced model;
+3. compares the VQE result against exact diagonalisation of the same embedded toy Hamiltonian; and
+4. shows where that quantum solve step sits inside the larger catalyst-screening pipeline.
 
-The notebook computes the binding energy of CO on the cluster using:
-1. Full DFT (fast, inaccurate for the binding site)
-2. Active-space VQE (quantum accuracy for the binding site, DFT for the rest)
-3. Exact active-space diagonalisation (classical benchmark)
+What it does **not** do: build the active space from molecular integrals, construct the bath, or iterate the embedding self-consistently. Those are part of the real workflow, but they are represented structurally rather than executed in the notebook.
 
-The difference between DFT and active-space results is the **correlation energy** in the active site; the part that classical methods get wrong and quantum computers get right.
+That still teaches the central idea. The point of quantum embedding is not that the quantum computer simulates the whole catalyst; it solves the **hard correlated fragment** after the classical front end has compressed the environment into an effective Hamiltonian.
 
-→ *The next chapter builds the quantum embedding pipeline from scratch, and shows you the code.*
+→ *The next chapter builds the embedding workflow conceptually — select, embed, solve, iterate — while the notebook keeps the runnable part focused on the quantum solve step.*
 
 
 ## Reality Check

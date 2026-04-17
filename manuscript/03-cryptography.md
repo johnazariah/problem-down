@@ -129,11 +129,23 @@ The QFT isn't magic; it's interference. Each output state $|k\rangle$ receives c
 
 This is the same physics that creates light and dark bands when light passes through narrow slits: waves that arrive in sync reinforce each other (bright band), waves that arrive out of sync cancel (dark band). The QFT is like a multi-slit experiment with $2^n$ slits, and the period $r$ determines which bands are bright.
 
+```{figure} ../figures/fourier-peaks.png
+:name: fig-fourier-peaks
+:alt: A periodic support pattern in the input register and the corresponding peaks after the quantum Fourier transform.
+
+Period-finding works because a periodic pattern in the input register becomes sharp frequency peaks after the QFT, so measuring $k$ reveals information about $r$.
+```
+
 ### Putting it together
 
 Here is Shor's algorithm as a circuit, drawn at the same box level we used for QAOA in Unit 1:
 
-![Shor's algorithm circuit: Hadamard on input register, oracle Uᶠ spanning both registers, inverse QFT on input register, measurement](../figures/shor-box-circuit.png)
+```{figure} ../figures/shor-box-circuit.png
+:name: fig-shor-box-circuit
+:alt: Shor's algorithm circuit with Hadamards on the input register, an oracle spanning both registers, an inverse QFT, and measurement on the input register.
+
+Shor's circuit follows the same three-act pattern as QAOA: prepare superposition, compute the structured oracle, then use a Fourier transform to make the period measurable.
+```
 
 Two registers. The top four wires are the input register; the bottom four are the output register. Read left to right: Hadamard creates superposition, the oracle $U_f$ evaluates $a^x \bmod N$ in superposition, the inverse QFT extracts the period, and measurement reads out a frequency. Only the input register is measured.
 

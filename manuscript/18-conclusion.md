@@ -1,4 +1,4 @@
-# What Quantum Computers Are Actually For
+# The Quantum Bottleneck
 
 We started with a UPS driver and 20 stops. We end with a catalyst and 50 orbitals. Between them, eight problems — eight bottlenecks — and one recurring pattern.
 

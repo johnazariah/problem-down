@@ -55,7 +55,12 @@ The companion notebook demonstrates a simplified version using discretised price
 
 The diffusion operator $2|s\rangle\langle s| - I$ is implemented as:
 
-![Grover diffusion circuit for 4 qubits](../figures/grover-diffusion-circuit.png)
+```{figure} ../figures/grover-diffusion-circuit.png
+:name: fig-grover-diffusion-circuit
+:alt: Grover diffusion circuit for four qubits.
+
+The diffusion block is the reusable heart of Grover-style algorithms: reflect about the marked set, then reflect about the mean amplitude.
+```
 
 The pattern is: Hadamard all qubits, flip all qubits ($X$), apply a **multi-controlled $Z$** (which flips the phase only when all qubits are $|1\rangle$ — decomposed as $H$ + multi-controlled $X$ + $H$ on the last qubit), then undo the $X$ and $H$ layers. This is the most gate-intensive part of Grover's algorithm, but it's a fixed overhead per iteration.
 

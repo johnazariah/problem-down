@@ -128,7 +128,12 @@ To see phase kickback in its simplest complete form, consider this problem: you'
 
 The circuit:
 
-![Deutsch-Jozsa circuit](../figures/deutsch-jozsa-circuit.png)
+```{figure} ../figures/deutsch-jozsa-circuit.png
+:name: fig-deutsch-jozsa-circuit
+:alt: Deutsch-Jozsa circuit with a superposition step, oracle, and final Hadamard before measurement.
+
+This is phase kickback in its cleanest form: the oracle writes information into a phase, and the final Hadamard turns that phase difference into a measurable bit.
+```
 
 1. Prepare $|0\rangle|{-}\rangle$ (the second qubit — called an **ancilla**, a helper qubit used as scratch space — is set to $|{-}\rangle$ via $X$ then $H$)
 2. Apply $H$ to the input qubit → superposition $|{+}\rangle|{-}\rangle$
@@ -192,11 +197,21 @@ Each qubit in the output depends on the input through a phase $e^{2\pi i x / 2^\
 
 For 3 qubits, the circuit is:
 
-![3-qubit Quantum Fourier Transform circuit](../figures/qft-3qubit-circuit.png)
+```{figure} ../figures/qft-3qubit-circuit.png
+:name: fig-qft-3qubit-circuit
+:alt: Three-qubit quantum Fourier transform circuit built from Hadamards and controlled phase gates.
+
+The QFT factorises into Hadamards and controlled phase rotations, which is why it can be built with only $O(n^2)$ gates instead of a full exponential matrix.
+```
 
 where $R_k$ applies a controlled phase of $e^{2\pi i / 2^k}$. The QFT naturally produces its output qubits in reverse order, so a final layer of SWAP gates puts them right:
 
-![3-qubit QFT with bit-reversal swap](../figures/qft-3qubit-with-swap.png)
+```{figure} ../figures/qft-3qubit-with-swap.png
+:name: fig-qft-3qubit-with-swap
+:alt: Three-qubit quantum Fourier transform circuit with a final swap layer for bit reversal.
+
+The final swap layer reverses the QFT's natural bit order so the output register reads in the usual most-significant-bit to least-significant-bit order.
+```
 
 Gate count: $n$ Hadamards + $n(n-1)/2$ controlled rotations = $O(n^2)$ gates. Compare with the classical Fast Fourier Transform (FFT): $O(n \cdot 2^n)$ operations. The QFT is exponentially faster; but you can't read out the full Fourier transform (measurement collapses it to one value).
 
@@ -210,7 +225,12 @@ Each output state $|k\rangle$ receives contributions from all the periodic input
 
 For our $N = 15$ example (period $r = 4$, register size $2^n = 16$), the four periodic inputs $x = 0, 4, 8, 12$ each contribute an arrow:
 
-![Phase arrows: at k=4 (a multiple of 16/r), all four arrows align constructively; at k=3, they point in four different directions and cancel](../figures/phase-arrows-qft.png)
+```{figure} ../figures/phase-arrows-qft.png
+:name: fig-phase-arrows-qft
+:alt: Phase arrows showing constructive alignment at one frequency and cancellation at another.
+
+When the phases line up, the arrows add; when they spread around the circle, they cancel. That is the whole reason the QFT can see a period.
+```
 
 **Left ($k = 4$):** The four arrows point at $0°$, $0°$, $0°$, $0°$. Why? Because the phase for input $x$ is $e^{2\pi i \cdot x \cdot 4/16} = e^{2\pi i \cdot x/4}$, and when $x$ is a multiple of 4, the exponent is a whole number of turns around the circle — every arrow lands back at $0°$. They all add up: constructive interference. High probability.
 

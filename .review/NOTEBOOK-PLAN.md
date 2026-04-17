@@ -96,10 +96,10 @@ Every notebook must clear these gates in order:
 |----------|---------|---------------|-------------------|---------------------|-------------|
 | `01-logistics.ipynb` | passing | Amber | strong pedagogical demo; likely under-labelled rather than wrong | `Faithful worked example` | validate links and claims, then add a semantic check and lock classification |
 | `02-cryptography.ipynb` | passing | Green | rewritten as an honest compiled period-finding toy for the $N = 15$, $a = 7$ example | `Toy demonstration` | locked unless later promoted to genuine modular-exponentiation period finding |
-| `03-drug-discovery.ipynb` | passing | Amber | useful VQE anatomy demo that overclaims geometry range and measurement fidelity | `Toy demonstration` or single-geometry `Faithful worked example` | narrow the promise or implement the missing XX/YY measurement path |
+| `03-drug-discovery.ipynb` | passing | Green | rewritten as an honest single-geometry H2 VQE anatomy demo with direct XX and YY measurements and an exact-diagonalisation benchmark for the reduced model | `Toy demonstration` | locked unless later promoted to a full geometry-dependent chemistry pipeline |
 | `04-machine-learning.ipynb` | passing | Amber | conceptually strong and probably close to done | `Faithful worked example` | validate kernel behavior, links, and quantitative claims, then add semantic coverage |
 | `05-finance.ipynb` | passing | Green | rewritten as an honest classical-pricing notebook plus compiled toy QAE phase readout for exercise probability | `Toy demonstration` | locked unless later promoted to full payoff-encoding amplitude estimation |
-| `06-supply-chains.ipynb` | passing | Red | readable toy with untrustworthy QUBO-to-Ising mapping and scale framing | `Toy demonstration` | repair the mapping and explicitly frame it as a micro-example |
+| `06-supply-chains.ipynb` | passing | Green | rewritten as an honest 2-nurse, 2-shift QUBO micro-example with an exact Ising map and tuned one-layer QAOA | `Toy demonstration` | locked unless later promoted to a larger but still truthful scheduling instance |
 | `07-materials-science.ipynb` | passing | Green | rewritten as an honest compiled phase-readout notebook anchored to the 2-site Hubbard benchmark | `Toy demonstration` | locked unless later promoted to faithful controlled-time-evolution Hubbard simulation |
 | `08-climate-energy.ipynb` | passing | Amber | strong capstone structure with inherited analytical shortcuts | `Pipeline illustration` unless missing measurement work is implemented | relabel as a pipeline demonstration and align claims with what is actually computed |
 
@@ -164,10 +164,10 @@ Every notebook must clear these gates in order:
 
 ### Now
 
-1. Repair the QUBO-to-Ising story in `06-supply-chains.ipynb`.
-2. Narrow or deepen `03-drug-discovery.ipynb` until the VQE claims are true.
-3. Lock the capstone framing for `08-climate-energy.ipynb`.
+1. Lock the capstone framing for `08-climate-energy.ipynb`.
+2. Promote `01-logistics.ipynb` and `04-machine-learning.ipynb` to green.
 
 ### After that
 
-4. Promote `01-logistics.ipynb` and `04-machine-learning.ipynb` to green.
+3. Notebook link and navigation sweep.
+4. Final semantic assertion pass across all quantitative notebooks.

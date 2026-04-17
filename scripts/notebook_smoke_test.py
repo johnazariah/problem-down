@@ -53,9 +53,16 @@ def smoke_unit_2() -> None:
 
 
 def smoke_unit_3() -> None:
-    ns = exec_code_cells(NOTEBOOKS / "03-drug-discovery.ipynb", [1, 2, 3, 4])
-    energy = ns["compute_energy"](0.5, ns["coeffs"], shots=128)
+    ns = exec_code_cells(NOTEBOOKS / "03-drug-discovery.ipynb", [1, 2, 3])
+    energy = ns["compute_energy"](ns["np"].pi, ns["coeffs"], shots=512)
     assert isinstance(energy, float), f"Unexpected energy type: {type(energy)!r}"
+    assert energy < ns["E_hf"], (
+        f"Drug-discovery VQE energy did not beat Hartree-Fock: {energy:.4f} >= {ns['E_hf']:.4f}"
+    )
+    assert abs(energy - ns["E_exact"]) <= 0.05, (
+        f"Drug-discovery reduced-model energy drifted too far from exact diagonalisation: "
+        f"{energy:.4f} vs {ns['E_exact']:.4f}"
+    )
 
 
 def smoke_unit_4() -> None:
@@ -82,6 +89,15 @@ def smoke_unit_5() -> None:
 def smoke_unit_6() -> None:
     ns = exec_code_cells(NOTEBOOKS / "06-supply-chains.ipynb", [1, 2, 3])
     assert_counts(ns["results"], min_total=1000)
+    assert ns["best_outcome"] in ns["feasible_states"], (
+        f"Unexpected dominant supply-chains outcome: {ns['best_outcome']}"
+    )
+    assert ns["feasible_probability"] >= 0.85, (
+        f"Feasible schedules are not dominant enough: {ns['feasible_probability']:.3f}"
+    )
+    assert ns["qaoa_expected_cost"] <= 1.0, (
+        f"Supply-chains expected cost too high: {ns['qaoa_expected_cost']:.3f}"
+    )
 
 
 def smoke_unit_7() -> None:
@@ -97,6 +113,14 @@ def smoke_unit_7() -> None:
 def smoke_unit_8() -> None:
     ns = exec_code_cells(NOTEBOOKS / "08-climate-energy.ipynb", [1, 2, 3])
     assert isinstance(ns["E_vqe"], float), f"Unexpected VQE energy type: {type(ns['E_vqe'])!r}"
+    assert ns["E_vqe"] < ns["E_dft"], (
+        f"Climate notebook VQE solve did not improve on the classical baseline: "
+        f"{ns['E_vqe']:.4f} >= {ns['E_dft']:.4f}"
+    )
+    assert abs(ns["E_vqe"] - ns["E_exact_active"]) <= 0.06, (
+        f"Climate notebook embedded solve drifted too far from exact diagonalisation: "
+        f"{ns['E_vqe']:.4f} vs {ns['E_exact_active']:.4f}"
+    )
 
 
 SMOKE_TESTS = {

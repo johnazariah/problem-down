@@ -28,7 +28,12 @@ A **quantum feature map** is a parameterised circuit $U_\phi(x)$ that maps a cla
 
 Encode each feature independently:
 
-![Product encoding: independent Ry rotations on each qubit](../figures/product-encoding.png)
+```{figure} ../figures/product-encoding.png
+:name: fig-product-encoding
+:alt: Product encoding with independent Ry rotations on each qubit.
+
+Independent single-qubit rotations create a feature map with no entanglement, which is why this kernel behaves like a classical product kernel.
+```
 
 This produces a **product state** — a tensor product of independent single-qubit states — with no entanglement. The feature space is just two independent Bloch spheres. The kernel $K(x, x')$ is the product of two cosines; equivalent to a classical kernel. No quantum advantage.
 
@@ -36,7 +41,12 @@ This produces a **product state** — a tensor product of independent single-qub
 
 Entanglement is what makes quantum feature maps non-classical. Add a CNOT and an interaction term:
 
-![ZZ feature map: Ry encoding + CNOT–Rz–CNOT entangling block](../figures/zz-feature-map.png)
+```{figure} ../figures/zz-feature-map.png
+:name: fig-zz-feature-map
+:alt: ZZ feature map with Ry encoding and a CNOT-Rz-CNOT entangling block.
+
+Entangling the qubits makes the feature map sensitive to nonlinear feature interactions rather than just the features one by one.
+```
 
 The $R_Z(x_1 \cdot x_2)$ gate, sandwiched between CNOTs, is exactly the ZZ interaction from Deep-Dive 1 (QAOA). But here, instead of encoding a graph edge cost, it encodes a *nonlinear feature interaction*. The kernel now depends on products of features; it goes beyond what any linear or product encoding can represent.
 
@@ -59,7 +69,12 @@ To compute $K(x, x')$:
 2. Apply $U_\phi(x')^\dagger$; the *adjoint* (reverse order, negate all angles)
 3. Measure; the probability of getting $|00\ldots0\rangle$ is $K(x, x')$
 
-![Kernel circuit: U(x) followed by U(x')† and measurement](../figures/kernel-circuit.png)
+```{figure} ../figures/kernel-circuit.png
+:name: fig-kernel-circuit
+:alt: Kernel circuit with U(x), then the adjoint U(x') dagger, followed by measurement.
+
+Kernel evaluation is just an overlap test: prepare one encoded state, undo the other, then ask how often the circuit returns to $|0\cdots0\rangle$.
+```
 
 Run this $N_\text{shots}$ times. Count how often you get $|00\rangle$. That fraction is $K(x, x')$.
 

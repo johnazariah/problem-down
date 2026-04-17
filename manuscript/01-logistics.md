@@ -36,7 +36,12 @@ Here's why MaxCut is hard. Each node is coloured one of two colours, so an $n$-n
 
 The problem is the search space. Every node is a binary decision: red or blue, 0 or 1. The decisions interact; the value of your choice for node $i$ depends on what you chose for nodes $j$, $k$, $l$ — every node that shares an edge with $i$. These interactions create a rugged *cost landscape*: imagine a mountainous terrain where altitude represents cost and you're trying to find the lowest valley. The landscape is a function over $\{0,1\}^n$ with exponentially many local optima — valleys that look good from nearby but aren't the deepest.
 
-![A rugged cost landscape with many local optima (red dots) and one global optimum (green star)](../figures/cost-landscape.png)
+```{figure} ../figures/cost-landscape.png
+:name: fig-cost-landscape
+:alt: A rugged cost landscape with many local optima and one global optimum.
+
+Local search can improve a route assignment one move at a time and still never cross the barrier to the true global optimum.
+```
 
 Classical heuristics navigate this landscape by making local moves. Flip one node's colour. If the cut count improves, keep it; otherwise, try another flip. Simulated annealing adds randomness; occasionally accept a worse solution to escape local optima, gradually reducing the randomness as you "cool down."
 
@@ -112,7 +117,12 @@ A quantum circuit is read left to right, like sheet music. Each horizontal line 
 
 Here's what that looks like in practice. The circuit below implements **quantum teleportation** — moving the state of one qubit to another using entanglement and two classical bits. You don't need to understand it yet; just notice the structure:
 
-![Quantum teleportation circuit: three qubit wires read left to right, with Hadamard and CNOT gates creating entanglement, measurements, and classically controlled corrections](../figures/teleportation-circuit.png)
+```{figure} ../figures/teleportation-circuit.png
+:name: fig-teleportation-circuit
+:alt: Quantum teleportation circuit with three qubit wires, entangling gates, measurements, and classically controlled corrections.
+
+This is a reading guide for every circuit in the book: wires are qubits, gates act left to right, and measurements can feed classical information forward to later operations.
+```
 
 Three wires, three qubits. Gates ($H$, CNOT) sit on the wires at specific moments in time. The grey arrows carry classical measurement results down to later gates. Read left to right, the circuit tells you exactly what happens and when — just like a musical score tells musicians what to play and when. This is the visual language for every quantum algorithm in the book.
 
@@ -131,7 +141,12 @@ With that vocabulary, let's look at the QAOA circuit.
 
 Here is the entire QAOA algorithm for our three-node MaxCut problem:
 
-![QAOA circuit: Hadamard initialisation, then repeated rounds of Cost and Mix with different angles each round, then measurement](../figures/qaoa-box-circuit.png)
+```{figure} ../figures/qaoa-box-circuit.png
+:name: fig-qaoa-box-circuit
+:alt: QAOA circuit with Hadamard initialisation, repeated Cost and Mix rounds, and final measurement.
+
+QAOA repeats one simple rhythm: imprint the cost as phases, mix neighbouring bit strings so those phases interfere, then measure a likely-good solution.
+```
 
 Read left to right. Initialise, then alternate between two boxes — Cost and Mix — for $p$ rounds, each round with its own pair of angles ($\gamma_k$, $\beta_k$). Then measure. That's the entire algorithm. The angles are different in every round: round 1 uses $\gamma_1, \beta_1$; round 2 uses $\gamma_2, \beta_2$; and so on. There are $2p$ parameters in total, and choosing them well is the whole game. We'll get to that. First, let's open each box.
 
@@ -171,7 +186,12 @@ Let's solve MaxCut on a triangle; three nodes, three edges. The optimal cut is 2
 
 ### The graph
 
-![MaxCut triangle graph: nodes 0, 1, 2 with edges (0,1), (0,2), (1,2)](../figures/maxcut-triangle-graph.png)
+```{figure} ../figures/maxcut-triangle-graph.png
+:name: fig-maxcut-triangle-graph
+:alt: Triangle graph with nodes 0, 1, 2 and edges between every pair.
+
+The triangle is small enough to solve exactly yet still large enough to show a genuine MaxCut optimum of 2.
+```
 
 Three nodes, three edges: (0,1), (0,2), (1,2). Each node gets one qubit.
 

@@ -91,7 +91,12 @@ This requires 2 CNOTs mixed with single-qubit rotations — a known decompositio
 
 **Interaction terms** $n_{i\uparrow} n_{i\downarrow}$: after encoding, each becomes $\frac{(1-Z_{i\uparrow})(1-Z_{i\downarrow})}{4}$. This is diagonal; the time evolution is a $ZZ$ phase gate, exactly the CNOT sandwich from Deep-Dive 1:
 
-![Trotter ZZ interaction term: CNOT–Rz(U·dt/2)–CNOT](../figures/trotter-zz-interaction.png)
+```{figure} ../figures/trotter-zz-interaction.png
+:name: fig-trotter-zz-interaction
+:alt: Trotter ZZ interaction term implemented as a CNOT-Rz-CNOT sequence.
+
+The interaction term is diagonal, so the Hubbard Trotter step reuses the same ZZ phase gadget that already appeared in QAOA and VQE.
+```
 
 Every piece of the Trotter circuit is built from gates we already know.
 
