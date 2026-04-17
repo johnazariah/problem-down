@@ -61,7 +61,8 @@ project:
         - file: manuscript/16-quantum-embedding.md
         - file: notebooks/08-climate-energy.ipynb
     - file: manuscript/17-error-correction.md
-    - file: manuscript/18-conclusion.md
+    - file: manuscript/18-inside-qec.md
+    - file: manuscript/19-conclusion.md
 
 site:
   template: book-theme
