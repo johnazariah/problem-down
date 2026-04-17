@@ -212,7 +212,7 @@ Let's be honest about where QAOA stands; and where it's heading.
 
 **At low depth, QAOA underperforms classical methods.** For depth-1 QAOA on MaxCut, the guaranteed approximation ratio is 0.6924 for 3-regular graphs. The best classical polynomial-time algorithm (Goemans-Williamson) achieves 0.878. If you can only run one or two rounds, you're better off classical.
 
-**At high depth, QAOA is competitive.** Performance improves monotonically with depth $p$, and recent work has computed exact QAOA performance through depth $p = 20$ for MaxCut and $p = 13$ for harder constraint-satisfaction problems. For these specific problem families, QAOA at sufficient depth matches or exceeds the best known quantum alternatives. Whether this competitiveness extends to other combinatorial problems is an open question.
+**At high depth, QAOA is competitive.** Performance improves monotonically with depth $p$, and recent work has computed exact QAOA performance through depth $p = 20$ for MaxCut and $p = 13$ for harder constraint-satisfaction problems. For these specific problem families, QAOA at sufficient depth is competitive with the best known quantum alternatives. Whether this extends to other combinatorial problems remains open.
 
 **The hardware is.** Today's quantum computers can run QAOA at $p = 1$ or $p = 2$ on a few dozen noisy qubits. The algorithm shines at $p \geq 8$. Closing this gap requires fault-tolerant quantum computers with $\sim 10^4$ logical qubits.
 

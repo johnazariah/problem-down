@@ -75,15 +75,15 @@ The alternative: **variational quantum ML** (parameterised quantum circuits trai
 
 ## Worked Example
 
-We build a quantum kernel classifier for a synthetic 2D dataset: two classes arranged in a pattern (two interleaved spirals) that's separable by a quantum feature map but not by a linear classifier.
+We build a quantum kernel classifier for a synthetic 2D dataset: two classes arranged in a pattern (two interleaved half-moons) that's separable by a quantum feature map but not by a linear classifier.
 
-1. Generate synthetic data (two interleaved spirals, 100 points per class)
+1. Generate synthetic data (two interleaved half-moons, 40 points)
 2. Define a quantum feature map: encode each 2D point $(x_1, x_2)$ into a 2-qubit state using parameterised rotations and entanglement
 3. Compute the quantum kernel matrix by running circuits on Quokka
 4. Train a classical SVM with the quantum kernel
 5. Compare the decision boundary with a classical RBF (radial basis function) kernel, which measures similarity as a Gaussian that decays with distance: $K(x,x') = e^{-\gamma\|x - x'\|^2}$
 
-On this dataset, the quantum kernel achieves ~95% classification accuracy — comparable to the classical RBF kernel. The decision boundaries look similar, which is the honest result: for this toy 2D problem, both kernels have enough expressive power. Whether a quantum kernel could outperform in higher dimensions depends on whether the data has structure that lives naturally in the entangled quantum feature space — and whether the encoding remains feasible. That's the open question the Reality Check addresses.
+For this toy 2D problem, both kernels classify the data well — the quantum kernel doesn't outperform the classical RBF kernel. That's the honest result: with only two features, both kernels have enough expressive power. Whether a quantum kernel could outperform in higher dimensions depends on whether the data has structure that lives naturally in the entangled quantum feature space — and whether the encoding remains feasible. That's the open question the Reality Check addresses.
 
 → *The next chapter builds the quantum kernel pipeline from scratch, and shows you the code.*
 
