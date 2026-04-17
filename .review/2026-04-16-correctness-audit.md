@@ -255,3 +255,43 @@ At least two Action Plan items still appear open:
 The Tier 2 edits that *did* land are in good shape. I am comfortable signing off on this commit as a clean readability pass with no new technical problems introduced.
 
 But Tier 2 as a whole still looks **partially complete**, not fully closed.
+
+## Tier 2 follow-up verification addendum - 2026-04-17
+
+I reviewed the subsequent commit `4a4814c85a2b9f507d35fe42d8f4981f6a7f41d4`, which was intended to close the remaining Tier 2 items.
+
+### Manuscript status
+
+Most of the targeted manuscript fixes landed cleanly:
+
+- the dense orbital / Hilbert-space setup in Unit 3 is now split into two beats;
+- the anticommutation example in Deep-Dive 3 is now aligned with the displayed anticommutation relation;
+- the tapering reminder is now present at first use in Unit 8;
+- Deep-Dive 6 now has the missing opening recap / bridge; and
+- Units 5, 6, and 7 now have stronger Reality Check closing summaries.
+
+I did not see any new mathematical or conceptual regressions introduced by those prose changes.
+
+### Remaining issue
+
+I do still have one residual Tier 2 manuscript concern.
+
+- `manuscript/03-cryptography.md`: the top-of-chapter ECC comparison was tightened correctly to `P-256`, but the Reality Check line still says: "new circuit designs (2026) reduce the estimated time to break 256-bit ECC to minutes on a fault-tolerant machine." That was the original Tier-2 concern: the Reality Check sentence is still broader than necessary and loses the comparison point / scope that motivated the cleanup in the first place.
+
+So I would not mark `T2-1` fully closed yet.
+
+### Review-record hygiene regressions
+
+This commit also regressed the review-file discipline that the repo had already settled on:
+
+- the standalone file `/.review/2026-04-17-GPT-5.4-XHigh-tier2-remaining-items.md` still exists instead of being subsumed into this main audit; and
+- `/.review/2026-04-16-Gemini-3.1-Pro-Preview.md` now contains the same Tier 2 verification report twice.
+
+These are process / record-keeping issues rather than manuscript-content issues, but they should not be treated as the desired end state for the review trail.
+
+### Current assessment
+
+This follow-up commit improves the manuscript and closes most of the previously open Tier 2 items. But it is **not** a fully clean Tier 2 closure:
+
+- `T2-1` still looks partially open in the cryptography Reality Check; and
+- the single-audit-file review workflow has regressed.

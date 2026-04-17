@@ -225,7 +225,7 @@ Gidney and Ekerå (2021) estimated that factoring a 2,048-bit RSA key would requ
 
 That estimate has dropped dramatically. The **Pinnacle architecture** (2026) uses *quantum LDPC codes* — a newer approach that packs more logical qubits per physical qubit — to reduce the cost to under **100,000 physical qubits**; a 200× improvement. The largest quantum computers in 2026 have a few thousand physical qubits, so we're still short; but 100K qubits is within plausible reach of hardware roadmaps in the next 5–10 years. The threat timeline just got much shorter.
 
-On the elliptic curve side, new circuit designs (2026) reduce the estimated time to break 256-bit ECC to minutes on a fault-tolerant machine.
+On the elliptic curve side, new circuit designs (2026) reduce the estimated time to break P-256 — the most widely deployed curve, with security comparable to RSA-2048 — to minutes on a fault-tolerant machine.
 
 **The post-quantum migration.** The threat is taken seriously. NIST finalised its first set of post-quantum cryptography standards in 2024: CRYSTALS-Kyber (key encapsulation) and CRYSTALS-Dilithium (digital signatures), both based on lattice problems believed to be hard for quantum computers. The U.S. government has mandated that federal systems begin migrating to post-quantum cryptography. Google, Cloudflare, and Apple have already deployed post-quantum key exchange in their products.
 
