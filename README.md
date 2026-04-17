@@ -1,13 +1,23 @@
-# The Problem With Quantum
+# The Quantum Bottleneck
 
-*What quantum computers are really for*
+*Real Problems and their Quantum Solutions*
 
-Each unit starts with an industry problem people already care about; a dollar figure, a bottleneck, a human cost; then pulls in only the quantum machinery needed to solve it.
+**Eight problems from logistics to climate — and the algorithms that could solve them.**
 
-## Units
+Most quantum computing books start with a qubit. This one starts with a delivery truck.
 
-| # | Unit | The Hook | The Quantum Angle |
-|---|------|----------|-------------------|
+Each unit opens with an industry problem — a dollar figure, a bottleneck, a human cost — then pulls in only the quantum machinery needed to address it. No qubit-first pedagogy. No hype. Every chapter includes a Reality Check that states plainly what works today and what doesn't.
+
+## Two ways to read this book
+
+**The fast path.** Read the application chapters (Units 1–8). You'll understand what quantum computers could do for logistics, cryptography, drug discovery, machine learning, finance, supply chains, materials science, and climate — and which applications are close to practical.
+
+**The full path.** Read the application chapters *and* the deep dives. You'll understand QAOA, Shor's algorithm, VQE, quantum kernels, amplitude estimation, QUBO, QPE, and quantum embedding — not as abstractions, but as tools built to solve specific problems.
+
+## The eight units
+
+| # | Unit | The Problem | The Quantum Angle |
+|---|------|-------------|-------------------|
 | 1 | Logistics | UPS saves $50M/year shaving 1 mile off each route | QAOA on graph problems |
 | 2 | Cryptography | Your bank uses a trapdoor quantum computers can kick open | Shor's algorithm / period-finding |
 | 3 | Drug Discovery | $2B and 12 years per new drug | VQE / molecular simulation |
@@ -17,19 +27,24 @@ Each unit starts with an industry problem people already care about; a dollar fi
 | 7 | Materials Science | Why room-temp superconductivity is so hard to predict | QPE / Hubbard models |
 | 8 | Climate & Energy | Designing a better catalyst for carbon capture | Quantum simulation / embedding |
 
-## Structure
+## Companion notebooks
 
+Every unit has a Jupyter notebook that runs the algorithm on a real quantum backend. These are the same algorithms described in the text, shrunk to a size that fits on current hardware.
+
+## Companion books
+
+- [**The Quokka Cookbook**](https://github.com/johnazariah/quokka-cookbook) — runnable QASM recipes for Quokka. This book tells you *why*; the Cookbook shows you *how*.
+- [**From Molecules to Qubits**](https://github.com/johnazariah/encodings-book) — fermion-to-qubit encodings for quantum chemistry. Units 3, 7, and 8 bridge to this.
+
+## Building
+
+```bash
+# PDF
+bash build-pdf.sh
+
+# Website
+myst build --html
 ```
-manuscript/    — chapter drafts (Markdown)
-notebooks/     — companion Jupyter notebooks (one per unit)
-figures/       — diagrams, plots, visualisations
-SPEC.md        — project specification
-```
-
-## Related projects
-
-- [The Quokka Cookbook](https://github.com/johnazariah/quokka-cookbook) — runnable QASM recipes for Quokka (the “how”)
-- [From Molecules to Qubits](https://github.com/johnazariah/encodings-book) — deep dive on encodings for quantum chemistry simulation
 
 ## License
 

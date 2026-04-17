@@ -6,7 +6,7 @@ _This deep dive pairs with Unit 7 (Materials Science), which explained why the H
 
 - **What you'll learn:** How QPE extracts exact energy eigenvalues, how Trotterisation approximates time evolution as a circuit, and how to estimate the resources needed for real materials simulation.
 - **What you need:** From Deep-Dive 2 (Shor), you know the QFT and phase kickback. From Deep-Dive 1 (QAOA), you know the ZZ gate and CNOT sandwich. Here we combine them for Hamiltonian simulation.
-- **Runnable version:** The companion notebook [`07-materials-science.ipynb`](../notebooks/07-materials-science.ipynb) runs QPE on a 2-site Hubbard model on a cloud Quokka.
+- **Runnable version:** The companion notebook [`07-materials-science.ipynb`](../notebooks/07-materials-science.ipynb) classically benchmarks the 2-site Hubbard model and then runs a compiled toy QPE phase-readout circuit on a cloud Quokka.
 
 
 ## QPE: from phases to eigenvalues

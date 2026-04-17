@@ -75,6 +75,11 @@ def smoke_unit_6() -> None:
 def smoke_unit_7() -> None:
     ns = exec_code_cells(NOTEBOOKS / "07-materials-science.ipynb", [1, 2, 3])
     assert_counts(ns["results"], min_total=1000)
+    assert ns["best_outcome"] == ns["expected_peak"], (
+        f"Unexpected dominant phase peak: {ns['best_outcome']} != {ns['expected_peak']}"
+    )
+    assert ns["peak_probability"] >= 0.6, f"Peak too diffuse: {ns['peak_probability']:.3f}"
+    assert ns["grid_error"] <= 0.25, f"Grid approximation too large: {ns['grid_error']:.4f}"
 
 
 def smoke_unit_8() -> None:

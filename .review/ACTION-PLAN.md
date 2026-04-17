@@ -10,7 +10,7 @@ Historical note: this file previously tracked the T0 / T0.5 / T1 / T2 review bac
 
 ## North Star
 
-Ship **The Problem With Quantum** as a book for smart non-specialists that is:
+Ship **The Quantum Bottleneck** as a book for smart non-specialists that is:
 
 - problem-first rather than qubit-first;
 - technically trustworthy and honest about current limits;
@@ -39,7 +39,7 @@ The book is ready for release when all of the following are true:
 
 ### Decisions to lock (30-minute session)
 
-- Confirm the current title/subtitle in `myst.yml`: **The Problem With Quantum** / **What quantum computers are really for**.
+- Confirm the current title/subtitle in `myst.yml`: **The Quantum Bottleneck** / **Real Problems and their Quantum Solutions**.
 - Confirm that the website is the source-of-truth reading experience, with the PDF treated as a polished derivative.
 - Confirm that `manuscript/17-error-correction.md` remains a numbered late-book chapter (recommendation: keep it — it earns its place as the foundation for every Reality Check).
 - Freeze the current table of contents as represented in `myst.yml` and mirrored in `README.md`.

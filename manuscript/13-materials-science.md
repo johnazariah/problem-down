@@ -105,15 +105,15 @@ The Pinnacle architecture (Unit 2) could dramatically reduce these numbers if qu
 
 ## Worked Example
 
-Ground state of the **2-site Hubbard model** via QPE. Sweep the $U/t$ ratio from 0 (free electrons) to 10 (strongly interacting) and observe the **crossover from delocalised to localised behaviour** (a true Mott phase transition emerges only in larger lattices, but the crossover is clearly visible even at 2 sites).
+Classically benchmark the **2-site Hubbard model** across $U/t \in [0, 10]$, then feed one benchmark ground-state energy into a compiled **3-bit QPE toy**. The sweep shows the **crossover from more delocalised to more localised behaviour** (a true Mott phase transition emerges only in larger lattices). The compiled circuit then shows what QPE is for: reading out an eigenphase once controlled time evolution exists.
 
-The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, representable with 4 qubits after Jordan-Wigner encoding. Small enough to run, large enough to show real physics:
+The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, representable with 4 qubits after Jordan-Wigner encoding. Small enough to benchmark exactly, and still useful for showing the structure of the quantum algorithm:
 
-- At $U/t = 0$: ground state is delocalised (metallic)
-- At $U/t \gg 1$: electrons localise, one per site (insulating)
-- The transition between them is visible in the ground-state energy curve
+- At $U/t = 0$: the ground state is more delocalised
+- At $U/t \gg 1$: the benchmark ground state becomes more localised, one electron per site
+- The notebook's QPE step is a **toy phase-readout demonstration**, not a full controlled-$e^{-iHt}$ Hubbard simulation
 
-→ *The next chapter builds QPE and the Trotter circuit from the components introduced in earlier deep dives, with runnable code.*
+→ *The next chapter builds QPE and the Trotter circuit from the components introduced in earlier deep dives, and the companion notebook shows the phase-readout part honestly on a compiled toy.*
 
 
 ## Reality Check

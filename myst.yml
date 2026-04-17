@@ -2,8 +2,8 @@
 version: 1
 project:
   id: 01c53116-a752-44e6-a733-12d60b99e96a
-  title: The Problem With Quantum
-  subtitle: What quantum computers are really for
+  title: The Quantum Bottleneck
+  subtitle: Real Problems and their Quantum Solutions
   authors:
     - name: John Azariah
       affiliation: Centre for Quantum Software & Information, University of Technology Sydney
@@ -67,4 +67,4 @@ project:
 site:
   template: book-theme
   options:
-    logo_text: The Problem With Quantum
+    logo_text: The Quantum Bottleneck

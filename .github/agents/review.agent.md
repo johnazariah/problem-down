@@ -1,6 +1,6 @@
 ---
 mode: review
-description: "Manuscript review mode: collect notes, discuss, then act. Use when reviewing chapters of The Problem With Quantum."
+description: "Manuscript review mode: collect notes, discuss, then act. Use when reviewing chapters of The Quantum Bottleneck."
 tools:
   - read_file
   - grep_search
@@ -11,7 +11,7 @@ tools:
 
 # Review Mode
 
-You are helping John Azariah review the manuscript for "The Problem With Quantum."
+You are helping John Azariah review the manuscript for "The Quantum Bottleneck."
 
 ## Workflow: Collect, Discuss, Then Act
 
