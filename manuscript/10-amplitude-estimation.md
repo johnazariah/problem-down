@@ -47,7 +47,7 @@ After $k_\text{opt} = \lfloor \pi / (4\theta) \rfloor$ iterations, the state is 
 
 ### The oracle circuit
 
-For the financial application (Unit 5), the full construction encodes the normalised payoff into an ancilla amplitude: given a quantum register encoding a discretised price $|x\\rangle$, rotate an ancilla qubit by an angle whose sine equals the normalised payoff $\\max(\\text{price}(x) - K, 0) / P_{\\max}$. QAE then extracts $\\mathbb{E}[f(X)]$ — the normalised expected payoff — which is rescaled by $P_{\\max}$ to give the option price.
+For the financial application (Unit 5), the full construction encodes the normalised payoff into an ancilla amplitude: for each discretised price $|x\rangle$, rotate an ancilla qubit so that the state becomes $\sqrt{1 - f(x)}|0\rangle + \sqrt{f(x)}|1\rangle$, where $f(x) = \max(\text{price}(x) - K, 0) / P_{\max}$ is the normalised payoff. The probability of measuring the ancilla in $|1\rangle$ is then $f(x)$ (not $f(x)^2$), so QAE extracts $\mathbb{E}[f(X)]$ — the normalised expected payoff — which is rescaled by $P_{\max}$ to give the option price.
 
 The companion notebook demonstrates a simplified version using a comparator oracle that marks in-the-money states ($S_T > K$). This estimates the exercise probability rather than the full expected payoff, but it illustrates the same Grover + QAE pipeline with a simpler circuit.
 
@@ -66,7 +66,7 @@ The pattern is: Hadamard all qubits, flip all qubits ($X$), apply a **multi-cont
 
 Grover's algorithm uses $G$ to *find* marked items. But the angle $\theta$; which determines how many iterations are needed; also encodes the *fraction* of marked items: $\sin^2\theta = M/N$.
 
-**Quantum Amplitude Estimation** (QAE) extracts $\theta$ directly, without finding any specific marked item. This is exactly what we need for Monte Carlo pricing: we don't want a specific market scenario, we want the *probability* of favourable scenarios (which encodes the expected payoff).
+**Quantum Amplitude Estimation** (QAE) extracts $\theta$ directly, without finding any specific marked item. This is exactly what we need for Monte Carlo pricing: we don't want a specific market scenario, we want the *expected payoff* across all scenarios.
 
 ### QPE on the Grover operator
 
