@@ -113,11 +113,7 @@ The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, rep
 - At $U/t \gg 1$: electrons localise, one per site (insulating)
 - The transition between them is visible in the ground-state energy curve
 
-→ **See [notebook `07-materials-science.ipynb`](../notebooks/07-materials-science.ipynb) for the runnable version.**
-
-
-
-→ *Want to understand the algorithm in detail? Read the next chapter.*
+→ *The next chapter builds QPE and the Trotter circuit from the components introduced in earlier deep dives, with runnable code.*
 
 
 ## Reality Check

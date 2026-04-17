@@ -88,11 +88,7 @@ Schedule 8 nurses across 4 shifts (Mon-day, Mon-night, Tue-day, Tue-night) in 2 
 
 Formulate as QUBO: 8 nurses × 8 shift-slots = 64 binary variables (reducible with symmetries). Solve with simulated annealing (classical) and compare with a QAOA circuit.
 
-→ **See [notebook `06-supply-chains.ipynb`](../notebooks/06-supply-chains.ipynb) for the runnable version.**
-
-
-
-→ *Want to understand the algorithm in detail? Read the next chapter.*
+→ *The next chapter shows how to formulate constraints as QUBO penalties and build the annealing circuit, with runnable code.*
 
 
 ## Reality Check

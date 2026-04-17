@@ -86,10 +86,6 @@ The difference between DFT and active-space results is the **correlation energy*
 → *The next chapter builds the quantum embedding pipeline from scratch, and shows you the code.*
 
 
-
-→ *Want to understand the algorithm in detail? Read the next chapter.*
-
-
 ## Reality Check
 
 **Microsoft and PNNL's nitrogen fixation estimate.** In 2022, Microsoft and Pacific Northwest National Laboratory published resource estimates for simulating the FeMo cofactor of nitrogenase; the enzyme that fixes atmospheric nitrogen. This is a biologically critical catalyst with a strongly correlated active site. Their estimate: ~4 million physical qubits for a useful simulation using QPE with surface code error correction. With the Pinnacle architecture (Unit 2), this could potentially drop to $\sim 200,000$ physical qubits.
@@ -100,7 +96,7 @@ The difference between DFT and active-space results is the **correlation energy*
 
 **The timeline.** Useful quantum catalyst screening requires ~50 active orbitals → ~100 qubits (after encoding and tapering — exploiting symmetries to reduce qubit count) → ~$10^5$ physical qubits with error correction. This is the same order of magnitude as the Hubbard model estimates from Unit 7. A generous estimate: 10–15 years.
 
-**What's real today.** The *pipeline* is real; define active space, compute integrals, encode, optimize. The quantum chemistry software (PySCF, OpenFermion, the encodings library) exists and works. What's missing is a quantum computer large enough and quiet enough to run the circuits.
+**What's real today:** The *pipeline* is real: define active space, compute integrals, encode, optimise. The quantum chemistry software (PySCF, OpenFermion, the encodings library) exists and works. What's missing is a quantum computer large enough and quiet enough to run the circuits.
 
 
 ## Chef's Notes

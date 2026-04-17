@@ -106,7 +106,7 @@ The more likely near-term path is smaller, harder problems: classifying outputs 
 
 **What would change the picture:** Discovery of a natural, practically important dataset where quantum kernels provably outperform all classical methods. Or fault-tolerant quantum computers that eliminate the data-loading bottleneck.
 
-**Honest assessment:** Quantum ML is the most speculative application area in this book. We include it because the *ideas* are beautiful (Hilbert space as feature space, Born rule as kernel evaluator) and because the theoretical framework is sound; but the path to practical advantage is less clear than for any other unit.
+**What's real today:** Quantum ML is the most speculative application area in this book. We include it because the theoretical framework is rigorous and the ideas are genuinely novel (Hilbert space as feature space, Born rule as kernel evaluator) — but the path to practical advantage is less clear than for any other unit.
 
 
 ## Chef's Notes

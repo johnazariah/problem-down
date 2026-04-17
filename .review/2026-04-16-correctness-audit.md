@@ -320,3 +320,56 @@ That duplication does not affect the manuscript itself, but it still leaves the 
 No manuscript-content findings in the current cleanup commit.
 
 At this point, the main remaining issue I can see is the duplicated Tier 2 verification text in the Gemini review file. The single-audit-file workflow is closer to the intended end state now than it was in the previous pass, but the review archive is still not fully clean.
+
+## Whole-book style and approachability review - 2026-04-17
+
+I then re-read the full manuscript for **style consistency and approachability** rather than factual correctness.
+
+### Overall verdict
+
+The book is **substantially cohesive**. The application chapters maintain a strong problem-first voice, the deep dives mostly honour the pedagogical contract set in the Preface, and the repeated patterns — encode / interfere / measure, honest Reality Checks, worked example → broader return to industry stakes — give the manuscript a recognisable identity.
+
+The remaining issues are not foundational. They are mostly about where the style drifts from the book's own strongest habits.
+
+### Findings
+
+1. **Deep-Dive 8 is noticeably less approachable than the rest of the deep-dive layer.**
+
+   The Preface promises that the deep dives state their prerequisites explicitly and can be followed as a coherent technical path. That generally holds through Deep-Dive 7. But Deep-Dive 8 shifts from the book's usual tutorial mode into a compressed survey mode very quickly. The chapter announces itself as a capstone, then introduces natural-orbital analysis, CASSCF / MP2 selection heuristics, DMET, bath construction, and density-matrix language in rapid succession. For readers who have been trained by the earlier deep dives to expect a slower gate-by-gate or mechanism-by-mechanism build, this is a real jump in density.
+
+   Relevant places: `00-preface.md` (the deep-dive contract), `16-quantum-embedding.md` (`What you need`, natural-orbital selection, DMET opening, density-matrix explanation).
+
+2. **Unit 4 remains the least "problem-down" chapter in the book.**
+
+   The opening Netflix hook is good, but the chapter transitions into generic kernel / SVM exposition earlier than the other units transition into their bottlenecks. Compared with the rest of the manuscript, Unit 4 feels more like a conventional explanatory chapter about ML concepts and less like a chapter that keeps the industry problem in the foreground all the way through. The honesty is strong; the stylistic fit is weaker.
+
+   Relevant places: `07-machine-learning.md` (Netflix hook, immediate shift into kernel / SVM framing, and later admission that natural-data advantage remains open).
+
+3. **The unit-to-deep-dive handoff text becomes mechanically inconsistent in the later units.**
+
+   Earlier units usually use one clean bridge to the next chapter. Later units sometimes stack multiple transition lines: notebook callout plus "Want to understand the algorithm in detail?" prompt, and in Unit 8 both "The next chapter builds..." and "Want to understand..." appear back-to-back. This is a small issue, but it makes the later chapters feel more templated and slightly less polished than the early ones.
+
+   Relevant places: `11-supply-chains.md`, `13-materials-science.md`, and `15-climate-energy.md`.
+
+4. **The Reality Check closing micro-template is still not fully standardised.**
+
+   One of the book's strongest recurring devices is the Reality Check, and most units now land it well. But the final closing label varies enough to be noticeable: some chapters end with `What's real today:`, Unit 8 uses `What's real today.` with a period, Unit 4 uses `Honest assessment:`, and Unit 3 uses `The hybrid approach works.` The content is strong in all cases; the framing is less uniform than the rest of the chapter template.
+
+   Relevant places: `01-logistics.md`, `05-drug-discovery.md`, `07-machine-learning.md`, `09-finance.md`, `11-supply-chains.md`, `13-materials-science.md`, `15-climate-energy.md`.
+
+### Strengths worth preserving
+
+- The Preface states the book's pedagogical contract clearly, and most chapters actually keep it.
+- Units 1, 2, 5, 6, and 7 are especially strong examples of the book's intended wide → narrow → quantum → code → wide rhythm.
+- The honesty policy is now consistently felt on the page; the Reality Checks no longer read like hype containment, they read like part of the book's voice.
+- Cross-unit callback density is high without becoming too referential; the manuscript increasingly feels like one book rather than eight stitched essays.
+
+### Current assessment
+
+I do **not** think the manuscript has a major consistency problem. The style is recognisably unified.
+
+If you want one more pass focused purely on reader experience, I would concentrate on:
+
+- smoothing Deep-Dive 8 so it feels like the culmination of the same tutorial sequence rather than a compressed survey;
+- making Unit 4 feel more concretely problem-led for longer; and
+- standardising the final Reality Check closing line and the unit → deep-dive handoff pattern.

@@ -231,7 +231,7 @@ On the elliptic curve side, new circuit designs (2026) reduce the estimated time
 
 The migration timeline is measured in decades, not years. Cryptographic infrastructure is deeply embedded in hardware, software, and protocols. The risk is **harvest now, decrypt later**: an adversary records encrypted traffic today and decrypts it in 15 years when a quantum computer is available. For secrets that must remain confidential for decades (state secrets, medical records, financial data), the threat is already real.
 
-**What's certain:** Shor's algorithm works. The mathematics is settled. The only question is when quantum hardware will be capable of running it at scale. The cryptography community has decided not to wait for the answer.
+**What's real today:** Shor's algorithm works. The mathematics is settled. The only question is when quantum hardware will be capable of running it at scale. The cryptography community has decided not to wait for the answer.
 
 
 ## Chef's Notes

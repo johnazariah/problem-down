@@ -132,7 +132,7 @@ The practical strategy, which we'll develop fully in Unit 8, is to use a classic
 
 **What would change the picture.** Fault-tolerant quantum computers would enable **quantum phase estimation** (Unit 7) instead of VQE; giving exact energies rather than variational upper bounds, without the measurement overhead. But QPE requires much deeper circuits and is a post-NISQ algorithm.
 
-**The hybrid approach works.** The real near-term strategy is **active-space methods**: use a classical computer for the "easy" electrons (core, weakly correlated) and a quantum computer for the "hard" ones (strongly correlated, in the active space). This is the approach we'll develop fully in Unit 8 (Climate & Energy).
+**What's real today:** The real near-term strategy is **active-space methods**: use a classical computer for the "easy" electrons (core, weakly correlated) and a quantum computer for the "hard" ones (strongly correlated, in the active space). This hybrid approach works for small molecules today, and we'll develop it fully for industrial-scale systems in Unit 8 (Climate & Energy).
 
 
 ## Chef's Notes
