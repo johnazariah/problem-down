@@ -65,6 +65,13 @@ def smoke_unit_4() -> None:
 def smoke_unit_5() -> None:
     ns = exec_code_cells(NOTEBOOKS / "05-finance.ipynb", [1, 2, 5, 6])
     assert_counts(ns["results"], min_total=1000)
+    assert ns["best_outcome"] == ns["expected_peak"], (
+        f"Unexpected dominant finance phase peak: {ns['best_outcome']} != {ns['expected_peak']}"
+    )
+    assert ns["peak_probability"] >= 0.6, f"Finance peak too diffuse: {ns['peak_probability']:.3f}"
+    assert abs(ns["exercise_prob_qae_toy"] - ns["exercise_fraction"]) <= 0.05, (
+        "Finance toy amplitude estimate drifted away from the discretised exercise fraction"
+    )
 
 
 def smoke_unit_6() -> None:

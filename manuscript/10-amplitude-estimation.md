@@ -6,7 +6,7 @@ _This deep dive pairs with Unit 5 (Finance), which explained why Monte Carlo pri
 
 - **What you'll learn:** How Grover's algorithm works geometrically, how quantum amplitude estimation extracts probabilities, and why the quadratic speedup matters for Monte Carlo.
 - **What you need:** From Deep-Dive 2, you know the controlled-powers-plus-inverse-QFT pattern that extracts eigenvalues from a unitary operator (that pattern is called **Quantum Phase Estimation**, or QPE). From Deep-Dive 1, you know the ZZ gate and the variational loop. Here we apply QPE to a new operator — the Grover iterator — and the eigenvalue it extracts encodes a probability rather than a period.
-- **Runnable version:** The companion notebook [`05-finance.ipynb`](../notebooks/05-finance.ipynb) demonstrates amplitude estimation on a cloud Quokka.
+- **Runnable version:** The companion notebook [`05-finance.ipynb`](../notebooks/05-finance.ipynb) prices the option classically, then runs a compiled toy amplitude-estimation phase readout for a discretised exercise-probability proxy on a cloud Quokka.
 
 
 ## Grover's algorithm: the geometric picture
@@ -49,7 +49,7 @@ After $k_\text{opt} = \lfloor \pi / (4\theta) \rfloor$ iterations, the state is 
 
 For the financial application (Unit 5), the full construction encodes the normalised payoff into an ancilla amplitude: for each discretised price $|x\rangle$, rotate an ancilla qubit so that the state becomes $\sqrt{1 - f(x)}|0\rangle + \sqrt{f(x)}|1\rangle$, where $f(x) = \max(\text{price}(x) - K, 0) / P_{\max}$ is the normalised payoff. The probability of measuring the ancilla in $|1\rangle$ is then $f(x)$ (not $f(x)^2$), so QAE extracts $\mathbb{E}[f(X)]$ — the normalised expected payoff — which is rescaled by $P_{\max}$ to give the option price.
 
-The companion notebook demonstrates a simplified version using a comparator oracle that marks in-the-money states ($S_T > K$). This estimates the exercise probability rather than the full expected payoff, but it illustrates the same Grover + QAE pipeline with a simpler circuit.
+The companion notebook demonstrates a simplified version using discretised price bins and a compiled Grover-eigenphase toy. It estimates the exercise probability rather than the full expected payoff, but it still shows the same structural bridge: mark good states, identify the Grover angle, and read it out as a phase.
 
 ### The diffusion circuit
 
@@ -98,7 +98,7 @@ The quadratic advantage: same accuracy, quadratically fewer queries.
 | $10^{-3}$ | $10^6$ | $10^3$ | 1,000× |
 | $10^{-6}$ | $10^{12}$ | $10^6$ | $10^6$× |
 
-The companion notebook runs amplitude estimation end-to-end — constructing the Grover oracle for option pricing, applying QPE, and comparing convergence against classical Monte Carlo.
+The companion notebook does **not** run full payoff-encoding amplitude estimation end-to-end. Instead, it keeps the real pricing work classical and runs a compiled toy QAE phase-readout circuit for the discretised exercise probability, which is the narrowest honest runnable version on the current setup.
 
 → **See [notebook `05-finance.ipynb`](../notebooks/05-finance.ipynb) for the runnable version.**
 

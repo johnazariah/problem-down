@@ -6,7 +6,7 @@ This book does the opposite.
 
 We start with problems. Real ones, with dollar figures attached. UPS saving \$50 million a year by shaving one mile off delivery routes. Banks pricing derivatives with Monte Carlo simulations that take hours. Pharmaceutical companies spending \$2 billion and twelve years to bring a single drug to market. Climate scientists searching for catalysts that could pull carbon from the atmosphere.
 
-For each problem, we ask: what makes it hard? Not "hard" in the vague sense, but structurally hard. What is the specific mathematical bottleneck that defeats classical computers? And then: does quantum mechanics offer anything at precisely that bottleneck?
+For each problem, we ask: what makes it hard? Not "hard" in the vague sense, but structurally hard. What is the specific computational bottleneck that defeats classical computers? And then: does quantum mechanics offer anything at precisely that bottleneck?
 
 Sometimes the answer is yes. Sometimes the answer is "maybe, if hardware improves by two orders of magnitude." Sometimes the answer is "we honestly don't know yet." We give you all three, clearly labelled.
 
@@ -26,9 +26,11 @@ The book is organised into eight **units**, each built around one industry probl
 
 Either path works. The deep-dives never assume you've read other deep-dives out of order; each one states its prerequisites explicitly.
 
+After the eight units, a standalone chapter on **quantum error correction** explains why today's hardware can't yet run most of these algorithms at scale — and what it will take to get there. The book closes with a short **conclusion** that ties the eight units together around a single idea.
+
 ## The notebooks
 
-Every unit has a companion Jupyter notebook that runs the algorithm on a real quantum backend. These aren't toy demonstrations; they're the same algorithms described in the text, shrunk to a size that fits on current hardware. You can run them, modify them, and break them. That's the point.
+Every unit has a companion Jupyter notebook that runs a version of the algorithm on a real quantum backend. Some are faithful implementations; others are simplified demonstrations that illustrate the pipeline at toy scale. You can run them, modify them, and break them. That's the point.
 
 ## What we don't promise
 

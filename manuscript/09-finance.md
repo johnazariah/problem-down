@@ -66,7 +66,7 @@ A quadratic speedup sounds modest compared to Shor's exponential speedup. But fo
 
 ## Worked Example
 
-Price a European call option using quantum amplitude estimation. Compare the convergence rate with classical Monte Carlo.
+Price a European call option classically, then use a compiled **toy amplitude-estimation phase readout** for a discretised exercise-probability proxy. Compare the classical $1/\sqrt{N}$ convergence with the projected quantum $1/N$ scaling, and make the simplification explicit.
 
 Setup:
 - Stock price $S_0 = 100$, strike price $K = 105$ (the fixed price at which the option can be exercised), volatility $\sigma = 20\%$ (the annualised standard deviation of the stock's returns — how wildly the price swings; this is the same $\sigma$ from the Bottleneck, now applied specifically to stock returns), maturity $T = 1$ year (the date when the option expires), risk-free rate $r = 5\%$ (the return on a riskless investment, like a government bond)
@@ -75,7 +75,7 @@ Setup:
 
 We discretise the stock price into $2^n$ bins, encode the **log-normal distribution** (stock prices are modelled so that their logarithm follows a normal distribution, ensuring prices can't go negative) as a quantum state, and rotate an ancilla to encode the normalised payoff $\max(S_T - K, 0) / P_{\max}$ into its amplitude. QAE then estimates the normalised expected payoff; multiplying by $P_{\max}$ gives the option price.
 
-(The companion notebook demonstrates a simplified version: a comparator oracle that identifies in-the-money states ($S_T > K$) and estimates the probability of exercise. The full payoff-encoding construction described above is the standard approach for pricing continuous payoffs.)
+(The companion notebook keeps the pricing pipeline honest by splitting the problem in two: classical Black-Scholes and Monte Carlo for the actual option price, then a compiled toy amplitude-estimation circuit for the **discretised exercise probability**. It does **not** encode the full continuous payoff into amplitudes; the full payoff-encoding construction described above remains the standard approach for pricing continuous payoffs.)
 
 → *The next chapter builds the amplitude estimation circuit from Grover's algorithm, and shows you the code.*
 
