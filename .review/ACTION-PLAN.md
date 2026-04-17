@@ -1,7 +1,7 @@
 # Production Plan — The Best Version of the Book
 
-**Date:** 2026-04-17  
-**Status:** Live plan  
+**Date:** 2026-04-17
+**Status:** Live plan
 **Scope:** Take the manuscript from a reviewed draft to a publishable web-first, print-capable book.
 
 Historical note: this file previously tracked the T0 / T0.5 / T1 / T2 review backlog. That review work is now captured in the addenda to `.review/2026-04-16-correctness-audit.md`. This file is now the forward-looking production plan.
@@ -35,13 +35,13 @@ The book is ready for release when all of the following are true:
 
 ## Phase 1 — Structure Freeze
 
-**Goal:** stop architectural churn before line-editing and figure production.
+**Goal:** lock the architecture in a single decision session so all downstream work proceeds from a stable base.
 
-### Decisions to lock
+### Decisions to lock (30-minute session)
 
 - Confirm the current title/subtitle in `myst.yml`: **The Problem With Quantum** / **What quantum computers are really for**.
 - Confirm that the website is the source-of-truth reading experience, with the PDF treated as a polished derivative.
-- Confirm whether `manuscript/17-error-correction.md` remains a numbered late-book chapter or moves to appendix status.
+- Confirm that `manuscript/17-error-correction.md` remains a numbered late-book chapter (recommendation: keep it — it earns its place as the foundation for every Reality Check).
 - Freeze the current table of contents as represented in `myst.yml` and mirrored in `README.md`.
 
 ### Deliverables
@@ -49,6 +49,7 @@ The book is ready for release when all of the following are true:
 - Finalised front matter and table of contents.
 - No outstanding chapter-order or appendix-placement questions.
 - `myst.yml` and `README.md` describing the same book object.
+- `README.md` rewritten as a landing page that matches the preface's promise (not just a repo structure guide for contributors).
 
 ### Exit criteria
 
@@ -99,6 +100,8 @@ For every chapter, verify the following:
 
 **Goal:** add the minimum figure set that reduces cognitive load and strengthens memory.
 
+**Timing:** The figure *inventory* should be created during Phase 2 so the editorial pass can reference figures that will exist. Figure *production* runs in parallel with the later stages of Phase 2.
+
 ### Figure principles
 
 - Every figure must teach, not decorate.
@@ -133,44 +136,30 @@ For every chapter, verify the following:
 
 ## Phase 4 — Notebook and Worked-Example Integrity
 
-**Goal:** make the notebooks worthy companions rather than aspirational props.
+**Goal:** make the notebooks executable, honest about scope, and aligned with the surrounding worked examples.
 
-### Global tasks
+The notebook track now has its own operational source of truth in `.review/NOTEBOOK-PLAN.md`.
+That separate document is agent-owned and is expected to change faster than this top-level production plan.
 
-- Standardise the notebook execution environment and dependency story.
-- Re-run every notebook end-to-end.
-- Check that every worked example in prose matches the actual notebook scope, simplifications, and outputs.
-- Label toy constructions honestly when they are intuition builders rather than faithful implementations.
+### Phase deliverables
 
-### Current triage
+- Every notebook has one explicit class: `faithful worked example`, `toy demonstration`, or `pipeline illustration`.
+- Every notebook is covered by CI smoke tests and remains compatible with the site build.
+- The manuscript never overstates what its companion notebook computes.
 
-| Notebook | Status | Production action |
-|----------|--------|-------------------|
-| `01-logistics.ipynb` | strong pedagogical demo | repair and validate |
-| `02-cryptography.ipynb` | internally inconsistent toy period-finding demo | rewrite or sharply reframe |
-| `03-drug-discovery.ipynb` | useful VQE anatomy demo, currently overclaims | relabel and repair |
-| `04-machine-learning.ipynb` | strong conceptual fit | repair and validate |
-| `05-finance.ipynb` | title overpromises relative to implementation | rewrite or relabel |
-| `06-supply-chains.ipynb` | good conceptually, math needs tightening | repair the mapping and narrow the claim |
-| `07-materials-science.ipynb` | core quantitative story currently too fragile | rewrite |
-| `08-climate-energy.ipynb` | good capstone structure, still inherits simplifications | relabel and repair |
+### Escalation boundary
 
-### Repair order
+Notebook work should only be pulled back into this main plan if it forces one of the following:
 
-1. Shared notebook execution and API assumptions
-2. `07-materials-science.ipynb`
-3. `05-finance.ipynb`
-4. `02-cryptography.ipynb`
-5. `06-supply-chains.ipynb`
-6. `03-drug-discovery.ipynb`
-7. `08-climate-energy.ipynb`
-8. `01-logistics.ipynb`
-9. `04-machine-learning.ipynb`
+- a chapter title change;
+- a worked example being removed rather than repaired;
+- a material weakening of a chapter's promise; or
+- a change in what the book claims quantum computers are actually for.
 
 ### Exit criteria
 
-- Each notebook has an honest label: faithful worked example, toy demonstration, or pipeline illustration.
-- The surrounding manuscript says exactly the same thing.
+- `.review/NOTEBOOK-PLAN.md` can be marked complete.
+- No notebook remains ambiguous, misleading, or unsupported by the manuscript.
 
 ---
 
@@ -199,7 +188,7 @@ For every chapter, verify the following:
 
 ---
 
-## Phase 6 — Production Polish
+## Phase 5 — Production Polish
 
 **Goal:** turn a strong manuscript into a finished book object.
 
@@ -218,7 +207,7 @@ For every chapter, verify the following:
 
 ---
 
-## Phase 7 — External Reader Passes
+## Phase 6 — External Reader Passes
 
 **Goal:** get targeted feedback from the right kinds of readers.
 
@@ -227,6 +216,10 @@ For every chapter, verify the following:
 1. Domain expert in at least one application area.
 2. Technical generalist who is smart but not a quantum specialist.
 3. Intelligent outsider who can report where the book stops carrying them.
+
+### Timeline
+
+Allow **10 calendar days** for reader feedback. After that, triage what you have. Do not hold the release for a reader who hasn't responded.
 
 ### Questions to ask them
 
@@ -242,7 +235,7 @@ For every chapter, verify the following:
 
 ---
 
-## Phase 8 — Release Candidate
+## Phase 7 — Release Candidate
 
 **Goal:** freeze scope and ship.
 
@@ -261,30 +254,26 @@ For every chapter, verify the following:
 
 ---
 
-## Suggested Four-Week Execution Window
+## Suggested Three-Week Execution Window
 
 ### Week 1
 
-- Freeze structure.
+- Lock structure (30-minute decision session).
 - Complete the anchor editorial pass on the preface, Unit 4, Deep Dive 8, and the conclusion.
 - Build the figure inventory.
-- Finalise notebook triage.
+- Start figure production for figures whose source text is stable.
+- Rewrite `README.md` as a reader-facing landing page.
 
 ### Week 2
 
 - Complete the manuscript-wide editorial pass.
 - Run the citation and quantitative-claim sweep.
-- Start figure production from the now-stable text.
+- Finish figure production.
+- Run full site/PDF builds and capture production issues.
 
 ### Week 3
 
-- Finish figures.
-- Repair or relabel notebooks in priority order.
-- Run full site/PDF builds and capture production issues.
-
-### Week 4
-
-- Send to external readers.
+- Send to external readers (10-day window starts).
 - Triage feedback into RC issues only.
 - Cut the release candidate.
 
@@ -295,7 +284,7 @@ For every chapter, verify the following:
 1. Lock the current title/subtitle, TOC, and `17-error-correction` placement.
 2. Start the final editorial pass with the preface, Unit 4, Deep Dive 8, and the conclusion.
 3. Create the figure inventory before producing any art.
-4. Triage the notebooks as a production risk, not an afterthought.
+4. Rewrite `README.md` as a reader-facing landing page.
 5. Treat the website as the primary artifact and the PDF as a derivative that must still read cleanly.
 
 ## Anti-Churn Rules

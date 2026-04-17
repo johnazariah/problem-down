@@ -373,3 +373,25 @@ If you want one more pass focused purely on reader experience, I would concentra
 - smoothing Deep-Dive 8 so it feels like the culmination of the same tutorial sequence rather than a compressed survey;
 - making Unit 4 feel more concretely problem-led for longer; and
 - standardising the final Reality Check closing line and the unit → deep-dive handoff pattern.
+
+## Whole-book style follow-up verification - 2026-04-17
+
+I reviewed the subsequent style-pass commits `5be6416950e92287e94458c9ec4ef1b0fd137f7d` and `2f903cab7e2950c9794f1941cfafb2577e76dd9c`, which were aimed directly at the cross-book style findings from the previous pass.
+
+### Result
+
+**No findings in this follow-up style pass.**
+
+The previously flagged consistency issues now read as satisfactorily addressed:
+
+- the Reality Check closing line is now standardised across the application chapters as `What's real today:`;
+- the stacked unit → deep-dive handoffs in Units 6, 7, and 8 have been cleaned into a single, more natural bridge;
+- the duplicated Tier 2 verification text in the Gemini review file has been removed;
+- Unit 4 now keeps the Netflix / recommender framing alive longer into the Bottleneck section instead of dropping immediately into generic kernel exposition; and
+- Deep-Dive 8 now prepares the reader for its capstone role by explicitly stating that it is assembling a pipeline from previously introduced pieces, which makes the denser opening feel intentional rather than abrupt.
+
+### Current assessment
+
+The manuscript now feels more stylistically unified than it did in the previous whole-book pass. The application chapters share a clearer common template, the unit-to-deep-dive handoff pattern is cleaner, and the deep-dive layer ends on a chapter that now reads like a capstone rather than a sudden mode shift.
+
+Residual note: Deep-Dive 8 is still naturally denser than the earlier deep dives, but at this point that reads as an intentional consequence of its capstone role rather than as a breach of the book's pedagogical contract.
