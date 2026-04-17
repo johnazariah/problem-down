@@ -31,6 +31,8 @@ Each unit opens with an industry problem — a dollar figure, a bottleneck, a hu
 
 Every unit has a companion Jupyter notebook. Some are faithful worked examples; others are toy demonstrations or pipeline illustrations where that is the honest way to show the idea at runnable scale. All are there to teach the algorithmic structure without pretending current hardware can already support the full industrial version.
 
+The code in those notebooks is intentionally pedagogy-friendly rather than production-ready. We keep the Quokka calls, circuit construction, and measurement post-processing explicit so readers can see the mechanism directly; a polished software library would factor more of that away, but that would make the teaching worse.
+
 ## Companion books
 
 - [**The Quokka Cookbook**](https://github.com/johnazariah/quokka-cookbook) — runnable QASM recipes for Quokka. This book tells you *why*; the Cookbook shows you *how*.
@@ -43,7 +45,7 @@ Every unit has a companion Jupyter notebook. Some are faithful worked examples; 
 bash build-pdf.sh
 
 # Website
-HOST=127.0.0.1 jupyter-book build --html --force
+bash build-site.sh
 ```
 
 ## License

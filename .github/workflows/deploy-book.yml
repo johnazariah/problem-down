@@ -42,8 +42,8 @@ jobs:
       - name: Build the book
         env:
           HOST: 127.0.0.1
-          BASE_URL: /problem-down
-        run: jupyter-book build --html
+          BASE_URL: /quantum-bottleneck
+        run: bash build-site.sh
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

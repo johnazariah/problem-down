@@ -17,9 +17,9 @@ For nearly 50 years, this trapdoor has held. Classical computers have gotten fas
 
 In 1994, Peter Shor shattered this assumption.
 
-Shor showed that a quantum computer can factor $N$ in time *polynomial* in the number of digits; roughly $n^3$. Not sub-exponential. Not "somewhat faster." Polynomial. For a 2,000-digit number, the difference is between $10^{30}$ years and a few hours.
+Shor showed that a quantum computer can factor $N$ in time *polynomial* in the number of digits; roughly $n^3$ in standard textbook resource counts, up to arithmetic details and log factors. Not sub-exponential. Not "somewhat faster." Polynomial. For cryptographically relevant sizes, the difference is between astronomical classical cost and a polynomial-time attack once a large fault-tolerant quantum computer exists.
 
-Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** — given $g^x \bmod p = y$, find $x$ — which breaks Diffie-Hellman (the original public-key protocol) and **elliptic curve cryptography** (ECC), a modern alternative to RSA based on different mathematics. ECC was adopted precisely because its keys are shorter than RSA's for equivalent classical security, but it's in some ways *more* vulnerable: breaking a 256-bit elliptic curve key (P-256, comparable security to RSA-2048) requires only ~2,330 logical qubits, far fewer than the ~6,000 logical qubits needed for RSA-2048. (We'll define logical vs. physical qubits in the Reality Check.) Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
+Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** — given $g^x \bmod p = y$, find $x$ — which breaks Diffie-Hellman (the original public-key protocol) and **elliptic curve cryptography** (ECC), a modern alternative to RSA based on different mathematics. ECC was adopted precisely because its keys are shorter than RSA's for equivalent classical security, but quantum resource estimates suggest a different tradeoff: breaking the widely deployed NIST P-256 curve needs about **2,330 logical qubits**. That's fewer than the roughly **6,000 logical qubits** often quoted for RSA-2048, though the closer classical-security comparison is RSA-3072, not RSA-2048. (We'll define logical vs. physical qubits in the Reality Check.) Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
 
 Let's understand why; and how.
 
@@ -159,7 +159,7 @@ Shor's algorithm:
 6. Use the **continued fractions algorithm** — a classical method that finds the simplest fraction $j/r$ close to $k / 2^n$ — to extract $r$
 7. Compute $\gcd(a^{r/2} \pm 1, N)$ → factors of $N$
 
-Steps 1, 6, and 7 are classical. Steps 2–5 are quantum. The quantum part runs in $O(n^2 \log n)$ gates; polynomial in the number of digits.
+Steps 1, 6, and 7 are classical. Steps 2–5 are quantum. With standard schoolbook arithmetic, the dominant quantum cost is usually summarised as $O(n^3)$ gates, though better arithmetic can improve constants and asymptotics. The crucial point is that the scaling is polynomial in the input size.
 
 
 ## Worked Example
@@ -210,7 +210,7 @@ $$\gcd(49 + 1, 15) = \gcd(50, 15) = 5$$
 
 And indeed: $15 = 3 \times 5$. $\blacksquare$
 
-This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially. For RSA-2048 (a 617-digit, 2,048-bit number), Shor's algorithm requires roughly 6,000 logical qubits and $O(n^3)$ gates with $n = 2{,}048$. The same algorithm, larger registers, more gates, same polynomial efficiency.
+This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially. For RSA-2048 (a 617-digit, 2,048-bit number), leading abstract-circuit estimates use roughly 6,000 logical qubits and about $2.6 \times 10^9$ Toffoli-scale operations before fault-tolerance overhead. The same algorithm, larger registers, more gates, same polynomial efficiency.
 
 → *The next chapter builds the period-finding circuit from scratch, and the companion notebook shows the runnable compiled-toy version honestly.*
 
@@ -218,7 +218,7 @@ This is a toy example; 4 qubits, a number you can factor in your head. But the a
 
 We started with credit card numbers and the quiet miracle of public-key cryptography. We factored $15 = 3 \times 5$ on a toy quantum computer. What connects the two?
 
-Scale. The same algorithm that finds the period of $7^x \bmod 15$ can find the period of $a^x \bmod N$ for any $N$. For RSA-2048, $N$ is a 617-digit number, the algorithm needs ~6,000 logical qubits, and the circuit has $\sim 10^{10}$ gates. But the structure is identical: superposition, oracle, QFT, measure, continued fractions, $\gcd$. The quantum computer doesn't know whether it's breaking a classroom exercise or a government cipher. It just finds periods.
+Scale. The same algorithm that finds the period of $7^x \bmod 15$ can find the period of $a^x \bmod N$ for any $N$. For RSA-2048, $N$ is a 617-digit number, the abstract circuit needs about 6,000 logical qubits and billions of Toffoli-scale operations, and a fault-tolerant machine must then implement those logical qubits reliably. But the structure is identical: superposition, oracle, QFT, measure, continued fractions, $\gcd$. The quantum computer doesn't know whether it's breaking a classroom exercise or a government cipher. It just finds periods.
 
 That's why the world's cryptographic infrastructure is being rebuilt. Not because a quantum computer has broken RSA — none has — but because the algorithm is ready and waiting. When the hardware catches up, it will work.
 
@@ -235,13 +235,13 @@ In short: Shor's algorithm has never been run, at scale, on a number whose facto
 
 Gidney and Ekerå (2021) estimated that factoring a 2,048-bit RSA key would require approximately **20 million noisy physical qubits** (using the *surface code*, with a gate error rate of $10^{-3}$) and roughly **8 hours** of computation.
 
-That estimate has dropped dramatically. The **Pinnacle architecture** (2026) uses *quantum LDPC codes* — a newer approach that packs more logical qubits per physical qubit — to reduce the cost to under **100,000 physical qubits**; a 200× improvement. The largest quantum computers in 2026 have a few thousand physical qubits, so we're still short; but 100K qubits is within plausible reach of hardware roadmaps in the next 5–10 years. The threat timeline just got much shorter.
+That estimate has dropped dramatically under different coding assumptions. The **Pinnacle architecture** (2026) uses *quantum LDPC codes* and reports RSA-2048 factoring with fewer than **100,000 physical qubits** under specific hardware assumptions: physical error rate $10^{-3}$, code cycle time $1\,\mu\text{s}$, reaction time $10\,\mu\text{s}$, and a one-month runtime in its low-qubit example. The point is not that RSA-2048 is about to fall tomorrow. The point is that architecture and error-correction choices can change the resource picture by orders of magnitude.
 
-On the elliptic curve side, new circuit designs (2026) reduce the estimated time to break P-256 — the most widely deployed curve, with security comparable to RSA-2048 — to minutes on a fault-tolerant machine.
+On the elliptic-curve side, new circuit designs (2026) estimate fault-tolerant attacks on prime-field ECC in minutes to hours using millions of physical qubits, depending on the curve and the space-time tradeoff. For ECC-224 — closer in classical security to RSA-2048 than P-256 is — the paper quotes **34-96 minutes** using roughly **6.9-19.1 million physical qubits**.
 
 **The post-quantum migration.** The threat is taken seriously. NIST finalised its first set of post-quantum cryptography standards in 2024: CRYSTALS-Kyber (key encapsulation) and CRYSTALS-Dilithium (digital signatures), both based on lattice problems believed to be hard for quantum computers. The U.S. government has mandated that federal systems begin migrating to post-quantum cryptography. Google, Cloudflare, and Apple have already deployed post-quantum key exchange in their products.
 
-The migration timeline is measured in decades, not years. Cryptographic infrastructure is deeply embedded in hardware, software, and protocols. The risk is **harvest now, decrypt later**: an adversary records encrypted traffic today and decrypts it in 15 years when a quantum computer is available. For secrets that must remain confidential for decades (state secrets, medical records, financial data), the threat is already real.
+The migration timeline is measured in decades, not years. Cryptographic infrastructure is deeply embedded in hardware, software, and protocols. The risk is **harvest now, decrypt later**: an adversary records encrypted traffic today and decrypts it years later when a large fault-tolerant quantum computer becomes available. For secrets that must remain confidential for decades (state secrets, medical records, financial data), the threat is already relevant.
 
 **What's real today:** Shor's algorithm works. The mathematics is settled. The only question is when quantum hardware will be capable of running it at scale. The cryptography community has decided not to wait for the answer.
 

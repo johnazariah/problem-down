@@ -13,7 +13,7 @@ If you could superconduct at room temperature, you could:
 
 The problem is that we can't *predict* which materials will superconduct at high temperatures. The physics involves **strongly correlated electrons** — quantum systems where the interactions between electrons are so strong that the **mean-field** approximation (treating each electron as if it moves in the average field of all the others) breaks down completely.
 
-The **Hubbard model** — the simplest model that captures this physics — has been studied for over 60 years. Its full phase diagram in two dimensions remains unsettled: different high-accuracy methods disagree in key parameter regimes, and whether the model supports superconductivity at high temperatures is still debated. This is not just a matter of computational effort; for the strongly correlated regime, it's a matter of computational *impossibility* with classical methods.
+The **Hubbard model** — the simplest model that captures this physics — has been studied for over 60 years. Its full phase diagram in two dimensions remains unsettled: different high-accuracy methods disagree in key parameter regimes, and whether the model supports a robust d-wave superconducting phase at intermediate coupling is still debated. The issue is not that classical physics knows nothing here; it is that no single classical method gives uniformly reliable access across the strongly correlated, doped 2D regime.
 
 
 ## The Bottleneck
@@ -56,7 +56,7 @@ The Hilbert space of $N$ electrons on $L$ sites with spin has dimension $\binom{
 
 **DMRG (Density Matrix Renormalization Group)** — an approach that represents the wavefunction as a chain of tensors (a **matrix product state**), capturing correlations efficiently in one dimension. Excellent for 1D systems, but the entanglement structure of 2D strongly correlated systems exceeds what matrix product states can represent.
 
-The 2D Hubbard model at intermediate $U/t$ is in a computational no-man's land. No classical method can solve it reliably.
+The 2D Hubbard model at intermediate $U/t$ is in a computational no-man's land. Classical methods provide important but partial windows into the problem; none is uniformly reliable across the full regime of interest.
 
 
 ## The Quantum Angle
@@ -82,25 +82,22 @@ The Hamiltonian $H = H_\text{hop} + H_\text{int}$ is a sum of non-commuting term
 
 $$e^{-iHt} \approx \left(e^{-iH_\text{hop}\Delta t} \cdot e^{-iH_\text{int}\Delta t}\right)^{t/\Delta t}$$
 
-Each factor ($e^{-iH_\text{hop}\Delta t}$ and $e^{-iH_\text{int}\Delta t}$) is easy to implement as a circuit because the individual terms within each part *do* commute. The error is $O(\Delta t^2)$ per step, so $O(t \cdot \Delta t)$ total. Use more Trotter steps (smaller $\Delta t$) for better accuracy; at the cost of deeper circuits.
+Each Trotter step breaks the evolution into pieces that are individually easy to compile. The interaction terms commute with one another, and the hopping terms can be scheduled in commuting groups or swap-network layers, so the circuit becomes a structured sequence rather than one opaque giant unitary. The error is $O(\Delta t^2)$ per step, so $O(t \cdot \Delta t)$ total. Use more Trotter steps (smaller $\Delta t$) for better accuracy; at the cost of deeper circuits.
 
 Higher-order Trotter formulas reduce the error further. The encodings book (Chapter 15, *Trotter Formulas*) covers this in full detail.
 
 ### Resource estimation: how big does the quantum computer need to be?
 
-This is the critical question. Babbush et al. (2018) estimated the resources for QPE on the 2D Hubbard model:
+This is the critical question. The honest answer is that there is no single settled number: published estimates depend strongly on the simulation algorithm, the target error model, and the fault-tolerance stack. A useful summary from McArdle et al. (2020) for a 100-site ($10 \times 10$) 2D Fermi-Hubbard model is:
 
-| Lattice size | Qubits needed | T-gates | Estimated wall time |
-|---|---|---|---|
-| $4 \times 4$ | ~100 logical | $10^8$ | Minutes |
-| $8 \times 8$ | ~400 logical | $10^{11}$ | Hours |
-| $16 \times 16$ | ~1,600 logical | $10^{14}$ | Days |
+| Literature estimate | Fault-tolerant scale |
+|---|---|
+| Babbush et al. (2018), qubitization with an intensive error target | about $7.1 \times 10^8$ T-gates, roughly $2$-$3$ million physical qubits, and tens of hours under the surface-code assumptions used in that work |
+| Kivlichan et al. (2019), Trotterisation with a size-extensive error target | about $10^6$ Toffoli gates / $10^7$-$10^8$ T-gates, roughly $4 \times 10^5$-$6 \times 10^5$ physical qubits, and a couple of hours under similar assumptions |
 
-(A **T-gate** is a specific rotation gate that, together with the Clifford gates, enables universal quantum computation. T-gates are the most expensive operation in fault-tolerant computing because they require resource-intensive distillation procedures, so the T-gate count is the standard cost metric.)
+(A **T-gate** is a specific rotation gate that, together with the Clifford gates, enables universal quantum computation. T-gates are expensive in fault-tolerant computing because they require resource-intensive distillation procedures, so the T-gate count is a standard cost metric.)
 
-With **surface code** error correction (the leading scheme, which encodes one logical qubit using ~1,000 physical qubits arranged on a 2D grid, at a physical error rate of $10^{-3}$), the $8 \times 8$ lattice needs about 400,000 physical qubits — well beyond current hardware, but within the scope of what might be built in 10–15 years.
-
-The Pinnacle architecture (Unit 2) could dramatically reduce these numbers if quantum LDPC codes prove applicable to Hamiltonian simulation.
+The takeaway is not that one paper has *the* answer. It is that scientifically interesting Hubbard-model QPE lives in the hundreds-of-thousands-to-millions of physical qubits, not in today's NISQ regime. Different codes and scheduling strategies could shift those numbers materially, so they should be read as architecture-dependent order-of-magnitude estimates, not countdown clocks.
 
 
 ## Worked Example
@@ -125,15 +122,15 @@ Even the 2-site dimer shows the qualitative story: as $U/t$ grows, localisation 
 
 ## Reality Check
 
-**The 2D Hubbard model is the "grand challenge" of quantum simulation.** It has been called the "standard model of condensed matter physics"; the simplest model that might explain high-temperature superconductivity in cuprate materials. Solving it is widely regarded as the problem most likely to yield the *first* practical quantum advantage in simulation.
+**The 2D Hubbard model is one of the grand challenges of quantum simulation.** It has been called the "standard model of condensed matter physics"; the simplest model that might explain high-temperature superconductivity in cuprate materials. It is widely regarded as one of the leading candidates for an early scientifically meaningful quantum advantage in simulation.
 
-**What's been demonstrated.** Small Hubbard models (2–4 sites) have been simulated on quantum hardware using VQE. Google's 2020 experiment on a $2 \times 2$ plaquette was a notable milestone. But these sizes are trivially classical; the value was in demonstrating the pipeline, not in producing new physics.
+**What's been demonstrated.** Small Hubbard models on the scale of a few sites have been simulated on quantum hardware using VQE-style methods. But these sizes are trivially classical; the value was in demonstrating the pipeline, not in producing new physics.
 
 **The VQE stopgap.** Until fault-tolerant QPE is available, VQE on the Hubbard model is an active area of research. Problem-specific ansätze (like the Hamiltonian variational ansatz) can capture Hubbard physics better than generic hardware-efficient circuits. But VQE is fundamentally limited by measurement overhead and barren plateaus (exponentially flat optimisation landscapes) at scale.
 
-**What would change the picture.** A fault-tolerant quantum computer capable of running QPE on a $10 \times 10$ Hubbard lattice. This would produce *new physics* — results that cannot be obtained any other way. The resource estimates suggest $\sim 10^5$ physical qubits with error rates $< 10^{-3}$. This is the most concrete milestone for "quantum utility" in simulation.
+**What would change the picture.** A fault-tolerant quantum computer capable of running QPE on a roughly 100-site 2D Hubbard model with controlled error bars. That would let us probe a regime that remains unresolved by today's controlled classical methods. Published estimates for that scale span roughly $4 \times 10^5$ physical qubits to a few million, depending on the algorithm, error target, and code assumptions.
 
-**What's real today:** Small Hubbard models are solvable classically. The quantum advantage will come from lattice sizes ($\geq 8 \times 8$) where classical methods disagree. The algorithms are ready; the hardware is not. Of all the applications in this book, materials simulation has the clearest path to producing genuinely new scientific knowledge once fault-tolerant machines arrive.
+**What's real today:** Small Hubbard models are classically accessible. The interesting target is the intermediate-coupling, doped 2D regime where controlled methods still leave open questions. The algorithmic route is reasonably clear; the fault-tolerant hardware and state-preparation stack are not. Of all the applications in this book, materials simulation is one of the clearest paths to genuinely new scientific information once those machines exist.
 
 
 ## Chef's Notes
@@ -146,6 +143,7 @@ Even the 2-site dimer shows the qualitative story: as $U/t$ grows, localisation 
 
 - **Further reading:**
     - Hubbard (1963). *Electron correlations in narrow energy bands.* [Proceedings of the Royal Society A 276:238–257](https://doi.org/10.1098/rspa.1963.0204)
-    - Babbush, Wiebe, McClean, et al. (2018). *Low-Depth Quantum Simulation of Materials.* [Physical Review X 8:011044](https://doi.org/10.1103/PhysRevX.8.011044) ([arXiv:1711.04789](https://arxiv.org/abs/1711.04789))
+    - Babbush, Wiebe, McClean, et al. (2018). *Low-Depth Quantum Simulation of Materials.* [Physical Review X 8:011044](https://doi.org/10.1103/PhysRevX.8.011044)
+    - McArdle, Endo, Aspuru-Guzik, Benjamin, Yuan (2020). *Quantum computational chemistry.* [Reviews of Modern Physics 92:015003](https://doi.org/10.1103/RevModPhys.92.015003) ([arXiv:1808.10402](https://arxiv.org/abs/1808.10402))
     - Troyer and Wiese (2005). *Computational Complexity and Fundamental Limitations to Fermionic Quantum Monte Carlo Simulations.* [Physical Review Letters 94:170201](https://doi.org/10.1103/PhysRevLett.94.170201) ([arXiv:cond-mat/0407066](https://arxiv.org/abs/cond-mat/0407066))
     - Qin, Schäfer, Andergassen, Corboz, Gull (2022). *The Hubbard Model: A Computational Perspective.* [Annual Review of Condensed Matter Physics 13:275–302](https://doi.org/10.1146/annurev-conmatphys-090921-033948) ([arXiv:2103.12097](https://arxiv.org/abs/2103.12097))

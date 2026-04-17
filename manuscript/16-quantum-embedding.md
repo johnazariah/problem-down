@@ -21,7 +21,7 @@ A catalyst system has hundreds of orbitals; carbon scaffolding, solvent molecule
 
 **Strong correlation**; the kind that defeats classical methods; lives in these few orbitals. The rest are either doubly occupied (core electrons: inert, boring) or empty (high-energy virtual orbitals: irrelevant at normal temperatures). Classical methods handle these "boring" orbitals perfectly well.
 
-The strategy: **use a quantum computer only for the hard part.** Select the 10–50 orbitals where classical methods fail (the "active space"), and solve those exactly with VQE (Deep-Dive 3) or QPE (Deep-Dive 7). Let a classical computer handle the other 450 orbitals with standard DFT or Hartree-Fock.
+The strategy: **use a quantum computer only for the hard part.** Select the 10–50 orbitals where classical methods are most stressed (the "active space"), and treat those with VQE (Deep-Dive 3) or, in a fault-tolerant setting, QPE (Deep-Dive 7). Let a classical computer handle the other 450 orbitals with standard DFT or Hartree-Fock.
 
 ### How to choose the active space
 
@@ -32,7 +32,7 @@ This is part science, part art:
 - **Natural orbital analysis.** Compute approximate natural orbital occupation numbers from a cheap classical calculation (CASSCF — Complete Active Space Self-Consistent Field, a classical method that optimises both orbitals and electron configurations within a small active space — or MP2, the perturbative correction from Unit 3's hierarchy). Orbitals with occupations significantly different from 0 or 2 are strongly correlated; include them.
 - **Entropy-based selection.** Compute the single-orbital entropy from an approximate wavefunction. High-entropy orbitals are strongly correlated.
 
-For a typical catalyst active site: 6 metal d-orbitals + 4–8 ligand orbitals = 10–14 active orbitals. After Jordan-Wigner encoding (Deep-Dive 3): 20–28 qubits. After tapering (using point-group symmetry and particle-number conservation to reduce qubits): possibly 12–20 qubits. Feasible on near-term hardware.
+As an order-of-magnitude example, a catalyst active site with 6 metal d-orbitals and 4–8 ligand orbitals gives 10–14 active orbitals. After Jordan-Wigner encoding (Deep-Dive 3): 20–28 qubits. After tapering (using point-group symmetry and particle-number conservation to reduce qubits): possibly 12–20 qubits in a favourable case. That is small enough to motivate embedding, but not automatically practical on current hardware once circuit depth and measurement cost are included.
 
 
 ## DMET: Density Matrix Embedding Theory
@@ -49,13 +49,13 @@ The procedure:
 
 3. **Build the embedded Hamiltonian.** Project the full Hamiltonian onto the fragment + bath space. The result is a small Hamiltonian; 20 orbitals instead of 500; that includes the environment's effect as an effective potential.
 
-4. **Solve the embedded problem.** Run VQE (Deep-Dive 3) or QPE (Deep-Dive 7) on the 20-orbital embedded Hamiltonian. This gives the exact energy and density matrix for the fragment, in the presence of the environment.
+4. **Solve the embedded problem.** Run VQE (Deep-Dive 3) or QPE (Deep-Dive 7) on the 20-orbital embedded Hamiltonian. This yields a fragment energy and density matrix in the presence of the environment: variational and approximate with VQE, systematically improvable and in principle arbitrarily precise with QPE.
 
 5. **Self-consistency.** Update the mean-field solution with the quantum result. The new mean-field changes the bath, which changes the embedded Hamiltonian, which changes the quantum solution. Iterate until convergence (typically 5–10 cycles).
 
 ### What the quantum computer does
 
-The quantum computer appears exactly once per self-consistency cycle: step 4. Everything else is classical linear algebra. The quantum computer solves a small, strongly correlated problem; the fragment + bath; that classical methods can't handle.
+The quantum computer appears exactly once per self-consistency cycle: step 4. Everything else is classical linear algebra. The quantum computer tackles the small, strongly correlated fragment + bath problem; the part classical methods handle least systematically.
 
 The pipeline is solver-agnostic. Today, use VQE on NISQ hardware. Tomorrow, use QPE on fault-tolerant hardware. The embedding framework doesn't change; only the quantum subroutine.
 
@@ -80,12 +80,12 @@ The companion notebook is narrower than the full theory in this chapter. It star
 
 ## What you should take away
 
-1. **The active space is the key insight.** You don't need a quantum computer for the whole molecule; just for the 10–50 orbitals where classical methods fail. This reduces the quantum resource requirement by orders of magnitude.
+1. **The active space is the key insight.** You don't need a quantum computer for the whole molecule; just for the 10–50 orbitals where classical methods are most stressed. This can reduce the quantum resource requirement by orders of magnitude.
 
 2. **DMET provides the framework.** It tells you how to build the bath, how to embed the fragment, and how to iterate to self-consistency. The quantum computer plugs in as the solver for the embedded problem.
 
 3. **Everything connects.** The qubit Hamiltonian comes from Deep-Dive 3 (VQE pipeline). The solver is either VQE (Deep-Dive 3) or QPE (Deep-Dive 7). The ZZ gates are from Deep-Dive 1 (QAOA). The QFT is from Deep-Dive 2 (Shor). Phase kickback drives QPE. The cost Hamiltonian pattern from Unit 1 reappears as the molecular Hamiltonian.
 
-4. **This is the pipeline for quantum utility in chemistry.** Not toy demonstrations on H₂, but real catalyst screening on industrially relevant systems. The engineering target: 50 active orbitals → 100 qubits → $10^5$ physical qubits with error correction. Ambitious but concrete.
+4. **This is one plausible pipeline for quantum utility in chemistry.** The target is not another H₂ demo but chemically meaningful embedded active spaces on realistic systems. Published chemistry resource estimates still span a wide band, from roughly a million physical qubits into the hundreds of millions depending on algorithm and assumptions. Embedding matters because it is one of the few routes to pushing those costs down by shrinking the quantum fragment instead of attacking the full system head-on.
 
 5. **For the encoding step,** see [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book). That book covers exactly the transformation at the heart of this pipeline.

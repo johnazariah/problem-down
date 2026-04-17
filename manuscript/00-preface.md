@@ -39,6 +39,8 @@ After the eight units, a standalone chapter on **quantum error correction** expl
 
 Every unit has a companion Jupyter notebook that runs a version of the algorithm on a real quantum backend. Some are faithful implementations; others are simplified demonstrations that illustrate the pipeline at toy scale. You can run them, modify them, and break them. That's the point.
 
+Where the notebook code looks more explicit than a production engineer might write, that is deliberate. We keep the Quokka calls, circuit construction, and measurement post-processing visible so you can inspect the mechanism end to end. A polished library would hide more behind abstractions; a teaching book should not.
+
 ## What we don't promise
 
 We don't promise that quantum computers will revolutionise your industry next year. Some of the applications in this book require fault-tolerant quantum computers that don't exist yet. Every chapter includes a **Reality Check** section that states, plainly, what works today on noisy hardware, what needs error correction, and what remains an open question.

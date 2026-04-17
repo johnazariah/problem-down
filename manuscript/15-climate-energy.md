@@ -9,7 +9,7 @@ The bottleneck isn't engineering; it's chemistry. Every DAC process depends on a
 
 This is a quantum chemistry problem. The catalyst's active site; the few atoms where the CO₂ molecule actually binds and reacts; involves **strongly correlated electrons** (just like the Hubbard model in Unit 7) embedded in a much larger environment (the metal surface, the solvent, the substrate). You need quantum-level accuracy for the active site and classical efficiency for everything else.
 
-No classical method handles both simultaneously. DFT is fast but inaccurate for strongly correlated active sites. **CCSD(T)** (the "gold standard" classical method from Unit 3, scaling as $O(N^7)$) is accurate but can't handle the full environment. **Full CI** (exact but exponentially expensive) is impossible at scale.
+No single classical method gives uniformly reliable, systematically improvable treatment across both scales. DFT is fast but often unreliable for strongly correlated active sites. **CCSD(T)** (the "gold standard" classical method from Unit 3, scaling as $O(N^7)$) can be very accurate in weak-to-moderate correlation regimes, but it becomes expensive and less reliable for strongly multireference states. **Full CI** (exact but exponentially expensive) is impossible at scale.
 
 This is where the quantum computing story comes together.
 
@@ -38,7 +38,7 @@ What we need: a method that gives quantum-accurate results for the active site w
 
 ### Quantum embedding: the best of both worlds
 
-The solution is **quantum embedding**; use a quantum computer for the hard part (the active site) and a classical computer for the easy part (the environment). This is not a compromise; it's the computationally optimal strategy.
+A plausible route is **quantum embedding**: use a quantum computer for the hard correlated fragment (the active site) and a classical computer for the rest (the environment). This is not a concession to limited hardware; it is a natural multiscale way to reserve expensive quantum resources for the part of the calculation where they matter most.
 
 The mathematical framework:
 
@@ -66,9 +66,9 @@ Every step in this pipeline has been introduced in an earlier unit. This chapter
 
 The active space is where the computational savings come from; and where the physical insight enters.
 
-For CO₂ capture on a metal oxide surface, the active site might be an iron or copper atom with its nearest-neighbour oxygen atoms — perhaps 6 metal d-orbitals and 10 ligand orbitals: 16 spatial orbitals (32 spin-orbitals after accounting for spin up and down). After Jordan-Wigner encoding: 32 qubits. After tapering (exploiting symmetries to reduce qubit count): roughly 20–24 qubits — feasible on near-term or early fault-tolerant hardware.
+As an order-of-magnitude counting example, a CO₂-capture active site on a metal oxide surface might involve an iron or copper centre and its nearest-neighbour ligands — say 16 spatial orbitals (32 spin-orbitals after accounting for spin). After Jordan-Wigner encoding: 32 qubits. After symmetry reduction in a favourable encoding: perhaps 20–24 qubits. That does not make the problem automatically easy, but it shows why embedding is attractive: the quantum register tracks the fragment, not the whole surface.
 
-The key point: **you don't need to simulate the whole surface.** The quantum computer handles the 16 orbitals where strong correlation matters. The classical computer handles the other 500 orbitals where mean-field methods are perfectly adequate. This division of labour is what makes quantum-classical embedding practical.
+The key point: **you don't need to simulate the whole surface.** The quantum computer handles the orbitals where strong correlation matters. The classical computer handles the rest of the surface and solvent at a cheaper approximate level. This division of labour is what makes quantum-classical embedding practical.
 
 
 ## Worked Example
@@ -90,29 +90,29 @@ That still teaches the central idea. The point of quantum embedding is not that 
 
 ## Reality Check
 
-**Microsoft and PNNL's nitrogen fixation estimate.** In 2022, Microsoft and Pacific Northwest National Laboratory published resource estimates for simulating the FeMo cofactor of nitrogenase; the enzyme that fixes atmospheric nitrogen. This is a biologically critical catalyst with a strongly correlated active site. Their estimate: ~4 million physical qubits for a useful simulation using QPE with surface code error correction. With the Pinnacle architecture (Unit 2), this could potentially drop to $\sim 200,000$ physical qubits.
+**Catalysis-scale resource estimates are still large.** Published fault-tolerant chemistry estimates for strongly correlated benchmarks such as FeMo-co remain far beyond current hardware. McArdle et al. (2020) summarise about 200 million physical qubits for the 2017 Trotter/QPE FeMo-co estimate under the surface-code assumptions used there, and about 1 million physical qubits' worth of Toffoli-distillation cost in a later qubitization-based estimate, though a full end-to-end fault-tolerant analysis for that later algorithm was not yet completed. These are nitrogen-fixation benchmarks rather than DAC calculations, but they show the right scale.
 
 **What's been demonstrated.** Active-space VQE has been demonstrated for small molecules (H₂, LiH, BeH₂) on real hardware. No catalyst system has been simulated quantumly at a scale that produces new chemistry; the gap between "toy demonstration" and "useful catalyst screening" remains large.
 
-**The classical competition.** DMRG (Density Matrix Renormalization Group) has made remarkable progress on catalyst active sites in recent years. Chan and co-workers have applied DMRG to problems with up to ~100 active orbitals in 1D-like geometries. For 2D active sites (common in surface catalysis), DMRG struggles; this is where quantum advantage is most likely.
+**The classical competition.** DMRG and related tensor-network methods have made real progress on strongly correlated active spaces, including metalloenzyme complexes with active spaces above 70 spin-orbitals. But the review literature still points to a hard sweet spot around 100–200 spin-orbitals where no classical method is uniformly reliable.
 
-**The timeline.** Useful quantum catalyst screening requires ~50 active orbitals → ~100 qubits (after encoding and tapering — exploiting symmetries to reduce qubit count) → ~$10^5$ physical qubits with error correction. This is the same order of magnitude as the Hubbard model estimates from Unit 7. A generous estimate: 10–15 years.
+**What remains open.** Embedding can shrink the quantum part dramatically, but the literature does not yet support a settled catalyst-screening threshold in qubits or years. Resource needs depend on the active-space choice, the solver (VQE versus QPE), and the fault-tolerance stack. The safe claim is that useful catalyst screening remains a fault-tolerant problem, not a NISQ one.
 
-**What's real today:** The *pipeline* is real: define active space, compute integrals, encode, optimise. The quantum chemistry software (PySCF, OpenFermion, the encodings library) exists and works. What's missing is a quantum computer large enough and quiet enough to run the circuits.
+**What's real today:** The *pipeline* is real in pieces: active-space selection, integral generation, encoding, and classical embedding loops are mature workflows, and toy quantum subroutines can be inserted into that stack. What's missing is an end-to-end quantum solve at scientifically useful catalyst scale.
 
 
 ## Chef's Notes
 
 - **This chapter is the capstone.** Every concept introduced in the book; qubits as binary variables (Unit 1), superposition and interference (Unit 2), fermions and encodings (Unit 3), variational methods (Units 1, 3), amplitude estimation (Unit 5), QPE and Trotterisation (Unit 7); comes together here in a single end-to-end pipeline.
 
-- **Active-space methods are the near-term strategy for quantum chemistry.** They reduce the quantum resource requirements by orders of magnitude compared to full-system simulation. The classical insight (where does strong correlation live?) combines with the quantum capability (solve the correlated subsystem exactly).
+- **Active-space and embedding methods are the main scaling strategy for quantum chemistry on limited hardware.** They can reduce the quantum resource requirement by an order of magnitude or more on realistic benchmark systems. The classical insight (where does strong correlation live?) combines with the quantum capability (treat the correlated subsystem more accurately).
 
 - **The encodings book covers the encoding step in depth.** This unit's pipeline includes "encode the active-space Hamiltonian as a qubit operator"; the step where [*From Molecules to Qubits*](https://github.com/johnazariah/encodings-book) begins. Readers who want to understand *why* Jordan-Wigner produces long operator strings, or how tapering reduces qubit count, should start there.
 
-- **Catalyst design is a killer app for quantum computing.** It's economically critical (carbon capture, fertiliser production, hydrogen fuel cells), scientifically well-defined (compute the activation energy of a reaction pathway), and classically intractable at the relevant accuracy. If quantum computers prove their worth anywhere in chemistry, it's here.
+- **Catalyst design is a compelling long-term target for quantum computing.** It's economically important (carbon capture, fertiliser production, hydrogen fuel cells), chemically concrete (compute reaction energetics for an active site), and still difficult for the classical toolbox in the strongly correlated regime. If quantum computers prove their worth anywhere in chemistry, embedded catalytic active sites are one plausible place it could happen.
 
 - **Further reading:**
-    - Reiher, Wiebe, Svore, Wecker, Troyer (2017). *Elucidating Reaction Mechanisms on Quantum Computers.* [PNAS 114:7555–7560](https://doi.org/10.1073/pnas.1619152114) ([arXiv:1704.05018](https://arxiv.org/abs/1704.05018))
+    - Reiher, Wiebe, Svore, Wecker, Troyer (2017). *Elucidating Reaction Mechanisms on Quantum Computers.* [PNAS 114:7555–7560](https://doi.org/10.1073/pnas.1619152114)
     - Lee, Berry, Gidney, et al. (2021). *Even More Efficient Quantum Computations of Chemistry Through Tensor Hypercontraction.* [PRX Quantum 2:030305](https://doi.org/10.1103/PRXQuantum.2.030305) ([arXiv:2012.09265](https://arxiv.org/abs/2012.09265))
     - Li, Otten, Isaev, et al. (2022). *Toward Practical Quantum Embedding Simulation of Realistic Chemical Systems on Near-Term Quantum Computers.* [Chemical Science 13:8953–8962](https://doi.org/10.1039/D2SC01492K)
     - Azariah et al. *From Molecules to Qubits.* [github.com/johnazariah/encodings-book](https://github.com/johnazariah/encodings-book)

@@ -1,7 +1,7 @@
 # Production Plan — The Best Version of the Book
 
 **Date:** 2026-04-17
-**Status:** Live plan. Phases 1-3 closed; Phase 4 active.
+**Status:** Live plan. Phases 1-5 closed; Phase 6 in progress.
 **Scope:** Take the manuscript from a reviewed draft to a publishable web-first, print-capable book.
 
 Historical note: this file previously tracked the T0 / T0.5 / T1 / T2 review backlog. That review work is now captured in the addenda to `.review/2026-04-16-correctness-audit.md`. This file is now the forward-looking production plan.
@@ -13,7 +13,8 @@ Historical note: this file previously tracked the T0 / T0.5 / T1 / T2 review bac
 | 1. Structure Freeze | Closed | Title/subtitle, README landing page, and conclusion now describe the same book object. |
 | 2. Final Editorial Pass | Closed | The preface, Unit 4, the capstone, and the conclusion now read as one book rather than as mismatched artifacts. |
 | 3. Figure Program | Closed | The mandatory figure set is in place, the inventory lives in this file, and manuscript figures now use one caption style. |
-| 4. Notebook and Worked-Example Integrity | Active | The remaining live work is notebook truth-in-labelling, semantic assertions, and final alignment, tracked in `.review/NOTEBOOK-PLAN.md`. |
+| 4. Notebook and Worked-Example Integrity | Closed | All eight companion notebooks are now classified, manuscript-aligned, and passing the full smoke suite documented in `.review/NOTEBOOK-PLAN.md`. |
+| 5. Citation and Quantitative-Claim Pass | Closed | Cryptography, finance, materials-science, and climate / embedding verification are now reflected in the manuscript and the main audit file. |
 
 ---
 
@@ -172,18 +173,19 @@ For every chapter, verify the following:
 
 ## Phase 4 — Notebook and Worked-Example Integrity
 
-**Goal:** make the notebooks executable, honest about scope, and aligned with the surrounding worked examples.
+**Goal:** make the notebooks executable, honest about scope, aligned with the surrounding worked examples, and written as teaching code rather than opaque production abstractions.
 
-**Status:** Active.
+**Status:** Closed.
 
-The notebook track now has its own operational source of truth in `.review/NOTEBOOK-PLAN.md`.
-That separate document is agent-owned and is expected to change faster than this top-level production plan.
+The notebook track retained its own operational source of truth in `.review/NOTEBOOK-PLAN.md` while remediation was in flight.
+That work is now complete: every notebook has an explicit class, the manuscript no longer overstates notebook scope, the code remains student-readable rather than over-abstracted, and the full smoke suite passes.
 
 ### Phase deliverables
 
 - Every notebook has one explicit class: `faithful worked example`, `toy demonstration`, or `pipeline illustration`.
 - Every notebook is covered by CI smoke tests and remains compatible with the site build.
 - The manuscript never overstates what its companion notebook computes.
+- Notebook code stays pedagogy-friendly: explicit enough for a reader to inspect the mechanism being taught without digging through polished library layers.
 
 ### Escalation boundary
 
@@ -196,7 +198,7 @@ Notebook work should only be pulled back into this main plan if it forces one of
 
 ### Exit criteria
 
-- `.review/NOTEBOOK-PLAN.md` can be marked complete.
+- `.review/NOTEBOOK-PLAN.md` is marked complete.
 - No notebook remains ambiguous, misleading, or unsupported by the manuscript.
 
 ---
@@ -204,6 +206,8 @@ Notebook work should only be pulled back into this main plan if it forces one of
 ## Phase 5 — Citation and Quantitative-Claim Pass
 
 **Goal:** remove every remaining trust leak.
+
+**Status:** Closed on 2026-04-17. Local paper-archive baseline was verified first, then the remaining trust-critical claim checks for cryptography, finance, materials science, and climate / embedding were closed in the manuscript and main audit trail.
 
 ### Tasks
 
@@ -214,10 +218,10 @@ Notebook work should only be pulled back into this main plan if it forces one of
 
 ### Special attention areas
 
-- cryptography resource estimates;
-- finance convergence claims;
-- materials-science resource counts;
-- climate / embedding claims about what is already classically routine versus still aspirational.
+- cryptography resource estimates: closed;
+- finance convergence claims: closed;
+- materials-science resource counts: closed;
+- climate / embedding claims about what is already classically routine versus still aspirational: closed.
 
 ### Exit criteria
 
@@ -234,6 +238,8 @@ Notebook work should only be pulled back into this main plan if it forces one of
 
 - Rename GitHub repo from `problem-down` to `quantum-bottleneck` and update all internal references (manuscript, notebooks, copilot-instructions, README, conclusion).
 - Build the site and PDF from the final text.
+- Keep HTML builds clean by clearing stale generated outputs before each rebuild.
+- Remove public-facing links back to the private authoring repo until the source repo is public.
 - Read the output artifacts, not just the markdown sources.
 - Check navigation, headings, typography, KaTeX, links, notebook embeds, captions, and page breaks.
 - Resolve build warnings and broken cross-references.

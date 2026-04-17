@@ -5,9 +5,9 @@
 
 In 2008, the financial crisis taught the world that mispriced **derivatives** — financial contracts whose value derives from an underlying asset like a stock, a bond, or an interest rate — can destroy economies. At the heart of the crisis were *exotic options*: contracts that give the holder the right to buy or sell an asset at a fixed price on a future date, but with complex conditions that make them hard to value.
 
-Pricing a derivative means answering one question: **what is the expected payoff** — the profit (if any) the contract delivers at maturity? For a simple **European call option** (the right to buy a stock at a fixed price, exercisable only at maturity), there's an analytical formula (Black-Scholes, 1973). For exotic options — path-dependent, multi-asset, with early exercise features — there is no formula. The standard method is **Monte Carlo simulation**: generate millions of random market scenarios, compute the payoff for each, and take the average.
+Pricing a derivative means answering one question: **what is the expected payoff** — the profit (if any) the contract delivers at maturity? For a simple **European call option** (the right to buy a stock at a fixed price, exercisable only at maturity), there's an analytical formula (Black-Scholes, 1973). For exotic options — path-dependent, multi-asset, with early exercise features — there is no formula. The standard method is **Monte Carlo simulation**: generate many random market scenarios, compute the payoff for each, and take the average.
 
-Monte Carlo works, but it's slow. The statistical error (the uncertainty in your price estimate) shrinks as $1/\sqrt{N}$ where $N$ is the number of samples. To get one more digit of accuracy, you need **100 times more samples**. For complex derivatives that take seconds per sample, this translates to hours or days of computation. Banks run massive compute clusters to price their portfolios overnight. Goldman Sachs reportedly runs over a billion Monte Carlo simulations *per day*.
+Monte Carlo works, but it's slow. The statistical error (the uncertainty in your price estimate) shrinks as $1/\sqrt{N}$ where $N$ is the number of samples. To get one more digit of accuracy, you need **100 times more samples**. For complex derivatives with expensive path simulation, this translates to substantial overnight compute budgets across large portfolios.
 
 The $1/\sqrt{N}$ convergence rate isn't a software limitation. For generic random sampling — estimating the mean of an arbitrary distribution from independent samples — you *cannot* do better than $1/\sqrt{N}$. (Structured classical techniques like variance reduction and quasi-Monte Carlo can improve performance for specific problems, but they don't change the fundamental scaling.)
 
@@ -24,7 +24,7 @@ $$|\bar{X} - \mu| \sim \frac{\sigma}{\sqrt{N}}$$
 
 where $\sigma$ is the **standard deviation** (a measure of how spread out the payoff values are). To halve the error, quadruple $N$. To gain a factor of 10 in precision, multiply $N$ by 100. This $1/\sqrt{N}$ convergence rate is a mathematical fact about generic sampling, not a software limitation — for any estimator based on independent classical samples from an arbitrary distribution, you *cannot* do better.
 
-For a derivative that needs 6 digits of accuracy ($10^{-6}$ relative error) with $\sigma \sim 1$: you need $N \sim 10^{12}$ samples. At 1 microsecond per sample, that's 12 days.
+For a normalised problem targeting additive accuracy around $10^{-6}$ with $\sigma \sim 1$: you need $N \sim 10^{12}$ samples. At 1 microsecond per sample, that's about 12 days.
 
 
 ## The Quantum Angle
@@ -55,9 +55,9 @@ For derivative pricing, the "gold balls" are market scenarios, and the "fraction
 4. Precision $\epsilon$ requires $O(1/\epsilon)$ queries to the oracle
 
 Classical Monte Carlo: precision $\epsilon$ requires $O(1/\epsilon^2)$ samples.
-Quantum amplitude estimation: precision $\epsilon$ requires $O(1/\epsilon)$ queries.
+Canonical, phase-estimation-based quantum amplitude estimation: precision $\epsilon$ requires $O(1/\epsilon)$ oracle uses.
 
-**Same accuracy, quadratically fewer samples.** For the derivative that needs $10^{12}$ classical samples: quantum estimation needs $10^6$ queries. At the same time per query, that's 1 second instead of 12 days.
+**Same target accuracy, quadratically fewer oracle calls.** For the normalised back-of-the-envelope above, $10^{12}$ classical samples becomes about $10^6$ quantum oracle uses. That is the asymptotic gain. Whether it becomes a wall-clock advantage depends on the cost of state preparation, payoff encoding, and fault tolerance.
 
 ```{figure} ../figures/qae-scaling.png
 :name: fig-qae-scaling
@@ -68,7 +68,7 @@ Monte Carlo is already useful, so the point of QAE is not a new problem class bu
 
 ### When does $\sqrt{}$ matter?
 
-A quadratic speedup sounds modest compared to Shor's exponential speedup. But for Monte Carlo, quadratic is transformative. The reason: the baseline is *already polynomial* (Monte Carlo is $O(1/\epsilon^2)$), and the constant factors are large. Going from $10^{12}$ to $10^6$ is the difference between "we need a compute cluster" and "we need a laptop."
+A quadratic speedup sounds modest compared to Shor's exponential speedup. But for Monte Carlo, it is exactly the relevant asymptotic improvement: from $O(1/\epsilon^2)$ to $O(1/\epsilon)$. The open question is not whether that query-complexity gain exists; it does. The open question is whether a full fault-tolerant pricing oracle can realise it before implementation overhead erases the advantage.
 
 
 ## Worked Example
@@ -88,24 +88,24 @@ We discretise the stock price into $2^n$ bins, encode the **log-normal distribut
 
 ### Back to the trading floor
 
-We priced a European call option — the simplest derivative there is. How does this help Goldman Sachs price exotic instruments?
+We priced a European call option — the simplest derivative there is. How does this help price exotic instruments?
 
-The pipeline is identical. A more complex derivative has a more complex payoff function (path-dependent, multi-asset, with barriers and early exercise), but the quantum algorithm doesn't care: it just needs a circuit that encodes the payoff into an ancilla amplitude, and QAE estimates the expected value. The quadratic speedup applies regardless of the payoff's complexity. For Goldman's billion-simulation-per-day workload, the gap between $10^{12}$ classical samples and $10^6$ quantum queries is the gap between a compute cluster and a single machine.
+The pipeline is structurally similar. A more complex derivative has a more complex payoff function (path-dependent, multi-asset, with barriers and early exercise), and QAE still estimates the expected value by reading out an ancilla amplitude. But the oracle does care: state preparation, path dependence, arithmetic, and payoff logic all get more expensive as the product gets more realistic. The quadratic speedup survives at the query-complexity level; practical advantage depends on the total cost of that oracle.
 
 
 ## Reality Check
 
-**What's been demonstrated.** Goldman Sachs and IBM published a series of papers (2019–2021) on quantum amplitude estimation for derivative pricing, demonstrating the algorithm on simulators for simple options. Actual quantum hardware experiments have been limited to toy models (2–4 qubits, highly simplified distributions).
+**What's been demonstrated.** Goldman Sachs and IBM published a series of papers (2019–2021) on quantum amplitude estimation for derivative pricing, including simulator studies for European, basket, Asian, and barrier options. The hardware demonstrations are still toy-scale: for example, Stamatopoulos et al. run a heavily discretised European-call experiment on three qubits using amplitude estimation without phase estimation and error mitigation.
 
 **The depth problem.** QAE requires quantum phase estimation, which requires deep circuits: $O(1/\epsilon)$ applications of the Grover iterator. For useful precision ($\epsilon \sim 10^{-3}$), that's thousands of sequential operations, each involving the full oracle circuit. On NISQ devices with short coherence times, this is currently infeasible.
 
-**Approximate QAE.** Variants like iterative QAE (Suzuki et al. 2020) and maximum likelihood QAE reduce the circuit depth at the cost of more measurements. These are more NISQ-friendly but haven't demonstrated practical advantage.
+**Approximate QAE.** Variants like iterative QAE and maximum-likelihood / no-phase-estimation QAE reduce the circuit depth at the cost of more measurements. Suzuki et al. show that this can preserve the quadratic query improvement while substantially reducing gate counts in a Monte Carlo integration example. That improves implementability, but it does not by itself settle the full economic crossover for real pricing workloads.
 
-**What would change the picture.** Fault-tolerant quantum computers with $O(10^3)$ logical qubits and the ability to run circuits of depth $O(10^4)$. The financial industry is actively investing: JP Morgan, Goldman Sachs, BBVA, and others have quantum computing research teams focused on this exact application.
+**What would change the picture.** Fault-tolerant quantum computers able to run long coherent pricing oracles repeatedly, with enough clean workspace for state preparation, payoff arithmetic, and amplitude estimation. The missing ingredient is not just "more qubits" in the abstract, but reliable depth across the whole oracle.
 
-**The quadratic wall.** A quadratic speedup means quantum advantage arrives only above a certain problem size, where the improved scaling overcomes the overhead of quantum error correction. For Monte Carlo, estimates suggest this crossover requires $10^3$–$10^4$ logical qubits; ambitious but within the scope of hardware roadmaps.
+**The quadratic wall.** A quadratic speedup means quantum advantage arrives only above a certain problem size, where the improved scaling overcomes oracle-construction and error-correction overhead. The option-pricing literature gives evidence for a query-count crossover on simplified models, but it does **not** yet pin this down to a settled full-stack threshold like "a few thousand logical qubits."
 
-**What's real today:** The algorithm is sound and the quadratic speedup is mathematically proven. But the circuits are too deep for current hardware, and the crossover point where quantum beats classical is still distant. If fault-tolerant hardware arrives at the scale the roadmaps project, Monte Carlo pricing could be among the first practical applications — but that "if" remains substantial.
+**What's real today:** The algorithm is sound and the quadratic speedup is mathematically proven. But the circuits are too deep for current hardware, and whether amplitude estimation beats the best classical finance stack after full fault-tolerant overhead remains open.
 
 
 ## Chef's Notes

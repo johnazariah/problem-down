@@ -95,13 +95,15 @@ Each application of $G$ is one "query" to the oracle. So:
 - **Precision $\epsilon$** requires $O(1/\epsilon)$ queries
 - **Classical Monte Carlo** requires $O(1/\epsilon^2)$ samples for the same precision
 
-The quadratic advantage: same accuracy, quadratically fewer queries.
+The quadratic advantage: same target accuracy, quadratically fewer oracle queries.
 
 | Target precision | Classical samples | Quantum queries | Speedup |
 |:---|:---|:---|:---|
 | $10^{-1}$ | 100 | 10 | 10× |
 | $10^{-3}$ | $10^6$ | $10^3$ | 1,000× |
 | $10^{-6}$ | $10^{12}$ | $10^6$ | $10^6$× |
+
+These are scaling-law counts, suppressing constant factors and assuming coherent oracle access.
 
 The companion notebook does **not** run full payoff-encoding amplitude estimation end-to-end. Instead, it keeps the real pricing work classical and runs a compiled toy QAE phase-readout circuit for the discretised exercise probability, which is the narrowest honest runnable version on the current setup.
 
@@ -114,7 +116,7 @@ The companion notebook does **not** run full payoff-encoding amplitude estimatio
 
 2. **Amplitude estimation = QPE on Grover.** The angle $\theta$ that controls Grover encodes the probability $\sin^2\theta = M/N$. QPE extracts $\theta$ with precision $O(1/2^m)$ using $O(2^m)$ queries.
 
-3. **The quadratic speedup is $1/\epsilon$ vs. $1/\epsilon^2$.** This transforms Monte Carlo from "days on a cluster" to "seconds on a quantum computer" for high-precision estimates.
+3. **The quadratic speedup is $1/\epsilon$ vs. $1/\epsilon^2$.** This is a query-complexity statement. Whether it becomes a wall-clock gain depends on the cost of building and repeating the full pricing oracle.
 
 4. **Phase kickback appears again.** The oracle uses it (Deep-Dive 2). The Grover iterator uses it. QPE uses it. It's the same mechanism at every level.
 

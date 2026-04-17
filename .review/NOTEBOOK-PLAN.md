@@ -1,9 +1,9 @@
 # Notebook Program — Agent-Owned Execution Plan
 
 **Date:** 2026-04-17
-**Status:** Active
+**Status:** Complete
 **Owner:** GitHub Copilot
-**Scope:** Take the eight companion notebooks from runnable drafts to honest, production-ready companions for the book.
+**Scope:** Take the eight companion notebooks from runnable drafts to honest, pedagogy-first companions for the book.
 
 This file is the working source of truth for notebook execution, fidelity, CI coverage, and manuscript alignment. The top-level `.review/ACTION-PLAN.md` retains only the executive summary for this phase.
 
@@ -18,6 +18,8 @@ For each notebook, do one of three things and say which one was done:
 3. frame it as a **pipeline illustration** when its value is structural rather than algorithmically faithful.
 
 The failure mode to avoid is not merely broken execution. It is a notebook that runs but teaches the wrong thing, overclaims what it computes, or silently disagrees with the manuscript.
+
+The code standard here is teaching clarity, not production abstraction. If a reusable layer would make the mechanism harder for a student to see, the notebook should stay more explicit.
 
 ---
 
@@ -55,10 +57,12 @@ This baseline proves runtime reliability only. It does **not** prove that the no
 ## Operating doctrine
 
 - Prefer truth over ambition.
+- Prefer pedagogy over polish.
 - Prefer honest relabelling over fake fidelity.
 - Rewrite only when relabelling would leave the chapter underpowered or misleading.
 - A notebook that merely runs is still red if it teaches the wrong algorithmic story.
 - Any notebook that supports a quantitative manuscript claim must eventually carry at least one semantic assertion, not just a runtime check.
+- Keep Quokka-facing code local and inspectable unless abstraction removes only accidental plumbing.
 
 ---
 
@@ -86,7 +90,7 @@ Every notebook must clear these gates in order:
 
 - **Red**: runnable or not, it is still misleading, quantitatively wrong, or structurally dishonest.
 - **Amber**: runtime is stable and the notebook is useful, but framing, mapping, links, or quantitative trust still need work.
-- **Green**: classified, tested, manuscript-aligned, and ready to be treated as production-stable.
+- **Green**: classified, tested, manuscript-aligned, and ready to be treated as stable teaching material.
 
 ---
 
@@ -94,14 +98,14 @@ Every notebook must clear these gates in order:
 
 | Notebook | Runtime | Program state | Current diagnosis | Preferred end state | Next action |
 |----------|---------|---------------|-------------------|---------------------|-------------|
-| `01-logistics.ipynb` | passing | Amber | strong pedagogical demo; likely under-labelled rather than wrong | `Faithful worked example` | validate links and claims, then add a semantic check and lock classification |
+| `01-logistics.ipynb` | passing | Green | explicit faithful worked example with the exact depth-1 triangle MaxCut parameters and semantic smoke coverage for optimal-state dominance | `Faithful worked example` | locked unless later expanded to a larger still-truthful routing micro-instance |
 | `02-cryptography.ipynb` | passing | Green | rewritten as an honest compiled period-finding toy for the $N = 15$, $a = 7$ example | `Toy demonstration` | locked unless later promoted to genuine modular-exponentiation period finding |
 | `03-drug-discovery.ipynb` | passing | Green | rewritten as an honest single-geometry H2 VQE anatomy demo with direct XX and YY measurements and an exact-diagonalisation benchmark for the reduced model | `Toy demonstration` | locked unless later promoted to a full geometry-dependent chemistry pipeline |
-| `04-machine-learning.ipynb` | passing | Amber | conceptually strong and probably close to done | `Faithful worked example` | validate kernel behavior, links, and quantitative claims, then add semantic coverage |
+| `04-machine-learning.ipynb` | passing | Green | explicit faithful worked example with kernel-behavior semantic checks and corrected manuscript navigation | `Faithful worked example` | locked unless later expanded with a stronger or larger benchmark task |
 | `05-finance.ipynb` | passing | Green | rewritten as an honest classical-pricing notebook plus compiled toy QAE phase readout for exercise probability | `Toy demonstration` | locked unless later promoted to full payoff-encoding amplitude estimation |
 | `06-supply-chains.ipynb` | passing | Green | rewritten as an honest 2-nurse, 2-shift QUBO micro-example with an exact Ising map and tuned one-layer QAOA | `Toy demonstration` | locked unless later promoted to a larger but still truthful scheduling instance |
 | `07-materials-science.ipynb` | passing | Green | rewritten as an honest compiled phase-readout notebook anchored to the 2-site Hubbard benchmark | `Toy demonstration` | locked unless later promoted to faithful controlled-time-evolution Hubbard simulation |
-| `08-climate-energy.ipynb` | passing | Amber | strong capstone structure with inherited analytical shortcuts | `Pipeline illustration` unless missing measurement work is implemented | relabel as a pipeline demonstration and align claims with what is actually computed |
+| `08-climate-energy.ipynb` | passing | Green | reframed as an honest embedding-pipeline illustration with one direct-measurement embedded VQE solve step and semantic smoke bounds | `Pipeline illustration` | locked unless later promoted to a real embedding front end with self-consistency |
 
 ---
 
@@ -160,14 +164,8 @@ Every notebook must clear these gates in order:
 
 ---
 
-## Immediate queue
+## Completion note
 
-### Now
+All eight notebooks are now classified, manuscript-aligned, and covered by semantic smoke assertions where they carry quantitative claims.
 
-1. Lock the capstone framing for `08-climate-energy.ipynb`.
-2. Promote `01-logistics.ipynb` and `04-machine-learning.ipynb` to green.
-
-### After that
-
-3. Notebook link and navigation sweep.
-4. Final semantic assertion pass across all quantitative notebooks.
+The final full smoke run passed across `01` through `08`, so this plan can be treated as closed unless later notebook work reopens it intentionally.

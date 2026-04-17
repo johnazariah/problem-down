@@ -3,7 +3,7 @@
 > **Project:** What Quantum Computers Are Actually For
 > **Subtitle:** Eight problems from logistics to climate — and the algorithms that could solve them
 > **Owner:** John Azariah (johnazariah)
-> **Repo:** https://github.com/johnazariah/problem-down (private)
+> **Repo:** https://github.com/johnazariah/quantum-bottleneck (private)
 > **Status:** All 8 units drafted, pre-publication
 
 ---
@@ -104,6 +104,7 @@ These are unresolved. Ask John before making decisions on:
 
 ## Related projects
 
+- **[quantum-workbooks](https://github.com/johnazariah/quantum-workbooks)** — downstream open workbook surface for runnable companions and blog-first exports. Bottleneck notebook exports should land there without making it the manuscript source of truth.
 - **[quokka-cookbook](https://github.com/johnazariah/quokka-cookbook)** — companion "Book B": runnable QASM recipes for Quokka. This project is "Book A" (why quantum); the Cookbook is "Book B" (how to build circuits). They cross-reference each other.
 - **[encodings-book](../encodings-book/)** — fermion-to-qubit encodings textbook. Unit 3 (Drug Discovery) bridges to this. Unit 8 (Climate) uses the full pipeline.
 - **[encodings](https://github.com/johnazariah/encodings)** — F# library for fermion-to-qubit encodings (companion code to the encodings book).

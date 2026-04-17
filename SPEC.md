@@ -339,7 +339,18 @@ Every unit has a **Reality Check** box. These are non-negotiable. The rules:
 4. **Acknowledge dequantisation.** If a claimed quantum advantage has been partially or fully matched classically (e.g., quantum recommendation systems → Tang 2019), say so.
 5. **Never promise.** Use "could", "in principle", "if error rates improve." Never "will", "soon", or "inevitably."
 
-### 4.4 Visual language
+### 4.4 Code philosophy
+
+The notebooks and worked examples are part of the pedagogy, not a disguised software library.
+
+- **Prefer legibility over polish.** Students should be able to read through the circuit construction, sampling loop, and post-processing without first unpacking an abstraction layer.
+- **Prefer standalone examples over opaque reuse.** If a helper function hides the mechanism the chapter is trying to teach, it is the wrong abstraction for this book.
+- **Abstract only accidental plumbing.** Shared code is acceptable for boilerplate such as response decoding, but not for the conceptual heart of the example.
+- **Do not optimise away the lesson.** Notebook code should be clear, local, and inspectable even when a production engineer would factor it differently.
+
+This is why the Quokka-facing code in this repo is intentionally pedagogy-friendly rather than production-ready.
+
+### 4.5 Visual language
 
 - **Circuit diagrams** for every quantum operation (QASM-style, matching Quokka Cookbook conventions)
 - **Cost landscape visualisations** (3D surfaces, energy diagrams) wherever optimisation is involved
@@ -381,7 +392,7 @@ Each notebook follows the same structure:
 ### 5.3 Repository structure
 
 ```
-problem-down/
+quantum-bottleneck/
 ├── README.md
 ├── manuscript/
 │   ├── 00-preface.md
@@ -413,7 +424,7 @@ problem-down/
 
 - Publish one unit per month as a standalone ~5,000-word blog post
 - Companion Jupyter notebook on GitHub
-- Host on quokka-cookbook GitHub Pages site (shared infrastructure) or separate site
+- Host on a dedicated `quantum-bottleneck` GitHub Pages site, or export runnable notebook-first surfaces through `quantum-workbooks`
 - Each post stands alone — readers can enter at any unit
 - Collect feedback via GitHub issues and social media
 - Build an audience before committing to print

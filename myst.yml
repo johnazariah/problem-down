@@ -14,7 +14,6 @@ project:
     - VQE
     - quantum machine learning
     - quantum chemistry
-  github: https://github.com/johnazariah/problem-down
   license: All Rights Reserved
   exclude:
     - SPEC.md

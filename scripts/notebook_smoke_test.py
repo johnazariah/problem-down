@@ -40,6 +40,18 @@ def assert_counts(counts: dict, min_total: int = 1) -> None:
 def smoke_unit_1() -> None:
     ns = exec_code_cells(NOTEBOOKS / "01-logistics.ipynb", [1, 2, 3, 4])
     assert_counts(ns["results"], min_total=128)
+    expected_cut = sum(
+        ns["cut_value"](bitstring, ns["edges"]) * count for bitstring, count in ns["results"].items()
+    ) / sum(ns["results"].values())
+    optimal_probability = sum(
+        count
+        for bitstring, count in ns["results"].items()
+        if ns["cut_value"](bitstring, ns["edges"]) == ns["best_cut"]
+    ) / sum(ns["results"].values())
+    assert expected_cut >= 1.95, f"Logistics expected cut regressed: {expected_cut:.3f}"
+    assert optimal_probability >= 0.95, (
+        f"Logistics optimal states are not dominant enough: {optimal_probability:.3f}"
+    )
 
 
 def smoke_unit_2() -> None:
@@ -67,11 +79,21 @@ def smoke_unit_3() -> None:
 
 def smoke_unit_4() -> None:
     ns = exec_code_cells(NOTEBOOKS / "04-machine-learning.ipynb", [1, 2, 3])
+    helper_source = load_code_cells(NOTEBOOKS / "04-machine-learning.ipynb")[3]
+    helper_source = helper_source.split('print(f"Computing ')[0]
+    exec(helper_source, ns)
     circuit = ns["kernel_circuit"](ns["X_train"][0], ns["X_train"][1])
     counts = ns["run_qasm"](circuit, shots=128)
     assert_counts(counts, min_total=128)
     probability_00 = counts.get("00", 0) / sum(counts.values())
     assert 0.0 <= probability_00 <= 1.0, f"Invalid probability: {probability_00}"
+    kernel_self = ns["quantum_kernel_value"](ns["X_train"][0], ns["X_train"][0], shots=256)
+    kernel_forward = ns["quantum_kernel_value"](ns["X_train"][0], ns["X_train"][1], shots=256)
+    kernel_reverse = ns["quantum_kernel_value"](ns["X_train"][1], ns["X_train"][0], shots=256)
+    assert kernel_self >= 0.85, f"Quantum kernel self-overlap too small: {kernel_self:.3f}"
+    assert abs(kernel_forward - kernel_reverse) <= 0.15, (
+        f"Quantum kernel symmetry drifted too far: {kernel_forward:.3f} vs {kernel_reverse:.3f}"
+    )
 
 
 def smoke_unit_5() -> None:

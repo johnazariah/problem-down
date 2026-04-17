@@ -10,7 +10,7 @@ This is not a coincidence. It's the structure of quantum mechanics itself. Quant
 
 **Real today.** The algorithms work. Shor's algorithm factors numbers. VQE computes molecular energies. QAOA optimises combinatorial problems. Quantum kernels classify data. These are mathematical facts, verified on simulators and demonstrated on small quantum hardware. The question has never been whether the algorithms work — it's whether the hardware can run them at useful scale.
 
-**Next.** The hardware gap is closing. Resource estimates for breaking RSA-2048 have dropped from 20 million physical qubits to under 100,000 in the space of five years. Early fault-tolerant devices — machines with a few thousand logical qubits — could arrive within a decade. The first applications to cross the utility threshold will likely be quantum chemistry (Units 3 and 8), where the problems are natively quantum and the active-space trick keeps qubit counts manageable.
+**Next.** The hardware gap is closing, but the target moves with the architecture. Resource estimates for breaking RSA-2048 have dropped from the 20-million-physical-qubit surface-code estimate of 2021 to sub-100,000-qubit QLDPC architecture studies in 2026, under different hardware and runtime assumptions. That does not mean practical cryptanalytic machines are imminent. It means the engineering target depends strongly on error correction, architecture, and parallelisation.
 
 **Unknown.** Whether QAOA will beat classical optimisation at scale. Whether quantum kernels will find natural datasets where they outperform classical methods. Whether the quadratic speedup of amplitude estimation justifies the overhead of error correction. These are open research questions, not marketing talking points. The honest answer is: we don't know yet. This book has tried to give you the tools to follow the answers as they emerge.
 
@@ -31,7 +31,7 @@ The problems are real. The algorithms are sound. The hardware is coming. What re
 
 **If you want to follow the research.** The arXiv preprint server ([arxiv.org](https://arxiv.org)) is where quantum computing research appears first. The annotated bibliography below is a starting point; every paper links to its arXiv version where available.
 
-**If you want to contribute.** This is an open-source book. The manuscript, notebooks, and build tooling are at [github.com/johnazariah/problem-down](https://github.com/johnazariah/problem-down). Issues, corrections, and pull requests are welcome.
+**If you want to follow the project structure.** The authoritative manuscript and build source stays in the private working repo for this book while it is being prepared for publication. Runnable workbook exports are intended to live in `quantum-workbooks`, so the public notebook surface can stay separate from the book-writing source of truth.
 
 
 ## Annotated Bibliography
@@ -46,7 +46,7 @@ The references below are the most important papers cited in this book, grouped b
 
 - Lucas (2014). *Ising formulations of many NP problems.* [Frontiers in Physics 2:5](https://doi.org/10.3389/fphy.2014.00005). The reference for encoding combinatorial problems as QUBO/Ising Hamiltonians. Covers graph problems, scheduling, satisfiability, and more.
 
-- Farhi et al. (2001). *A quantum adiabatic evolution algorithm applied to random instances of an NP-complete problem.* [Science 292:472–475](https://doi.org/10.1126/science.1057726). The foundational paper on quantum annealing as an algorithmic paradigm.
+- Farhi et al. (2001). *A quantum adiabatic evolution algorithm applied to random instances of an NP-complete problem.* [Science 292:472–475](https://doi.org/10.1126/science.1057726) ([arXiv:quant-ph/0001106](https://arxiv.org/abs/quant-ph/0001106)). The foundational paper on quantum annealing as an algorithmic paradigm.
 
 ### Cryptography and period-finding (Unit 2)
 
@@ -54,25 +54,25 @@ The references below are the most important papers cited in this book, grouped b
 
 - Gidney and Ekerå (2021). *How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits.* [arXiv:1905.09749](https://arxiv.org/abs/1905.09749). The definitive resource estimate for breaking RSA with a quantum computer — the benchmark that every subsequent estimate improves on.
 
-- Webster, Berent, Chandra, Hockings et al. (2026). *The Pinnacle Architecture.* [arXiv:2602.11457](https://arxiv.org/abs/2602.11457). Reduced the RSA-2048 cost to under 100,000 physical qubits using quantum LDPC codes — a 200× improvement over surface-code estimates.
+- Webster, Berent, Chandra, Hockings et al. (2026). *The Pinnacle Architecture.* [arXiv:2602.11457](https://arxiv.org/abs/2602.11457). Reduced the quoted RSA-2048 footprint to under 100,000 physical qubits under its stated hardware and runtime assumptions, using quantum LDPC codes — a dramatic improvement over surface-code estimates.
 
 ### Quantum chemistry and simulation (Units 3, 7, 8)
 
-- Peruzzo et al. (2014). *A variational eigenvalue solver on a photonic quantum processor.* [Nature Communications 5:4213](https://doi.org/10.1038/ncomms5213). The first experimental demonstration of VQE — the algorithm that makes quantum chemistry possible on near-term hardware.
+- Peruzzo et al. (2014). *A variational eigenvalue solver on a photonic quantum processor.* [Nature Communications 5:4213](https://doi.org/10.1038/ncomms5213) ([arXiv:1304.3061](https://arxiv.org/abs/1304.3061)). The first experimental demonstration of VQE — the algorithm that makes quantum chemistry possible on near-term hardware.
 
-- McArdle, Endo, Aspuru-Guzik, Benjamin, Yuan (2020). *Quantum computational chemistry.* [Reviews of Modern Physics 92:015003](https://doi.org/10.1103/RevModPhys.92.015003). The most comprehensive review of quantum algorithms for chemistry. Start here for the full landscape.
+- McArdle, Endo, Aspuru-Guzik, Benjamin, Yuan (2020). *Quantum computational chemistry.* [Reviews of Modern Physics 92:015003](https://doi.org/10.1103/RevModPhys.92.015003) ([arXiv:1808.10402](https://arxiv.org/abs/1808.10402)). The most comprehensive review of quantum algorithms for chemistry. Start here for the full landscape.
 
-- Low and Chuang (2019). *Hamiltonian Simulation by Qubitization.* [Quantum 3:163](https://doi.org/10.22331/q-2019-07-12-163). Introduced qubitization — a fundamentally different approach to Hamiltonian simulation that achieves optimal query complexity. The theoretical foundation for next-generation quantum simulation algorithms.
+- Low and Chuang (2019). *Hamiltonian Simulation by Qubitization.* [Quantum 3:163](https://doi.org/10.22331/q-2019-07-12-163) ([arXiv:1610.06546](https://arxiv.org/abs/1610.06546)). Introduced qubitization — a fundamentally different approach to Hamiltonian simulation that achieves optimal query complexity. The theoretical foundation for next-generation quantum simulation algorithms.
 
-- Reiher, Wiebe, Svore, Wecker, Troyer (2017). *Elucidating Reaction Mechanisms on Quantum Computers.* [PNAS 114:7555–7560](https://doi.org/10.1073/pnas.1619152114). The first concrete resource estimate for quantum chemistry on an industrially relevant molecule (FeMoCo). Established the engineering targets for fault-tolerant quantum chemistry.
+- Reiher, Wiebe, Svore, Wecker, Troyer (2017). *Elucidating Reaction Mechanisms on Quantum Computers.* [PNAS 114:7555–7560](https://doi.org/10.1073/pnas.1619152114). A landmark early FeMoCo resource estimate for fault-tolerant quantum chemistry; useful as a benchmark, though later algorithms materially change the cost picture.
 
-- Babbush, Wiebe, McClean, et al. (2018). *Low-Depth Quantum Simulation of Materials.* [Physical Review X 8:011044](https://doi.org/10.1103/PhysRevX.8.011044). Resource estimates for QPE on the 2D Hubbard model — the numbers in Unit 7's Reality Check.
+- Babbush, Wiebe, McClean, et al. (2018). *Low-Depth Quantum Simulation of Materials.* [Physical Review X 8:011044](https://doi.org/10.1103/PhysRevX.8.011044). A landmark resource-estimate paper for fault-tolerant Hubbard-model simulation; best read alongside later reviews when comparing assumptions across algorithms.
 
 ### Quantum machine learning (Unit 4)
 
-- Havlíček, Córcoles, Temme, et al. (2019). *Supervised learning with quantum-enhanced feature spaces.* [Nature 567:209–212](https://doi.org/10.1038/s41586-019-0980-2). The experimental demonstration of quantum kernel methods — the algorithm from Unit 4 running on real hardware.
+- Havlíček, Córcoles, Temme, et al. (2019). *Supervised learning with quantum-enhanced feature spaces.* [Nature 567:209–212](https://doi.org/10.1038/s41586-019-0980-2) ([arXiv:1804.11326](https://arxiv.org/abs/1804.11326)). The experimental demonstration of quantum kernel methods — the algorithm from Unit 4 running on real hardware.
 
-- Tang (2019). *A quantum-inspired classical algorithm for recommendation systems.* [STOC 2019](https://doi.org/10.1145/3313276.3316310). The dequantisation result that narrowed the territory for quantum ML advantage. Essential reading for anyone claiming quantum speedups in ML.
+- Tang (2019). *A quantum-inspired classical algorithm for recommendation systems.* [STOC 2019](https://doi.org/10.1145/3313276.3316310) ([arXiv:1807.04271](https://arxiv.org/abs/1807.04271)). The dequantisation result that narrowed the territory for quantum ML advantage. Essential reading for anyone claiming quantum speedups in ML.
 
 ### Quantum finance (Unit 5)
 

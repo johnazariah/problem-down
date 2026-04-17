@@ -489,3 +489,158 @@ The live production work is now correctly concentrated in:
 - Phase 4 notebook integrity;
 - Phase 5 citation / quantitative-claim verification; and
 - the later output-polish and external-reader phases.
+
+## Phase 5 cryptography verification addendum - 2026-04-17
+
+I reviewed the cryptography chapter and conclusion against the local archive for:
+
+- Roetteler, Naehrig, Svore, Lauter (2017) on ECDLP logical-qubit and Toffoli counts;
+- Gidney and Ekerå (2021) on RSA-2048 surface-code resource estimates;
+- Webster et al. (2026) on the Pinnacle architecture; and
+- Kim et al. (ePrint 2026/106) on updated ECDLP circuit and fault-tolerant estimates.
+
+### Findings resolved in the manuscript
+
+1. The hook incorrectly described **P-256 as comparable in classical security to RSA-2048**. The cited ECC paper explicitly says P-256 is closer to RSA-3072. The text now keeps the 2,330-logical-qubit headline but adds the correct security-equivalence caveat.
+
+2. The Reality Check line claiming **P-256 can be broken in minutes** was too strong for the cited source. The ePrint paper's prose summary is explicit for **ECC-224** at RSA-2048-comparable security (34-96 minutes using about 6.9-19.1 million physical qubits) and only gives a broader minutes-to-hours range across curves. The chapter now states the sourced broader claim and anchors the concrete number to ECC-224.
+
+3. The chapter mixed **$O(n^3)$** and **$O(n^2 \log n)$** descriptions for the quantum cost of Shor's algorithm. The Gidney-Ekerå abstract-circuit formula scales cubically in the problem size for standard arithmetic, so the inconsistent lower-complexity line has been removed.
+
+4. The text's **$\sim 10^{10}$ gates** line for RSA-2048 overstated the cited abstract-circuit count. Gidney and Ekerå give about $0.3n^3 + 0.0005n^3 \lg n$ Toffoli operations, which is about $2.6 \times 10^9$ at $n = 2048$. The chapter now says billions of Toffoli-scale operations instead of quoting an inflated gate count.
+
+5. Two forecast-style statements were stronger than the sources justified:
+   - the Pinnacle paragraph implied a near-term hardware-roadmap conclusion not contained in the paper; and
+   - the conclusion paragraph implied a specific early fault-tolerant timeline without a source.
+
+   Both passages have been softened to keep the architecture result while removing unsupported forecasting.
+
+6. The **"harvest now, decrypt later"** paragraph previously used a specific 15-year horizon without a source in the chapter. The text now keeps the security rationale but removes the uncited time horizon.
+
+### Current assessment
+
+I am satisfied that the trust-critical cryptography claims now match the cited papers more closely and that the remaining prose is materially cleaner about which comparisons are like-for-like, which numbers are title-level architecture estimates, and which statements are still forecasts rather than established facts.
+
+## Phase 5 finance verification addendum - 2026-04-17
+
+I reviewed the finance unit and amplitude-estimation deep dive against the local archive for:
+
+- Montanaro (2015) on quantum Monte Carlo speedups and the $\widetilde{O}(1/\epsilon)$ mean-estimation scaling;
+- Stamatopoulos, Egger, Sun, et al. (2020) on option pricing circuits, simulator studies, and toy hardware experiments; and
+- Suzuki, Uno, Raymond, et al. (2020) on amplitude estimation without phase estimation.
+
+### Findings resolved in the manuscript
+
+1. The chapter translated **query complexity directly into wall-clock runtime** by treating a quantum oracle call as if it had the same cost as a classical Monte Carlo sample ("1 second instead of 12 days," "cluster versus laptop," "single machine"). The cited papers support the asymptotic $1/\epsilon$ versus $1/\epsilon^2$ comparison, but not that wall-clock equivalence. The text now keeps the asymptotic gap and makes the oracle-cost caveat explicit.
+
+2. The bottleneck example used **relative-error language where the calculation was additive**. The $\sigma/\sqrt{N}$ estimate is an additive-error statement in normalised units, not a relative-error guarantee. The chapter now states the example as a normalised additive-accuracy back-of-the-envelope.
+
+3. The hook and payoff section used an **unsupported Goldman-Sachs workload number** and then leaned on it rhetorically in later comparisons. I did not find a source for the manuscript's "over a billion Monte Carlo simulations per day" line in the local archive. The manuscript now uses sourced, general workload language instead of a precise unsourced headline.
+
+4. The Reality Check overstated the hardware evidence as **"2-4 qubits, highly simplified distributions"**. The cited option-pricing paper is more specific: it reports a toy three-qubit European-call experiment on IBM Q Tokyo using amplitude estimation without phase estimation and error mitigation. The manuscript now says that directly.
+
+5. The Reality Check introduced an unsupported **logical-qubit threshold and roadmap framing** ("$10^3$-$10^4$ logical qubits," "within hardware roadmaps"). The cited finance papers do show query-count crossover behavior on simplified models, but they do not establish a settled fault-tolerant resource threshold of that form. The manuscript now frames this as an open full-stack crossover question rather than a sourced qubit-count forecast.
+
+6. The deep dive repeated the same overreach by turning the $1/\epsilon$ versus $1/\epsilon^2$ scaling into **"days on a cluster" versus "seconds on a quantum computer."** That line has been narrowed to the correct query-complexity claim.
+
+### Current assessment
+
+I am satisfied that the finance pair now distinguishes clearly between:
+
+- the mathematically proven quadratic query improvement;
+- toy simulator and hardware demonstrations that support the algorithmic story; and
+- the still-open question of whether a full fault-tolerant pricing oracle will beat the best classical finance stack in practice.
+
+## Phase 5 materials-science verification addendum - 2026-04-17
+
+I reviewed the materials-science unit and the QPE / Trotter deep dive against the local archive for:
+
+- Qin, Schäfer, Andergassen, Corboz, Gull (2022) on what is and is not settled in the 2D Hubbard phase diagram;
+- McArdle, Endo, Aspuru-Guzik, Benjamin, Yuan (2020) on phase-estimation scaling and on later summaries of Hubbard-model resource estimates; and
+- the repository's citation metadata for Babbush, Wiebe, McClean, et al. (2018).
+
+### Findings resolved in the manuscript
+
+1. The unit presented an unsupported **resource table as if it were a direct Babbush et al. result**: `$4 \times 4 \to 10^8$ T-gates`, `$8 \times 8 \to 10^{11}$`, `$16 \times 16 \to 10^{14}$`, together with `~100 / ~400 / ~1600 logical qubits` and minute/hour/day wall times. I did not find this table in the local archive. The local review literature instead summarises a band of estimates for a 100-site 2D Fermi-Hubbard problem, with substantial dependence on algorithm and error model. The manuscript now reports that band explicitly instead of attributing a faux-precise scaling table to one paper.
+
+2. The Reality Check understated the physical-qubit cost with an unsupported **`~10^5 physical qubits` milestone** and coupled it to near-term forecast language (`10-15 years`, `next decade`, `plausible target`). The local review article instead summarises roughly `$4 \times 10^5$-$6 \times 10^5$` physical qubits for one Trotter-based estimate and roughly `2-3 million` for a qubitization-based estimate on similar 100-site problems. The manuscript now gives that architecture-dependent band and drops the countdown framing.
+
+3. The deep dive contained a genuine **QPE complexity error**. It wrote the total cost as `O(m \cdot N_\text{Trotter} \cdot L^2)`, even though the chapter itself correctly explains that standard QPE applies `U^{2^k}`. McArdle et al. summarise the standard result: total coherent evolution scales as `O(2^m) = O(1/\epsilon)` rather than `O(m)`. The manuscript now states the correct asymptotic dependence and stops deriving end-to-end resource numbers from the linear-in-bits formula.
+
+4. The unit said the hopping and interaction pieces were easy to implement because the individual terms within each part **"do commute."** That is false for the hopping Hamiltonian as a whole. The revised text now says what is actually true: interaction terms commute, while hopping terms must be scheduled in commuting groups or swap-network layers.
+
+5. The hook and bottleneck used **too-absolute classical-impossibility language** (`computational impossibility`, `No classical method can solve it reliably`). Qin et al. are more careful: they emphasise unsettled parts of the 2D phase diagram and the fact that different controlled methods provide partial but non-uniform access across parameter regimes. The manuscript now reflects that nuance.
+
+6. The unit's further-reading list paired **DOI `10.1103/PhysRevX.8.011044` with `arXiv:1711.04789`**, which is not the same paper in the local archive. The misleading arXiv link has been removed.
+
+### Current assessment
+
+I am satisfied that the materials pair now distinguishes clearly between:
+
+- what is mathematically established about QPE resource scaling;
+- what the literature actually supports for 2D Hubbard fault-tolerant resource estimates; and
+- what remains an open scientific and engineering question about the true classical/quantum crossover in strongly correlated materials.
+
+## Phase 5 climate / embedding verification addendum - 2026-04-17
+
+I reviewed the climate-and-energy capstone and the embedding deep dive against the local archive for:
+
+- Li, Otten, Isaev, et al. (2022) on what quantum embedding actually demonstrates on realistic chemical benchmarks;
+- McArdle, Endo, Aspuru-Guzik, Benjamin, Yuan (2020) on the classical chemistry landscape and on published FeMo-co resource estimates; and
+- Kandala, Mezzacapo, Temme, et al. (2017) on the small-molecule hardware VQE demonstrations used as the chapter's current-state anchor.
+
+### Findings resolved in the manuscript
+
+1. The capstone used **too-absolute language about classical methods** (`No classical method handles both simultaneously`, `computationally optimal strategy`, `classically intractable at the relevant accuracy`). The local chemistry review literature is more careful: DFT, CCSD(T), DMRG, and embedding methods each cover parts of the space, but no single method is uniformly reliable across the strongly correlated 100–200 spin-orbital regime. The manuscript now reflects that narrower claim.
+
+2. The Reality Check introduced an unsupported **catalyst-screening timeline and qubit threshold** (`~10^5 physical qubits`, `10-15 years`). I did not find support for that threshold in the local archive. The local review instead points to much larger and assumption-sensitive chemistry resource estimates, ranging from about `1 million` physical qubits' worth of Toffoli-distillation cost in a later FeMo-co estimate to about `200 million` physical qubits for the 2017 Trotter/QPE estimate under the older surface-code assumptions summarised by McArdle et al. The manuscript now presents this as an open fault-tolerant resource question rather than a countdown.
+
+3. The capstone cited an unsupported **Microsoft / PNNL / Pinnacle resource chain** for nitrogen fixation (`~4 million physical qubits`, then `~200,000` under Pinnacle) without a matching local source trail. The local Pinnacle paper contains condensed-matter benchmarks, not a catalyst-specific end-to-end chemistry estimate of that form. The manuscript now drops that unsupported transfer.
+
+4. The deep dive contained a genuine **algorithmic overstatement** by saying the active space could be solved `exactly with VQE or QPE`. VQE is variational and approximate; QPE is the systematically improvable / asymptotically exact route. The manuscript now says that directly.
+
+5. The embedding chapter repeated the same unsupported **`50 active orbitals -> 100 qubits -> 10^5 physical qubits` engineering target**. That number was not supported by the local embedding paper, which shows order-of-magnitude qubit reductions on benchmark systems (for example, `144` to `16` qubits for C18) but does not establish a single fault-tolerant catalyst threshold. The deep dive now states the broader million-to-hundreds-of-millions chemistry resource band instead.
+
+6. The further-reading list and conclusion both carried a **bad arXiv link** for Reiher et al. (2017), pairing the PNAS paper with `arXiv:1704.05018`, which is a different paper. The incorrect arXiv link has been removed.
+
+### Current assessment
+
+I am satisfied that the climate / embedding pair now distinguishes clearly between:
+
+- the genuinely promising structural idea that embedding can shrink the quantum part dramatically;
+- the benchmark evidence that this already helps on realistic chemistry test cases; and
+- the still-open question of when, and on what hardware, that pipeline becomes useful for real catalyst screening.
+
+## Phase 6 output-build addendum - 2026-04-17
+
+I started the production-polish pass by rebuilding the website and PDF from the current manuscript.
+
+### Findings and fixes
+
+1. The live source metadata is already aligned on `quantum-bottleneck`, but HTML rebuilds were leaving **stale hashed exports** under `_build/html` and `_build/site`. That meant old generated markdown files could still contain `problem-down` URLs even after the source and current rendered pages were correct.
+
+2. I fixed this at the build step rather than by one-off manual cleanup. The repository now has a `build-site.sh` helper that removes the generated HTML/site trees before running `jupyter-book build --html --force`. The README and GitHub Pages workflow now both use that script, so local and CI builds follow the same clean-build path.
+
+3. After the change, a fresh HTML rebuild and PDF rebuild both completed successfully. The current generated pages now point at `quantum-bottleneck` rather than the old repo name.
+
+### Remaining note
+
+The HTML build still emits the advisory warning that `myst.yml` uses `All Rights Reserved` rather than an SPDX license identifier. I left that unchanged because it is a publishing / licensing decision, not a mechanical production fix.
+
+## Phase 6 public-link addendum - 2026-04-17
+
+After fixing the stale-output problem, I checked the public-facing links in the rendered site.
+
+### Findings and fixes
+
+1. The companion-repo links used in the manuscript body are not the main problem here. `quokka-cookbook` and `encodings-book` both resolve publicly.
+
+2. The real output defect was the project-level GitHub metadata. `myst.yml` still declared `project.github: https://github.com/johnazariah/quantum-bottleneck`, and that caused the built site to inject a GitHub repo button plus `Edit this page` / source links to the private authoring repo on every generated page.
+
+3. The target repo currently returns 404 for unauthenticated readers, so those links were dead in the public build.
+
+4. I fixed this by removing the project-level GitHub metadata from `myst.yml` and rewriting the conclusion paragraph that explicitly linked readers to the private repo. The book now describes the private authoring-repo arrangement without sending public readers to a dead URL.
+
+### Validation
+
+After a clean rebuild, the generated HTML no longer injects repo/edit links to `johnazariah/quantum-bottleneck`, while the public companion links remain intact.

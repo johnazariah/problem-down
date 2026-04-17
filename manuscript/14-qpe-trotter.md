@@ -109,20 +109,18 @@ For an $L \times L$ Hubbard lattice with $2L^2$ spin-orbitals:
 
 | Component | Gate count |
 |:---|:---|
-| Hopping terms per Trotter step | $O(L^2)$ CNOTs |
-| Interaction terms per Trotter step | $O(L^2)$ CNOTs |
-| QFT (for QPE) | $O(m^2)$ controlled rotations |
-| Total | $O(m \cdot N_\text{Trotter} \cdot L^2)$ |
+| Hopping + interaction terms per Trotter step | $O(L^2)$ two-qubit gates |
+| One Trotterized call to $e^{-iHt}$ | $O(N_\text{Trotter} \cdot L^2)$ gates |
+| Standard QPE to phase precision $\epsilon_\text{PE}$ | $O(N_\text{Trotter} \cdot L^2 / \epsilon_\text{PE})$ controlled evolution |
+| Inverse QFT overhead | $O(\log^2(1/\epsilon_\text{PE}))$ controlled rotations |
 
-For an $8 \times 8$ lattice (the same size benchmarked in Unit 7) with **chemical-precision** QPE ($m \approx 20$ bits, giving ~1 milliHartree accuracy — the threshold from Unit 3 where energy differences become chemically meaningful, $N_\text{Trotter} \approx 10^3$): each Trotter step requires roughly $10^4$ gates on $\sim 400$ logical qubits (including QPE ancillas). With $N_\text{Trotter} \approx 10^3$ steps per time-evolution query, that's $\sim 10^7$ gates per query. The total T-gate count — accounting for all QPE queries and the overhead of fault-tolerant gate synthesis — is $\sim 10^{11}$, matching the Babbush et al. estimates cited in Unit 7.
+The key point is that QPE is **not** linear in the number of ancilla bits. If you use $m$ ancillas, standard QPE applies $U, U^2, \ldots, U^{2^{m-1}}$, so the total coherent evolution scales like $2^m = O(1/\epsilon_\text{PE})$, not $O(m)$. That is why it is safer to quote published end-to-end resource estimates than to multiply a few back-of-the-envelope factors.
+
+McArdle et al. (2020) summarise two representative results for a 100-site 2D Fermi-Hubbard problem. A qubitization-based estimate with an intensive error target lands at about $7.1 \times 10^8$ T-gates and roughly $2$-$3$ million physical qubits. A Trotter-based estimate with a size-extensive error target lands at about $10^6$ Toffoli gates / $10^7$-$10^8$ T-gates and roughly $4 \times 10^5$-$6 \times 10^5$ physical qubits. Those figures are not plug-and-play comparable because the error conventions differ, but they put the problem firmly in the fault-tolerant regime.
 
 ### Physical qubits
 
-With **surface code** error correction (the leading scheme from Unit 2's Reality Check; physical error rate $10^{-3}$, **code distance** ~20 — the code distance controls how many physical errors can be corrected, with each logical qubit requiring roughly $2d^2 \approx 800$ physical qubits for distance $d = 20$): the $8 \times 8$ Hubbard model needs:
-
-$$400 \text{ logical} \times 800 \text{ physical/logical} \approx 320{,}000 \text{ physical qubits}$$
-
-This is in the same ballpark as the Pinnacle architecture's estimate for RSA-2048 (Unit 2: 100,000 physical qubits). Both are ambitious but plausible targets for the next decade of hardware development.
+There is no single, architecture-independent conversion from logical to physical qubits. The code distance, factory overhead, routing strategy, and target logical failure rate all matter. That is why the literature for similar Hubbard problems reports a **band** of physical-qubit costs, from hundreds of thousands into the low millions, rather than one fixed number obtained by a single logical-to-physical multiplier.
 
 
 ## What you should take away
@@ -133,7 +131,7 @@ This is in the same ballpark as the Pinnacle architecture's estimate for RSA-204
 
 3. **The circuit is deep but structured.** Every gate in a Trotter circuit has a physical meaning: it simulates one interaction in the Hamiltonian for one time step. More accuracy → more Trotter steps → deeper circuit.
 
-4. **Resource estimates are concrete.** For the 2D Hubbard model ($8 \times 8$ lattice): ~400 logical qubits, ~$10^{11}$ T-gates, ~$3 \times 10^5$ physical qubits with surface-code error correction. These numbers define the engineering targets.
+4. **Resource estimates are concrete, but assumption-dependent.** For roughly 100-site 2D Hubbard problems, published fault-tolerant studies land in the $10^7$-$10^8$ to $10^9$ T-gate band and the hundreds-of-thousands to low-millions physical-qubit band, depending on the algorithm and error model.
 
 5. **Everything connects.** QPE reuses the QFT from Deep-Dive 2 (Shor). Trotterisation reuses the ZZ gate from Deep-Dive 1 (QAOA). The fermionic encoding comes from Deep-Dive 3 (VQE). This is where the threads converge.
 
