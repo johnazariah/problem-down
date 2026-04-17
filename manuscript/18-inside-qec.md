@@ -31,25 +31,17 @@ $$|0\rangle_L = |000\rangle, \qquad |1\rangle_L = |111\rangle$$
 
 A general state $\alpha|0\rangle + \beta|1\rangle$ becomes $\alpha|000\rangle + \beta|111\rangle$. This is *not* three copies of the qubit (that would violate the no-cloning theorem). It's one logical qubit spread across three physical qubits — the superposition coefficients $\alpha$ and $\beta$ are preserved in the *correlations* between the three qubits, not in any individual one.
 
-The encoding circuit uses two CNOTs:
+The encoding circuit uses two CNOTs, but let's see the *entire* correction cycle at once — encoding, error, syndrome extraction, and correction — in a single circuit:
 
-![Bit-flip code encoding: two CNOTs spread the logical qubit across three physical qubits](../figures/qec-bitflip-encode.png)
+![Complete bit-flip correction cycle: encode with CNOTs, an X error strikes qubit 2, syndrome ancillas detect it via parity checks, and a classically-conditioned X gate corrects it](../figures/qec-bitflip-full-cycle.png)
 
-1. Start with the data qubit $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$ and two ancillas in $|0\rangle$
-2. CNOT from qubit 1 to qubit 2
-3. CNOT from qubit 1 to qubit 3
+Read left to right through four stages:
 
-Result: $\alpha|000\rangle + \beta|111\rangle$. The CNOTs spread the logical information without cloning it.
+**Encode:** Two CNOTs spread the data qubit across three physical qubits: $\alpha|0\rangle + \beta|1\rangle \to \alpha|000\rangle + \beta|111\rangle$. This is *not* three copies (that would violate no-cloning). It's one logical qubit whose information lives in the *correlations* between the three qubits.
 
-### Detecting the error
+**Error:** A bit flip ($X$) hits qubit 2. The state becomes $\alpha|010\rangle + \beta|101\rangle$. We don't know this has happened — that's the point.
 
-Suppose a bit flip hits qubit 2: $\alpha|000\rangle + \beta|111\rangle \to \alpha|010\rangle + \beta|101\rangle$.
-
-We need to detect *which* qubit flipped without learning whether the state is $|0\rangle_L$ or $|1\rangle_L$. The trick: measure the **parity** of pairs of qubits, not the qubits themselves.
-
-Two **syndrome measurements**:
-
-![Syndrome extraction circuit: CNOTs compute parity of data qubit pairs into ancillas, which are then measured](../figures/qec-syndrome-circuit.png)
+**Syndrome:** Two ancilla qubits measure the parity of qubit pairs via CNOTs. $Z_1 Z_2$ checks whether qubits 1 and 2 agree; $Z_2 Z_3$ checks qubits 2 and 3. Crucially, these parity checks reveal which qubit *disagrees* without revealing whether the logical state is $|0\rangle_L$ or $|1\rangle_L$:
 
 | Measurement | What it checks | No error | Qubit 1 flipped | Qubit 2 flipped | Qubit 3 flipped |
 |:---:|:---|:---:|:---:|:---:|:---:|
@@ -83,6 +75,12 @@ The phase-flip code is the bit-flip code in a different basis. Instead of encodi
 $$|0\rangle_L = |{+}{+}{+}\rangle, \qquad |1\rangle_L = |{-}{-}{-}\rangle$$
 
 Now a phase flip on one qubit ($Z$ error) flips that qubit from $|+\rangle$ to $|{-}\rangle$ (or vice versa) — which is a *bit flip in the Hadamard basis*. The syndrome measurements become $X_1 X_2$ and $X_2 X_3$ instead of $Z_1 Z_2$ and $Z_2 Z_3$, and the correction is a $Z$ gate on the identified qubit (since $Z \cdot Z = I$, just like $X \cdot X = I$).
+
+Here's the full phase-flip correction cycle — compare it with the bit-flip circuit above:
+
+![Complete phase-flip correction cycle: encode in Hadamard basis, a Z error strikes qubit 2, X-basis parity checks detect it, and a classically-conditioned Z gate corrects it](../figures/qec-phaseflip-full-cycle.png)
+
+The structure is identical. The only differences: $H$ gates wrap the encoding, the syndrome checks use $X$-basis parity instead of $Z$-basis, and the correction is $Z$ instead of $X$. Everything else — the CNOTs, the ancillas, the classical conditioning — is the same circuit in a different basis.
 
 ### The $X$/$Z$/Hadamard duality
 
