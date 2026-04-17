@@ -111,6 +111,8 @@ The equilibrium bond length (the minimum of the potential energy curve) is where
 
 VQE with a 4-qubit UCCSD ansatz reproduces the exact Full CI result for H₂ to **chemical accuracy** (1.6 milliHartree ≈ 1 kcal/mol — the threshold at which energy differences become chemically meaningful; the Hartree is the atomic unit of energy, roughly 27.2 eV). At the equilibrium bond length (~0.74 Å, where 1 Å = $10^{-10}$ m), the computed energy matches the exact value to several decimal places. As we stretch the bond toward dissociation, the correlation between the two electrons grows stronger, and this is precisely where VQE outperforms Hartree-Fock.
 
+![H₂ potential energy surface: the exact curve versus Hartree-Fock, showing where classical mean-field methods fail at large bond lengths](../figures/h2-potential-energy.png)
+
 → *The next chapter builds the full VQE pipeline — from molecular integrals to circuit to energy — and shows you the code.*
 
 ### Back to the pharmacy

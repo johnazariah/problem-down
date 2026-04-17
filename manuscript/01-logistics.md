@@ -36,6 +36,8 @@ Here's why MaxCut is hard. Each node is coloured one of two colours, so an $n$-n
 
 The problem is the search space. Every node is a binary decision: red or blue, 0 or 1. The decisions interact; the value of your choice for node $i$ depends on what you chose for nodes $j$, $k$, $l$ — every node that shares an edge with $i$. These interactions create a rugged *cost landscape*: imagine a mountainous terrain where altitude represents cost and you're trying to find the lowest valley. The landscape is a function over $\{0,1\}^n$ with exponentially many local optima — valleys that look good from nearby but aren't the deepest.
 
+![A rugged cost landscape with many local optima (red dots) and one global optimum (green star)](../figures/cost-landscape.png)
+
 Classical heuristics navigate this landscape by making local moves. Flip one node's colour. If the cut count improves, keep it; otherwise, try another flip. Simulated annealing adds randomness; occasionally accept a worse solution to escape local optima, gradually reducing the randomness as you "cool down."
 
 These methods are powerful, but they have a fundamental weakness: they explore the landscape *sequentially*. At any moment, they're sitting at a single point in the space of $2^n$ possible colourings. They can only see the immediate neighbourhood. A better solution might exist on the other side of a high barrier, and no amount of local flipping will find it.

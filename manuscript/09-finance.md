@@ -59,6 +59,8 @@ Quantum amplitude estimation: precision $\epsilon$ requires $O(1/\epsilon)$ quer
 
 **Same accuracy, quadratically fewer samples.** For the derivative that needs $10^{12}$ classical samples: quantum estimation needs $10^6$ queries. At the same time per query, that's 1 second instead of 12 days.
 
+![Classical Monte Carlo vs quantum amplitude estimation: the quadratic gap in query count grows with precision](../figures/qae-scaling.png)
+
 ### When does $\sqrt{}$ matter?
 
 A quadratic speedup sounds modest compared to Shor's exponential speedup. But for Monte Carlo, quadratic is transformative. The reason: the baseline is *already polynomial* (Monte Carlo is $O(1/\epsilon^2)$), and the constant factors are large. Going from $10^{12}$ to $10^6$ is the difference between "we need a compute cluster" and "we need a laptop."
