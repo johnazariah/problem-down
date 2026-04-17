@@ -135,4 +135,48 @@ I spot-checked several of the highest-stakes citations. The following references
 
 So the main issue in the cryptography chapter is not fabricated citation; it is comparison hygiene and resource-description accuracy.
 
+## Verification addendum - 2026-04-17
+
+I re-checked the manuscript after the Tier 0 and Tier 0.5 fixes landed, including the follow-up commit that aligned the Deep-Dive 7 Hubbard resource paragraph with the Unit 7 Babbush table.
+
+### Tier 0 status
+
+I am now satisfied that the original Tier 0 issues raised in this audit are resolved:
+
+- The finance pair now describes payoff-amplitude encoding correctly, and the deep dive explicitly uses the $\sqrt{f(x)}$ amplitude construction instead of implying a threshold-event estimator.
+- The Shor periodic-superposition normalisation has been fixed from $1/\sqrt{r}$ to $1/\sqrt{M}$.
+- The phase-kickback "catalyst" language in Deep-Dive 2 now correctly distinguishes the single-bit $| - \rangle$ trick from the entangled multi-bit Shor oracle.
+- The raising-operator and Y-measurement statements in the VQE deep dive have been corrected.
+- The 2-site Hubbard worked example now uses "crossover" language instead of claiming a true Mott phase transition.
+- The Deep-Dive 7 resource paragraph is now aligned to the same $8 \times 8$, ~400 logical-qubit, ~$10^{11}$ T-gate benchmark used in Unit 7.
+- The active-space qubit-counting language in Units 8 / Deep-Dive 8 is materially clearer and now consistently distinguishes spatial orbitals from spin-orbitals and encoded qubits.
+
+### Tier 0.5 status
+
+I am satisfied that most Tier 0.5 issues are now resolved as well:
+
+- The continued-fractions count in the toy Shor example is fixed.
+- The GNFS asymptotic is now written in the standard $\ln N$ / $\ln\ln N$ form.
+- The memory claim in the drug-discovery chapter has been softened to something technically defensible.
+- The Monte Carlo discussion now scopes the $1/\sqrt{N}$ statement to generic sampling rather than all classical finance methods.
+- The gate-model low-energy-language and QAOA $p \to \infty$ caveat in Unit 1 are fixed.
+- The 2D Hubbard uncertainty language is now appropriately cautious.
+- The DMET / active-space embedding distinction is now explicit.
+
+### Remaining concern
+
+I do still have one residual medium-severity concern in the cryptography chapter.
+
+The chapter now uses consistent "logical" versus "physical" labels, but it still states in several places that RSA-2048 needs roughly **4,000 logical qubits**. The Gidney and Ekerå (2021) abstract-circuit formula quoted from the paper is approximately
+
+$$3n + 0.002 \, n \, \lg n$$
+
+logical qubits for an $n$-bit RSA integer. For $n = 2048$, that is closer to **6.2k** logical qubits than 4k. So the original apples-to-oranges issue is fixed, but the rough RSA-2048 logical-qubit estimate still appears low unless the text intends a narrower "register size" claim rather than a full algorithm resource count.
+
+## Current status
+
+**Tier 0: closed.**
+
+**Tier 0.5: substantially resolved, but not fully signed off because of the remaining RSA-2048 logical-qubit-count concern in the cryptography chapter.**
+
 No manuscript text was changed.

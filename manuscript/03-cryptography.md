@@ -19,7 +19,7 @@ In 1994, Peter Shor shattered this assumption.
 
 Shor showed that a quantum computer can factor $N$ in time *polynomial* in the number of digits; roughly $n^3$. Not sub-exponential. Not "somewhat faster." Polynomial. For a 2,000-digit number, the difference is between $10^{30}$ years and a few hours.
 
-Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** — given $g^x \bmod p = y$, find $x$ — which breaks Diffie-Hellman (the original public-key protocol) and **elliptic curve cryptography** (ECC), a modern alternative to RSA based on different mathematics. ECC was adopted precisely because its keys are shorter than RSA's for equivalent classical security, but it's in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~4,000 logical qubits needed for RSA-2048. (We'll define logical vs. physical qubits in the Reality Check.) Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
+Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** — given $g^x \bmod p = y$, find $x$ — which breaks Diffie-Hellman (the original public-key protocol) and **elliptic curve cryptography** (ECC), a modern alternative to RSA based on different mathematics. ECC was adopted precisely because its keys are shorter than RSA's for equivalent classical security, but it's in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~6,000 logical qubits needed for RSA-2048. (We'll define logical vs. physical qubits in the Reality Check.) Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
 
 Let's understand why; and how.
 
@@ -198,7 +198,7 @@ $$\gcd(49 + 1, 15) = \gcd(50, 15) = 5$$
 
 And indeed: $15 = 3 \times 5$. $\blacksquare$
 
-This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially. For RSA-2048 (a 617-digit, 2,048-bit number), Shor's algorithm requires roughly 4,000 logical qubits and $O(n^3)$ gates with $n = 2{,}048$. The same algorithm, larger registers, more gates, same polynomial efficiency.
+This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially. For RSA-2048 (a 617-digit, 2,048-bit number), Shor's algorithm requires roughly 6,000 logical qubits and $O(n^3)$ gates with $n = 2{,}048$. The same algorithm, larger registers, more gates, same polynomial efficiency.
 
 → *The next chapter builds the period-finding circuit from scratch, and shows you the code.*
 
@@ -206,7 +206,7 @@ This is a toy example; 4 qubits, a number you can factor in your head. But the a
 
 We started with credit card numbers and the quiet miracle of public-key cryptography. We factored $15 = 3 \times 5$ on a toy quantum computer. What connects the two?
 
-Scale. The same algorithm that finds the period of $7^x \bmod 15$ can find the period of $a^x \bmod N$ for any $N$. For RSA-2048, $N$ is a 617-digit number, the registers need ~4,000 logical qubits, and the circuit has $\sim 10^{10}$ gates. But the structure is identical: superposition, oracle, QFT, measure, continued fractions, $\gcd$. The quantum computer doesn't know whether it's breaking a classroom exercise or a government cipher. It just finds periods.
+Scale. The same algorithm that finds the period of $7^x \bmod 15$ can find the period of $a^x \bmod N$ for any $N$. For RSA-2048, $N$ is a 617-digit number, the algorithm needs ~6,000 logical qubits, and the circuit has $\sim 10^{10}$ gates. But the structure is identical: superposition, oracle, QFT, measure, continued fractions, $\gcd$. The quantum computer doesn't know whether it's breaking a classroom exercise or a government cipher. It just finds periods.
 
 That's why the world's cryptographic infrastructure is being rebuilt. Not because a quantum computer has broken RSA — none has — but because the algorithm is ready and waiting. When the hardware catches up, it will work.
 
