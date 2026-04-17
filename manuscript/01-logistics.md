@@ -214,7 +214,7 @@ Let's be honest about where QAOA stands; and where it's heading.
 
 **At high depth, QAOA is competitive.** Performance improves monotonically with depth $p$, and recent work has computed exact QAOA performance through depth $p = 20$ for MaxCut and $p = 13$ for harder constraint-satisfaction problems. For these specific problem families, QAOA at sufficient depth is competitive with the best known quantum alternatives. Whether this extends to other combinatorial problems remains open.
 
-**The hardware is.** Today's quantum computers can run QAOA at $p = 1$ or $p = 2$ on a few dozen noisy qubits. The algorithm shines at $p \geq 8$. Closing this gap requires fault-tolerant quantum computers with $\sim 10^4$ logical qubits.
+**The hardware isn't there yet.** Today's quantum computers can run QAOA at $p = 1$ or $p = 2$ on a few dozen noisy qubits. The algorithm shines at $p \geq 8$. Closing this gap requires fault-tolerant quantum computers with $\sim 10^4$ logical qubits.
 
 **Barren plateaus — the training problem.** A **barren plateau** is a region of parameter space where the optimisation landscape becomes exponentially flat — the gradient vanishes, leaving the optimiser with no direction to improve. For generic random quantum circuits, this happens inevitably as the system grows. QAOA's structured alternating layers avoid barren plateaus in practice through moderate depths, but it remains an active area of research.
 

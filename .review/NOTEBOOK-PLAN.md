@@ -95,7 +95,7 @@ Every notebook must clear these gates in order:
 | Notebook | Runtime | Program state | Current diagnosis | Preferred end state | Next action |
 |----------|---------|---------------|-------------------|---------------------|-------------|
 | `01-logistics.ipynb` | passing | Amber | strong pedagogical demo; likely under-labelled rather than wrong | `Faithful worked example` | validate links and claims, then add a semantic check and lock classification |
-| `02-cryptography.ipynb` | passing | Red | compiled period-finding toy with internal inconsistency | `Toy demonstration` unless a larger rewrite earns more | rewrite or sharply reframe so it stops presenting itself as faithful Shor |
+| `02-cryptography.ipynb` | passing | Green | rewritten as an honest compiled period-finding toy for the $N = 15$, $a = 7$ example | `Toy demonstration` | locked unless later promoted to genuine modular-exponentiation period finding |
 | `03-drug-discovery.ipynb` | passing | Amber | useful VQE anatomy demo that overclaims geometry range and measurement fidelity | `Toy demonstration` or single-geometry `Faithful worked example` | narrow the promise or implement the missing XX/YY measurement path |
 | `04-machine-learning.ipynb` | passing | Amber | conceptually strong and probably close to done | `Faithful worked example` | validate kernel behavior, links, and quantitative claims, then add semantic coverage |
 | `05-finance.ipynb` | passing | Green | rewritten as an honest classical-pricing notebook plus compiled toy QAE phase readout for exercise probability | `Toy demonstration` | locked unless later promoted to full payoff-encoding amplitude estimation |
@@ -164,11 +164,10 @@ Every notebook must clear these gates in order:
 
 ### Now
 
-1. Reframe `02-cryptography.ipynb` as a compiled toy or rebuild it to remove the internal inconsistency.
-2. Repair the QUBO-to-Ising story in `06-supply-chains.ipynb`.
-3. Narrow or deepen `03-drug-discovery.ipynb` until the VQE claims are true.
+1. Repair the QUBO-to-Ising story in `06-supply-chains.ipynb`.
+2. Narrow or deepen `03-drug-discovery.ipynb` until the VQE claims are true.
+3. Lock the capstone framing for `08-climate-energy.ipynb`.
 
 ### After that
 
-4. Lock the capstone framing for `08-climate-energy.ipynb`.
-5. Promote `01-logistics.ipynb` and `04-machine-learning.ipynb` to green.
+4. Promote `01-logistics.ipynb` and `04-machine-learning.ipynb` to green.
