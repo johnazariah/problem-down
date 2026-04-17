@@ -173,3 +173,46 @@ I am satisfied that the Tier 0.5 issues are now resolved as well:
 At this point, I am satisfied that the Tier 0 and Tier 0.5 bundle is resolved properly and can be treated as complete for purposes of moving on to Tier 1 readability work.
 
 No manuscript text was changed.
+
+## Tier 1 verification addendum - 2026-04-17
+
+I then reviewed the Tier 1 readability pass against the targets in `ACTION-PLAN.md`.
+
+### Initial Tier 1 landing
+
+The main Tier 1 readability changes landed cleanly:
+
+- `01-logistics.md` now introduces the "interference machine" thesis early, removes the unfulfilled teleportation forward reference, and trims the Reality Check into a more readable shape.
+- `02-building-qaoa.md` now defines the Bloch sphere at first use.
+- `09-finance.md` now gives Grover / amplitude estimation substantially more runway before introducing QAE.
+- `13-materials-science.md` now builds the Hubbard Hamiltonian in stages rather than dropping the full notation all at once.
+
+Those changes improved readability without introducing any obvious new mathematical problems.
+
+### Follow-up concerns from the first Tier 1 review
+
+My first Tier 1 pass still identified two residual issues:
+
+1. the high-depth QAOA claim in `01-logistics.md` needed a narrower caveat; and
+2. the worked-example prose in `07-machine-learning.md` had drifted away from the notebook.
+
+### Follow-up verification
+
+These two follow-up commits resolved those concerns in sequence:
+
+- `89231e24ae529fb17ee5e3ca703e47125143b839` fixed the QAOA caveat by narrowing the high-depth competitiveness claim to the specific problem families supported by the cited exact-evaluation results.
+- `033dd71282ce4880632e51505eb1d90205506a91` fixed the remaining Unit 4 mismatch by bringing the worked example back into alignment with the notebook: interleaved half-moons, 40 points, and no unsupported specific accuracy figure.
+
+The final Unit 4 wording is also stronger on honesty: for this toy 2D problem, both kernels perform well, and any higher-dimensional advantage is left conditional on data structure and feasible encoding.
+
+## Final status
+
+**Tier 0: closed.**
+
+**Tier 0.5: closed.**
+
+**Tier 1: closed.**
+
+At this point, I am satisfied that the Tier 1 readability bundle has landed cleanly and that the earlier residual concerns from the first Tier 1 review are now resolved.
+
+Residual note: I did not rerun the machine-learning notebook end-to-end in this verification pass, but the prose no longer depends on any unverified accuracy number.

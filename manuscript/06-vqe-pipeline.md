@@ -51,7 +51,7 @@ $$\{a_i, a_j^\dagger\} \equiv a_i a_j^\dagger + a_j^\dagger a_i = \delta_{ij}$$
 
 The curly braces $\{A, B\} \equiv AB + BA$ denote the *anticommutator* — unlike the commutator $[A,B] = AB - BA$ you may know from Pauli algebra. And $\delta_{ij}$ is the Kronecker delta: 1 when $i = j$, 0 otherwise.
 
-What does this say? Creating electron $j$ then destroying electron $i$ is *not the same* as destroying $i$ then creating $j$ — they differ by a sign (unless $i = j$). This is the mathematical expression of the Pauli exclusion principle.
+What does this say? Creating electron $j$ then destroying electron $i$ is *not the same* as destroying $i$ then creating $j$ — they differ by a sign (unless $i = j$). Concretely: if you create electron A then create electron B, the result is $-1$ times what you'd get by creating B then A. That minus sign is the entire difference between fermions (matter) and bosons (light). This is the mathematical expression of the Pauli exclusion principle.
 
 ### The molecular Hamiltonian
 

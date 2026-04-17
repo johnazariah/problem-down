@@ -111,7 +111,7 @@ A caveat for later: this clean "catalyst" picture works perfectly when $f$ outpu
 
 Phase kickback isn't limited to single-bit functions. For the period-finding problem, $f(x) = a^x \bmod N$ produces multi-bit outputs. The mechanism is more general: instead of $(-1)^{f(x)}$, the phase encodes the *eigenvalue* of the oracle operator. (An eigenvalue is the factor by which an operator scales a particular state: if $U|v\rangle = \lambda|v\rangle$, then $\lambda$ is the eigenvalue and $|v\rangle$ is the eigenvector.) We'll see this in detail when we build the full period-finding circuit below.
 
-The pattern generalises. Deutsch-Jozsa, Bernstein-Vazirani, Simon's algorithm, Grover's search, and Shor's algorithm all use phase kickback. Master it once, and you've understood the engine of quantum speedup.
+The pattern generalises — several quantum algorithms (from simple ones like Deutsch-Jozsa to powerful ones like Shor's) all use phase kickback as their engine. Master it once, and you've understood the mechanism behind quantum speedup.
 
 
 ## Oracles: packaging functions as gates
@@ -290,9 +290,9 @@ Each factor is a **controlled multiplication**: if input bit $x_k = 1$, multiply
 
 Multiplication modulo $N$ is built from:
 
-1. **Quantum adders** (Draper's QFT-based adder, Cuccaro's ripple-carry adder, or Gidney's optimised adder)
+1. **Quantum adders** (efficient reversible circuits for addition modulo $N$)
 2. **Modular reduction** (subtract $N$ if the result exceeds $N$, using a comparison and controlled subtraction)
-3. **Uncomputation**: quantum operations must be reversible, so any scratch work must be run backwards after use. Leftover scratch qubits become entangled with the result — called *garbage entanglement* — which ruins interference.
+3. **Uncomputation**: quantum operations must be reversible, so any scratch work must be run backwards after use. Leftover scratch qubits become entangled with the result — called *garbage entanglement* — and this ruins interference because measuring the answer effectively measures the scratch too, collapsing the superposition.
 
 Each controlled multiplication costs $O(n^2)$ gates. There are $2n$ such multiplications (one per input qubit). Total: $O(n^3)$ gates for the naive version. Gidney and Ekerå (2021) brought this down to $O(n^2)$ **Toffoli gates** — a Toffoli flips a target qubit only when *two* control qubits are both $|1\rangle$, making it the quantum AND gate.
 

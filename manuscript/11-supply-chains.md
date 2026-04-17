@@ -37,7 +37,7 @@ The real difficulty is the **interaction structure**. Constraints are non-local:
 
 ### QUBO: turning constraints into energy
 
-The key idea is **Quadratic Unconstrained Binary Optimisation** (QUBO). We convert the constrained scheduling problem into an *unconstrained* minimisation of a quadratic function over binary variables; then map that to the ground state of a quantum Hamiltonian.
+The key idea is **QUBO** — **Q**uadratic **U**nconstrained **B**inary **O**ptimisation. Each word matters: *quadratic* (the cost function involves at most pairs of variables), *unconstrained* (constraints are folded into penalty terms), *binary* (every variable is 0 or 1), *optimisation* (find the assignment that minimises the total cost). We convert the constrained scheduling problem into an unconstrained minimisation of a quadratic function over binary variables, then map that to the ground state of a quantum Hamiltonian.
 
 Each binary decision gets a variable: $x_{n,s} = 1$ if nurse $n$ is assigned to shift $s$, 0 otherwise. The total number of binary variables is $N \times S$.
 
@@ -67,7 +67,7 @@ There are two quantum approaches to finding the ground state of an Ising Hamilto
 
 $$H(t) = \left(1 - \frac{t}{T}\right) H_\text{init} + \frac{t}{T} H_\text{problem}$$
 
-The **adiabatic theorem** guarantees: if you change the Hamiltonian slowly enough (large $T$), the system stays in the ground state throughout — it continuously adapts to the changing energy landscape rather than getting excited. At the end ($t = T$), you're in the ground state of $H_\text{problem}$ — the optimal schedule.
+The **adiabatic theorem** guarantees: if you change the Hamiltonian slowly enough (large $T$), the system stays in the ground state throughout. The intuition is physical: imagine a marble sitting at the bottom of a bowl. If you tilt the bowl slowly, the marble rolls smoothly to the new lowest point. Tilt it too fast, and the marble sloshes up the sides and doesn't settle. The quantum system behaves the same way — slow changes let it continuously adapt to the shifting energy landscape. At the end ($t = T$), you're in the ground state of $H_\text{problem}$ — the optimal schedule.
 
 ### Why quantum annealing might help
 

@@ -69,7 +69,7 @@ A quadratic speedup sounds modest compared to Shor's exponential speedup. But fo
 Price a European call option using quantum amplitude estimation. Compare the convergence rate with classical Monte Carlo.
 
 Setup:
-- Stock price $S_0 = 100$, strike price $K = 105$ (the fixed price at which the option can be exercised), volatility $\sigma = 20\%$ (the annualised standard deviation of the stock's returns — how wildly the price swings), maturity $T = 1$ year (the date when the option expires), risk-free rate $r = 5\%$ (the return on a riskless investment, like a government bond)
+- Stock price $S_0 = 100$, strike price $K = 105$ (the fixed price at which the option can be exercised), volatility $\sigma = 20\%$ (the annualised standard deviation of the stock's returns — how wildly the price swings; this is the same $\sigma$ from the Bottleneck, now applied specifically to stock returns), maturity $T = 1$ year (the date when the option expires), risk-free rate $r = 5\%$ (the return on a riskless investment, like a government bond)
 - Payoff: $\max(S_T - K, 0)$
 - Black-Scholes analytical price: ~$8.02
 

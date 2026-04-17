@@ -29,7 +29,7 @@ The challenge is that the active site's electronic structure depends on the envi
 Classical methods pick one scale and approximate the others:
 - **DFT**: handles everything at the same (insufficient) level of accuracy
 - **Multiscale QM/MM**: use quantum mechanics (QM) for the active site and classical molecular mechanics (MM, a ball-and-spring model) for the environment — but the QM part is still classical DFT, which fails for strong correlation
-- **Embedded CCSD(T)**: classical high-accuracy method for the active site, DFT for the environment — better, but CCSD(T) still scales as $O(N^7)$ and breaks down for **open-shell** systems (molecules with unpaired electrons) and **multi-reference** states (systems where no single electron arrangement dominates — multiple configurations contribute equally to the wavefunction), which are common in catalysis
+- **Embedded CCSD(T)**: classical high-accuracy method for the active site, DFT for the environment — better, but CCSD(T) still scales as $O(N^7)$ and breaks down for the strongly correlated electronic states common in catalysis (molecules with unpaired electrons, or systems where multiple electron configurations contribute equally to the wavefunction)
 
 What we need: a method that gives quantum-accurate results for the active site while scaling efficiently with the total system size.
 
@@ -98,7 +98,7 @@ The difference between DFT and active-space results is the **correlation energy*
 
 **The classical competition.** DMRG (Density Matrix Renormalization Group) has made remarkable progress on catalyst active sites in recent years. Chan and co-workers have applied DMRG to problems with up to ~100 active orbitals in 1D-like geometries. For 2D active sites (common in surface catalysis), DMRG struggles; this is where quantum advantage is most likely.
 
-**The timeline.** Useful quantum catalyst screening requires ~50 active orbitals → ~100 qubits (after encoding and tapering) → ~$10^5$ physical qubits with error correction. This is the same order of magnitude as the Hubbard model estimates from Unit 7. A generous estimate: 10–15 years.
+**The timeline.** Useful quantum catalyst screening requires ~50 active orbitals → ~100 qubits (after encoding and tapering — exploiting symmetries to reduce qubit count) → ~$10^5$ physical qubits with error correction. This is the same order of magnitude as the Hubbard model estimates from Unit 7. A generous estimate: 10–15 years.
 
 **What's real today.** The *pipeline* is real; define active space, compute integrals, encode, optimize. The quantum chemistry software (PySCF, OpenFermion, the encodings library) exists and works. What's missing is a quantum computer large enough and quiet enough to run the circuits.
 

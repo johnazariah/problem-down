@@ -135,11 +135,11 @@ This is in the same ballpark as the Pinnacle architecture's estimate for RSA-204
 
 ## Beyond Trotter: qubitization
 
-Trotterisation is not the only way to implement $e^{-iHt}$ for QPE. A fundamentally different approach called **qubitization** (Low and Chuang, 2019) avoids Trotter error entirely by encoding the Hamiltonian as a *block* of a larger unitary — a technique called a **block encoding**. Instead of approximating $e^{-iHt}$ with a product of simple gates (introducing Trotter error that must be controlled), qubitization constructs a unitary operator whose eigenvalues are *exact functions* of the Hamiltonian's eigenvalues.
+Trotterisation approximates time evolution by breaking it into small steps — like drawing a curve with many short straight-line segments. More segments give a better approximation, but the circuit gets deeper.
 
-The practical consequence: qubitization-based algorithms like **quantum signal processing** (QSP) and **quantum singular value transformation** (QSVT) achieve optimal query complexity — they use the minimum number of oracle calls provably necessary to estimate eigenvalues to a given precision. For Hamiltonian simulation, this means asymptotically fewer gates than any Trotter formula.
+**Qubitization** (Low and Chuang, 2019) takes a fundamentally different approach: instead of approximating the curve, it encodes the Hamiltonian directly into a larger unitary (a technique called **block encoding**) and traces the exact curve. The result is a family of algorithms — **quantum signal processing** (QSP) and **quantum singular value transformation** (QSVT) — that achieve the theoretically optimal gate count for Hamiltonian simulation.
 
-The tradeoff: qubitization requires more ancilla qubits and a more complex circuit structure (the block encoding of $H$). For near-term and early fault-tolerant devices, Trotterisation may still be more practical due to its simpler circuits. But for the long-term fault-tolerant regime, qubitization is the theoretically optimal approach.
+The tradeoff: qubitization requires more ancilla qubits and a more complex circuit structure. For near-term devices, Trotterisation's simpler circuits may still win. But for the long-term fault-tolerant regime, qubitization is the theoretically optimal approach.
 
 - Low and Chuang (2019). *Hamiltonian Simulation by Qubitization.* [Quantum 3:163](https://doi.org/10.22331/q-2019-07-12-163) ([arXiv:1610.06546](https://arxiv.org/abs/1610.06546))
-- Gilyen, Su, Low, Wiebe (2019). *Quantum singular value transformation and beyond: exponential improvements for quantum matrix arithmetics.* [STOC 2019](https://doi.org/10.1145/3313276.3316366) ([arXiv:1806.01838](https://arxiv.org/abs/1806.01838))
+- Gilyén, Su, Low, Wiebe (2019). *Quantum singular value transformation and beyond.* [STOC 2019](https://doi.org/10.1145/3313276.3316366) ([arXiv:1806.01838](https://arxiv.org/abs/1806.01838))

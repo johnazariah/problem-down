@@ -70,7 +70,7 @@ This is the most contested question in quantum machine learning. There are three
 
 Quantum kernel methods are the most *rigorous* approach to quantum ML; they come with provable guarantees under specific conditions. But the conditions are narrow, and it's an open question whether natural (non-constructed) datasets exhibit the kind of structure that quantum kernels exploit.
 
-The alternative: **variational quantum ML** (parameterised quantum circuits trained end-to-end as classifiers); is more heuristic. It's easier to run on near-term hardware but has weaker theoretical foundations and faces barren plateau problems at scale.
+The alternative: **variational quantum ML** (parameterised quantum circuits trained end-to-end as classifiers); is more heuristic. It's easier to run on near-term hardware but has weaker theoretical foundations and faces barren plateau problems (exponentially flat optimisation landscapes) at scale.
 
 
 ## Worked Example

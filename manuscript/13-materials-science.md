@@ -126,7 +126,7 @@ The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, rep
 
 **What's been demonstrated.** Small Hubbard models (2–4 sites) have been simulated on quantum hardware using VQE. Google's 2020 experiment on a $2 \times 2$ plaquette was a notable milestone. But these sizes are trivially classical; the value was in demonstrating the pipeline, not in producing new physics.
 
-**The VQE stopgap.** Until fault-tolerant QPE is available, VQE on the Hubbard model is an active area of research. Problem-specific ansätze (like the Hamiltonian variational ansatz) can capture Hubbard physics better than generic hardware-efficient circuits. But VQE is fundamentally limited by measurement overhead and barren plateaus at scale.
+**The VQE stopgap.** Until fault-tolerant QPE is available, VQE on the Hubbard model is an active area of research. Problem-specific ansätze (like the Hamiltonian variational ansatz) can capture Hubbard physics better than generic hardware-efficient circuits. But VQE is fundamentally limited by measurement overhead and barren plateaus (exponentially flat optimisation landscapes) at scale.
 
 **What would change the picture.** A fault-tolerant quantum computer capable of running QPE on a $10 \times 10$ Hubbard lattice. This would produce *new physics*; results that cannot be obtained any other way. The resource estimates suggest $\sim 10^5$ physical qubits with error rates $< 10^{-3}$. This is the most concrete milestone for "quantum utility" in simulation.
 

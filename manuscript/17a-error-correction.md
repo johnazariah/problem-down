@@ -44,9 +44,11 @@ The cost: a computation that needs 200 logical qubits (like QPE on the Hubbard m
 
 ## LDPC codes: doing more with less
 
-**Quantum LDPC codes** (Low-Density Parity-Check codes) are a newer family that encode more logical qubits per physical qubit than surface codes. The Pinnacle architecture (Unit 2's Reality Check) uses LDPC codes to reduce the cost of breaking RSA-2048 from 20 million physical qubits to under 100,000 — a 200× improvement.
+The surface code's main weakness is overhead: ~$2d^2$ physical qubits per logical qubit, with $d$ in the range 15–25 for practical computations. That means 500–1,000 physical qubits for every logical one.
 
-The tradeoff: LDPC codes require longer-range connectivity between qubits (not just nearest neighbours), which is harder to build in hardware. Whether current architectures can support LDPC codes at scale is an active engineering challenge.
+**Quantum LDPC codes** (Low-Density Parity-Check codes) are a newer family that achieve a better ratio — in principle, a constant number of physical qubits per logical qubit, independent of the code distance. The Pinnacle architecture (Unit 2's Reality Check) uses LDPC codes to reduce the cost of breaking RSA-2048 from 20 million physical qubits to under 100,000 — a 200× improvement.
+
+The tradeoff: LDPC codes require longer-range connectivity between qubits (not just nearest neighbours), which is harder to build in hardware. Surface codes work with a simple 2D grid; LDPC codes need a more complex wiring pattern. Whether current architectures can support LDPC codes at scale is an active engineering challenge — but the potential payoff is enormous, and several hardware groups are actively pursuing it.
 
 
 ## Error mitigation: the NISQ bridge

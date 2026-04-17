@@ -34,7 +34,7 @@ MaxCut sounds like it has nothing to do with delivery trucks. But TSP, MaxCut, a
 
 Here's why MaxCut is hard. Each node is coloured one of two colours, so an $n$-node graph has $2^n$ possible two-colourings. For each colouring, you can count the cut edges in $O(m)$ time, where $m$ is the number of edges. So the brute-force algorithm takes $O(m \cdot 2^n)$ time. For $n = 50$, that's roughly $10^{15}$ operations; doable but slow. For $n = 100$, it's $10^{30}$ operations. For $n = 300$, you'd need more time than the age of the universe.
 
-The problem is the search space. Every node is a binary decision: red or blue, 0 or 1. The decisions interact; the value of your choice for node $i$ depends on what you chose for nodes $j$, $k$, $l$; every node that shares an edge with $i$. These interactions create a rugged *cost landscape*: a function over $\{0,1\}^n$ with exponentially many local optima.
+The problem is the search space. Every node is a binary decision: red or blue, 0 or 1. The decisions interact; the value of your choice for node $i$ depends on what you chose for nodes $j$, $k$, $l$ — every node that shares an edge with $i$. These interactions create a rugged *cost landscape*: imagine a mountainous terrain where altitude represents cost and you're trying to find the lowest valley. The landscape is a function over $\{0,1\}^n$ with exponentially many local optima — valleys that look good from nearby but aren't the deepest.
 
 Classical heuristics navigate this landscape by making local moves. Flip one node's colour. If the cut count improves, keep it; otherwise, try another flip. Simulated annealing adds randomness; occasionally accept a worse solution to escape local optima, gradually reducing the randomness as you "cool down."
 
@@ -216,7 +216,7 @@ Let's be honest about where QAOA stands; and where it's heading.
 
 **The hardware is.** Today's quantum computers can run QAOA at $p = 1$ or $p = 2$ on a few dozen noisy qubits. The algorithm shines at $p \geq 8$. Closing this gap requires fault-tolerant quantum computers with $\sim 10^4$ logical qubits.
 
-**Barren plateaus — the training problem.** For generic random quantum circuits, the optimisation landscape becomes exponentially flat as the system grows, making it impossible to find good parameters. QAOA's structured alternating layers avoid this in practice through moderate depths, but it remains an active area of research.
+**Barren plateaus — the training problem.** A **barren plateau** is a region of parameter space where the optimisation landscape becomes exponentially flat — the gradient vanishes, leaving the optimiser with no direction to improve. For generic random quantum circuits, this happens inevitably as the system grows. QAOA's structured alternating layers avoid barren plateaus in practice through moderate depths, but it remains an active area of research.
 
 **What's real today:** The algorithm's performance is well-characterised. The bottleneck is hardware, not the algorithm.
 
