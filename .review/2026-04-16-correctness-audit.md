@@ -216,3 +216,42 @@ The final Unit 4 wording is also stronger on honesty: for this toy 2D problem, b
 At this point, I am satisfied that the Tier 1 readability bundle has landed cleanly and that the earlier residual concerns from the first Tier 1 review are now resolved.
 
 Residual note: I did not rerun the machine-learning notebook end-to-end in this verification pass, but the prose no longer depends on any unverified accuracy number.
+
+## Tier 2 verification addendum - 2026-04-17
+
+I reviewed the Tier 2 readability / friction-reduction commit `07b13b1b8ab9782014dbec4e83cdfd8c98986e87`.
+
+### Result
+
+I did **not** find any new factual, mathematical, or conceptual regressions in the landed Tier 2 edits.
+
+The following changes all look directionally good and technically safe on this pass:
+
+- Unit 1 now grounds the "cost landscape" metaphor more concretely and defines barren plateaus at first use.
+- Unit 2's Reality Check uses cleaner parenthetical citation style, and Deep-Dive 2 is less cluttered by adder name-dropping.
+- Deep-Dive 2's garbage-entanglement explanation is more concrete.
+- Deep-Dive 3 now gives a useful anticommutation example.
+- Unit 5 now disambiguates the overloaded $\sigma$ notation.
+- Deep-Dive 5 has a stronger opening orientation section.
+- Unit 6 now unpacks QUBO and adds a good marble-in-a-bowl intuition for the adiabatic theorem.
+- Units 4 and 7 define barren plateaus at first use.
+- Units 3 and 8 now remind the reader what tapering means when it reappears.
+- Deep-Dive 7's qubitization section is clearer.
+- 17a's LDPC section is more useful and better connected to the resource-estimate story elsewhere in the book.
+
+This commit also correctly keeps the review trail consolidated by deleting the standalone `2026-04-17-tier1-verification.md` note and leaving the main audit as the single review record.
+
+### Remaining Tier 2 items
+
+I would **not** mark the entire Tier 2 bundle closed yet.
+
+At least two Action Plan items still appear open:
+
+- `T2-4` (`05-drug-discovery.md`): the long Schrödinger / orbital setup still appears largely intact rather than being split into a gentler progression.
+- `T2-15` (global Reality Check template pass): I do not see evidence in this commit of a full all-units template pass; this looks like a strong partial Tier 2 landing rather than the complete Tier 2 checklist.
+
+### Current assessment
+
+The Tier 2 edits that *did* land are in good shape. I am comfortable signing off on this commit as a clean readability pass with no new technical problems introduced.
+
+But Tier 2 as a whole still looks **partially complete**, not fully closed.
