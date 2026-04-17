@@ -15,7 +15,7 @@ The problem is that finding the optimal route isn't just difficult; it's one of 
 
 This is the **Travelling Salesman Problem** (TSP), and it has tormented mathematicians, computer scientists, and logistics companies for over a century. Every exact algorithm for TSP has a running time that grows at least exponentially with the number of stops. There is strong theoretical evidence (though no proof) that no efficient exact algorithm exists; the problem is NP-hard.
 
-In practice, nobody solves TSP exactly at scale. ORION doesn't find the best route; it finds a *pretty good* route, using heuristics that have been refined over decades. Branch-and-bound, genetic algorithms, simulated annealing, Lin-Kernighan; these are all sophisticated methods for exploring the vast space of possible routes without drowning in it.
+In practice, nobody solves TSP exactly at scale. ORION doesn't find the best route; it finds a *pretty good* route, using a toolkit of sophisticated heuristics — from simulated annealing to specialised graph algorithms — that have been refined over decades.
 
 They work remarkably well. But they all share a fundamental limitation: they explore the space of routes *one at a time*. They walk through the landscape of possible solutions, stepping from one candidate to a neighbouring one, hoping that local improvements lead to global ones. Sometimes they get stuck in valleys; solutions that are better than all their neighbours but far worse than the global optimum.
 
@@ -112,9 +112,7 @@ Here's what that looks like in practice. The circuit below implements **quantum 
 
 ![Quantum teleportation circuit: three qubit wires read left to right, with Hadamard and CNOT gates creating entanglement, measurements, and classically controlled corrections](../figures/teleportation-circuit.png)
 
-Three wires, three qubits. Gates ($H$, CNOT) sit on the wires at specific moments in time. The grey arrows carry classical measurement results down to later gates. Read left to right, the circuit tells you exactly what happens and when — just like a musical score tells musicians what to play and when.
-
-We'll return to teleportation in later units. For now, this is the visual language for every quantum algorithm in the book.
+Three wires, three qubits. Gates ($H$, CNOT) sit on the wires at specific moments in time. The grey arrows carry classical measurement results down to later gates. Read left to right, the circuit tells you exactly what happens and when — just like a musical score tells musicians what to play and when. This is the visual language for every quantum algorithm in the book.
 
 > **Unitary.** You'll see quantum operations called "unitary." This is a technical term from linear algebra that means two things: the operation is *reversible* (you can always undo it), and it *preserves probabilities* (they still add up to 1 afterwards). Every quantum gate is unitary. Measurement is not; it's the one irreversible step, where the quantum state collapses to a definite classical value. Deep-Dive 1 goes deeper into the mathematics.
 
@@ -145,7 +143,7 @@ So what good are the phases? This is where interference enters.
 
 > **Interference.** Quantum amplitudes aren't just numbers — they have both a magnitude and a *direction* (technically, a complex phase). Think of them as arrows. When two arrows point the same way, they reinforce: their magnitudes add. When they point in opposite directions, they cancel: their magnitudes subtract. This is *interference*, and it's the mechanism that makes quantum computing fundamentally different from classical computing.
 >
-> Superposition gives you the blank canvas — all $2^n$ solutions present at once. But superposition alone is useless: you can't look at all the solutions, and a random one is no better than a coin flip. Interference is what sculpts the canvas. It converts the phase information (which solution is good, which is bad) into probability information (which solution you're likely to measure). Every quantum algorithm is, at its core, an interference machine. The details differ — Shor's algorithm uses the Quantum Fourier Transform to create constructive interference at the period. Grover's uses the diffusion operator. QAOA uses the mixer. But the trick is always the same: arrange for good answers to reinforce and bad answers to cancel.
+> Superposition gives you the blank canvas — all $2^n$ solutions present at once. But superposition alone is useless: you can't look at all the solutions, and a random one is no better than a coin flip. Interference is what sculpts the canvas. It converts the phase information (which solution is good, which is bad) into probability information (which solution you're likely to measure). Every quantum algorithm is, at its core, an interference machine — and this is the pattern for every chapter in this book: encode the problem, let interference amplify the right answer, measure. The details differ — Shor's algorithm uses the Quantum Fourier Transform to create constructive interference at the period. Grover's uses the diffusion operator. QAOA uses the mixer. But the trick is always the same: arrange for good answers to reinforce and bad answers to cancel.
 
 **Box 3: The mixer** ($e^{-i\beta_k B}$). An $R_X(2\beta_k)$ rotation on every qubit. This "stirs" the superposition, causing amplitudes from different colourings to overlap and interfere. Because the cost phase tagged good colourings with different phases from bad ones, the mixer's stirring produces constructive interference for high-cut colourings and destructive interference for low-cut ones. After the mixer, the probabilities are no longer uniform: good solutions are more likely to appear when you measure.
 
@@ -212,19 +210,15 @@ That's also why we'll see this same pattern in every unit of this book. Drug mol
 
 Let's be honest about where QAOA stands; and where it's heading.
 
-**The low-depth story.** For depth-1 QAOA on MaxCut, Farhi, Goldstone, and Gutmann (2014) proved a guaranteed approximation ratio of 0.6924 for 3-regular graphs. The best classical polynomial-time algorithm (Goemans-Williamson, 1995) achieves 0.878. So at low depth, QAOA *underperforms* the best classical method. This is worth stating plainly: if you can only run one or two rounds, you're better off with Goemans-Williamson.
+**At low depth, QAOA underperforms classical methods.** For depth-1 QAOA on MaxCut, the guaranteed approximation ratio is 0.6924 for 3-regular graphs. The best classical polynomial-time algorithm (Goemans-Williamson) achieves 0.878. If you can only run one or two rounds, you're better off classical.
 
-**Beyond low depth.** QAOA's performance improves monotonically with depth $p$, and a body of work has made it possible to compute exact QAOA performance at depths that were previously out of reach. MaxCut is the $k = 2$ case of a broader family called Max-$k$-XORSAT, where each constraint involves $k$ variables connected by an XOR. For $D$-regular instances, Basso et al. (2021) showed that QAOA's expected performance in the infinite-size limit can be computed via a *tree tensor network* contraction — a classical calculation whose cost is exponential in $p$ but independent of the graph size. Farhi et al. (2025) pushed this to depth $p = 20$ for MaxCut on 3-regular graphs.
+**At high depth, QAOA is competitive.** Performance improves monotonically with depth $p$, and recent work has computed exact QAOA performance through depth $p = 20$ for MaxCut and $p = 13$ for harder constraint-satisfaction problems. At sufficient depth, QAOA matches or exceeds the best known quantum alternatives. The algorithm itself is not the bottleneck.
 
-Meanwhile, a different quantum approach has emerged: **Decoded Quantum Interferometry** (DQI), a non-variational algorithm introduced by Jordan et al. (Nature, 2025). DQI combined with Belief Propagation post-processing (DQI+BP) achieves strong results on Max-$k$-XORSAT without any classical optimiser loop, and was the state of the art for several $(k, D)$ parameter regimes.
+**The hardware is.** Today's quantum computers can run QAOA at $p = 1$ or $p = 2$ on a few dozen noisy qubits. The algorithm shines at $p \geq 8$. Closing this gap requires fault-tolerant quantum computers with $\sim 10^4$ logical qubits.
 
-Recent work by Azariah and Jordan (2026) extended the tree tensor network approach to Max-$k$-XORSAT for $k \geq 3$, enabling exact QAOA evaluation through depth $p = 13$. These calculations show that QAOA at sufficient depth is competitive with DQI+BP across most parameter regimes tested — though each algorithm has its strengths.
+**Barren plateaus — the training problem.** For generic random quantum circuits, the optimisation landscape becomes exponentially flat as the system grows, making it impossible to find good parameters. QAOA's structured alternating layers avoid this in practice through moderate depths, but it remains an active area of research.
 
-**The hardware gap.** These are theoretical results; computing what QAOA *would* achieve if you could run it at depth $p = 12$ on a large enough quantum computer. Today's hardware can run QAOA at $p = 1$ or $p = 2$ on a few dozen noisy qubits. The gap between where the algorithm shines ($p \geq 8$) and where hardware can operate ($p \leq 2$) is real. Fault-tolerant quantum computers with $\sim 10^4$ logical qubits would close this gap.
-
-**The barren plateau question.** McClean et al. (2018) showed that for random quantum circuits, the cost function gradient vanishes exponentially with system size. This is a serious concern for variational algorithms. However, QAOA has far more structure than a random circuit; its alternating problem/mixer layers are determined by the problem graph. Barren plateaus have not been observed in practice for QAOA at moderate depths, and the exact evaluations confirm that the parameter landscape remains navigable through $p = 13$.
-
-**What's real today:** QAOA's algorithmic performance is now well-characterised for an important family of combinatorial problems. The algorithm is provably competitive with the best known quantum alternatives. The bottleneck is hardware, not the algorithm.
+**What's real today:** The algorithm's performance is well-characterised. The bottleneck is hardware, not the algorithm.
 
 
 ## Chef's Notes

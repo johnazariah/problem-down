@@ -20,13 +20,25 @@ The **Hubbard model** — the simplest model that captures this physics — has 
 
 ### The Hubbard model
 
-The Hubbard model describes electrons hopping on a lattice, with an energy cost for double occupation. If you've read Deep-Dive 3 (VQE), the notation will be familiar — the same creation operators $c^\dagger$ and annihilation operators $c$ from the molecular Hamiltonian, now on a lattice:
+The Hubbard model describes electrons on a lattice with just two ingredients.
 
-$$H = -t \sum_{\langle i,j \rangle, \sigma} (c_{i\sigma}^\dagger c_{j\sigma} + \text{h.c.}) + U \sum_i n_{i\uparrow} n_{i\downarrow}$$
+**Hopping.** An electron can jump from one lattice site to a neighbouring site. The amplitude for this hop is $t$ (the kinetic energy scale). In the language of creation and annihilation operators from Deep-Dive 3:
 
-Here $c_{i\sigma}^\dagger$ creates an electron with spin $\sigma$ (up or down) at site $i$. The symbol $\langle i,j \rangle$ means the sum runs over neighbouring sites on the lattice. The notation "h.c." (Hermitian conjugate) means "add the dagger of the preceding term" — it ensures the Hamiltonian is physically valid. And $n_{i\sigma} = c_{i\sigma}^\dagger c_{i\sigma}$ is the **number operator** — it counts whether site $i$ is occupied by a spin-$\sigma$ electron (0 or 1).
+$$H_\text{hop} = -t \sum_{\langle i,j \rangle, \sigma} (c_{i\sigma}^\dagger c_{j\sigma} + \text{h.c.})$$
 
-Two parameters: $t$ (the hopping amplitude — kinetic energy) and $U$ (the on-site repulsion — interaction energy). The ratio $U/t$ controls the physics:
+Here $c_{i\sigma}^\dagger$ creates an electron with spin $\sigma$ (up or down) at site $i$. The symbol $\langle i,j \rangle$ means the sum runs over neighbouring sites. The notation "h.c." (Hermitian conjugate) means "add the dagger of the preceding term" — it ensures electrons can hop in both directions.
+
+**Repulsion.** Two electrons on the *same* site pay an energy cost $U$. The number operator $n_{i\sigma} = c_{i\sigma}^\dagger c_{i\sigma}$ counts whether site $i$ is occupied by a spin-$\sigma$ electron (0 or 1), so:
+
+$$H_\text{int} = U \sum_i n_{i\uparrow} n_{i\downarrow}$$
+
+This term is zero unless both a spin-up and a spin-down electron occupy the same site, in which case it costs energy $U$.
+
+**The full Hamiltonian** is just these two terms combined:
+
+$$H = H_\text{hop} + H_\text{int} = -t \sum_{\langle i,j \rangle, \sigma} (c_{i\sigma}^\dagger c_{j\sigma} + \text{h.c.}) + U \sum_i n_{i\uparrow} n_{i\downarrow}$$
+
+Two parameters, $t$ and $U$. The ratio $U/t$ controls the physics:
 
 - **Small $U/t$:** electrons hop freely, metal
 - **Large $U/t$:** electrons localise to avoid repulsion, insulator (Mott insulator)

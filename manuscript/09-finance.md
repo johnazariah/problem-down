@@ -33,19 +33,21 @@ For a derivative that needs 6 digits of accuracy ($10^{-6}$ relative error) with
 
 Before we get to financial pricing, we need the tool that makes it possible: **amplitude amplification**, which is Grover's search algorithm generalised.
 
-Grover's algorithm (1996) solves unstructured search: given a function $f:\{0,1\}^n \to \{0,1\}$ with $M$ solutions among $N = 2^n$ inputs, find a solution. Classically: $O(N/M)$ queries. Quantumly: $O(\sqrt{N/M})$ queries. A quadratic speedup.
+Here's the idea. Imagine you have a bag of $N$ balls, $M$ of which are gold. Classical approach: draw balls one at a time, check each one. On average you need $N/M$ draws to find a gold ball.
 
-The key operation is the **Grover iterator** $G = S_0 \cdot S_f$, where $S_f$ flips the phase of solutions and $S_0$ reflects about the initial superposition. Geometrically, $G$ is a rotation in the 2D subspace spanned by "solutions" and "non-solutions." Each application rotates the state vector by an angle $2\theta$ toward the solution space, where $\sin\theta = \sqrt{M/N}$.
+Grover's algorithm (1996) does this quantumly with only $\sqrt{N/M}$ queries — a quadratic speedup. It works not by checking balls faster, but by *rotating* the quantum state. Think of it geometrically: the quantum state starts pointing mostly toward "non-gold" and Grover's algorithm rotates it, step by step, toward "gold." Each step rotates by a fixed angle $2\theta$, where $\sin\theta = \sqrt{M/N}$. After about $\pi/(4\theta)$ rotations, the state points almost entirely at "gold." Measure, and you get a gold ball with near-certainty.
 
-After $k = O(\sqrt{N/M})$ iterations, the overlap with the solution space is close to 1. Measure, and you get a solution with high probability.
+The rotation is implemented by the **Grover iterator** $G$, which applies two reflections that together produce a rotation. Deep-Dive 5 builds $G$ from gates; here we just need the geometric picture.
 
-### Quantum amplitude estimation
+### From search to estimation
 
-Now the key insight: the *angle* $\theta$ encodes $M/N$; the fraction of inputs that are solutions. If you can measure $\theta$ precisely, you can estimate $M/N$ without ever finding a specific solution.
+Now the key insight. The rotation angle $\theta$ itself encodes the answer to a different question: *what fraction of balls are gold?* Since $\sin\theta = \sqrt{M/N}$, measuring $\theta$ precisely gives you $M/N$ — without ever finding a specific gold ball.
 
-**Quantum Amplitude Estimation** (QAE) does exactly this. It uses the same controlled-powers-plus-inverse-QFT pattern we built in Deep-Dive 2 for period-finding — that pattern is called **Quantum Phase Estimation** (QPE), and it works for *any* unitary operator, not just the modular exponentiation oracle from Shor's algorithm. Here we apply QPE to the Grover iterator $G$. The eigenvalues of $G$ are $e^{\pm 2i\theta}$, and QPE extracts $\theta$ with precision $O(1/N_{\text{queries}})$ — that's $1/N$, not $1/\sqrt{N}$.
+**Quantum Amplitude Estimation** (QAE) measures $\theta$. It uses the same controlled-powers-plus-inverse-QFT pattern we saw in Unit 2 (Shor's algorithm) — that pattern is called **Quantum Phase Estimation** (QPE), and it works for any unitary operator. Here we apply it to the Grover iterator $G$, whose eigenvalues are $e^{\pm 2i\theta}$, and QPE extracts $\theta$ with precision $O(1/N_{\text{queries}})$ — that's $1/N$, not $1/\sqrt{N}$.
 
-Applied to Monte Carlo:
+### Applying QAE to Monte Carlo
+
+For derivative pricing, the "gold balls" are market scenarios, and the "fraction of gold" is generalised to the expected payoff. Specifically:
 
 1. **Encode** the probability distribution as a quantum state: prepare $\sum_x \sqrt{p(x)}|x\rangle$
 2. **Encode the payoff** into an ancilla amplitude: for each price state $|x\rangle$, rotate an ancilla qubit so that its amplitude encodes the (normalised) payoff $f(x)$. The combined state becomes $\sum_x \sqrt{p(x)}|x\rangle\bigl(\sqrt{1-f(x)}|0\rangle + \sqrt{f(x)}|1\rangle\bigr)$

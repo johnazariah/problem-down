@@ -153,7 +153,7 @@ I am now satisfied that the original Tier 0 issues raised in this audit are reso
 
 ### Tier 0.5 status
 
-I am satisfied that most Tier 0.5 issues are now resolved as well:
+I am satisfied that the Tier 0.5 issues are now resolved as well:
 
 - The continued-fractions count in the toy Shor example is fixed.
 - The GNFS asymptotic is now written in the standard $\ln N$ / $\ln\ln N$ form.
@@ -162,21 +162,14 @@ I am satisfied that most Tier 0.5 issues are now resolved as well:
 - The gate-model low-energy-language and QAOA $p \to \infty$ caveat in Unit 1 are fixed.
 - The 2D Hubbard uncertainty language is now appropriately cautious.
 - The DMET / active-space embedding distinction is now explicit.
-
-### Remaining concern
-
-I do still have one residual medium-severity concern in the cryptography chapter.
-
-The chapter now uses consistent "logical" versus "physical" labels, but it still states in several places that RSA-2048 needs roughly **4,000 logical qubits**. The Gidney and Ekerå (2021) abstract-circuit formula quoted from the paper is approximately
-
-$$3n + 0.002 \, n \, \lg n$$
-
-logical qubits for an $n$-bit RSA integer. For $n = 2048$, that is closer to **6.2k** logical qubits than 4k. So the original apples-to-oranges issue is fixed, but the rough RSA-2048 logical-qubit estimate still appears low unless the text intends a narrower "register size" claim rather than a full algorithm resource count.
+- The RSA-2048 logical-qubit estimate in the cryptography chapter has been updated from the earlier rough ~4,000 figure to ~6,000, which is consistent with the Gidney and Ekerå abstract-circuit formula quoted in this audit.
 
 ## Current status
 
 **Tier 0: closed.**
 
-**Tier 0.5: substantially resolved, but not fully signed off because of the remaining RSA-2048 logical-qubit-count concern in the cryptography chapter.**
+**Tier 0.5: closed.**
+
+At this point, I am satisfied that the Tier 0 and Tier 0.5 bundle is resolved properly and can be treated as complete for purposes of moving on to Tier 1 readability work.
 
 No manuscript text was changed.

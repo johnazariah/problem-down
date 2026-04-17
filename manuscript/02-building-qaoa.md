@@ -150,7 +150,7 @@ Each factor is just an $R_X$ rotation: $e^{-i\beta X} = R_X(2\beta)$:
 
 ![Mixer: Rx(2β) applied to each qubit](../figures/qaoa-mixer.png)
 
-What does $R_X(\theta)$ do? It rotates the qubit's state around the X axis of the Bloch sphere. In the computational basis, it mixes $\lvert 0\rangle$ and $\lvert 1\rangle$:
+What does $R_X(\theta)$ do? It rotates the qubit's state around the X axis of the **Bloch sphere** — a geometric picture where a single qubit's state is a point on a sphere, with $\lvert 0\rangle$ at the north pole, $\lvert 1\rangle$ at the south pole, and superpositions on the surface between. In the computational basis, $R_X$ mixes $\lvert 0\rangle$ and $\lvert 1\rangle$:
 
 $$R_X(\theta)\lvert 0\rangle = \cos(\theta/2)\lvert 0\rangle - i\sin(\theta/2)\lvert 1\rangle$$
 
