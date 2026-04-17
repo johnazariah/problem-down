@@ -18,13 +18,15 @@ A quantum computer operates natively in an exponentially large space; the Hilber
 
 ## The Bottleneck
 
-The kernel trick is effective: instead of mapping data into a high-dimensional space $\phi: x \mapsto \phi(x)$ and computing inner products $\langle \phi(x), \phi(x') \rangle$ explicitly, you compute $K(x, x') = \langle \phi(x), \phi(x') \rangle$ directly. The classifier never sees the high-dimensional representation; it only needs the kernel matrix $K_{ij} = K(x_i, x_j)$ over the training set.
+Return to Netflix. You have 480,000 users, each described by their ratings on 18,000 movies. Two users are "similar" if they tend to rate the same movies the same way. A recommendation engine needs to compute this similarity efficiently — and it needs to do so in a space with hundreds of thousands of dimensions.
 
-The kernel trick works well when $K$ is cheap to compute. But consider:
+The kernel trick handles this: instead of explicitly constructing each user's position in the full feature space $\phi(x)$ and computing inner products $\langle \phi(x), \phi(x') \rangle$, you compute the similarity $K(x, x') = \langle \phi(x), \phi(x') \rangle$ directly from the raw data. The classifier never sees the high-dimensional representation; it only needs the kernel matrix $K_{ij} = K(x_i, x_j)$ over the training set (the labelled examples the algorithm learns from).
 
-- A feature map into a space of dimension $2^n$ (exponential in the number of input features)
+This works well when $K$ is cheap to compute. But consider what happens as the feature space grows:
+
+- A feature map into a space of dimension $2^n$ (exponential in the number of input features) — where user preferences interact in combinatorially many ways
 - A kernel that requires sampling from a distribution that's hard to sample classically
-- A learning task where the relevant structure lives in a space that has no efficient classical description
+- A learning task where the relevant similarity structure has no efficient classical description
 
 In these cases, the kernel trick doesn't help; you can't compute $K(x, x')$ efficiently, even though you never explicitly construct $\phi(x)$.
 

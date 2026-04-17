@@ -11,6 +11,10 @@ _This deep dive pairs with Unit 8 (Climate & Energy), which explained why cataly
 
 ## The active space idea
 
+This chapter moves faster than the earlier deep dives. That's by design: it's the capstone, and every tool it uses has been built in a previous chapter. Where earlier deep dives taught one mechanism at a time (the ZZ gate, the QFT, the VQE loop), this one assembles a *pipeline* from pieces you already know. If a step feels unfamiliar, the cross-references will take you back to where it was introduced.
+
+The pipeline has three stages: **select** the orbitals that need quantum treatment, **embed** them in the classical environment, and **solve** the embedded problem with VQE or QPE. Let's take them one at a time.
+
 ### Why you don't simulate the whole molecule
 
 A catalyst system has hundreds of orbitals; carbon scaffolding, solvent molecules, bulk metal. But the chemistry happens at just a few: the metal d-orbitals where CO binds, the π* orbitals where electrons transfer.
