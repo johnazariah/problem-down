@@ -49,7 +49,7 @@ Applied to Monte Carlo:
 
 1. **Encode** the probability distribution as a quantum state: prepare $\sum_x \sqrt{p(x)}|x\rangle$
 2. **Encode the payoff** into an ancilla amplitude: for each price state $|x\rangle$, rotate an ancilla qubit so that its amplitude encodes the (normalised) payoff $f(x)$. The combined state becomes $\sum_x \sqrt{p(x)}|x\rangle\bigl(\sqrt{1-f(x)}|0\rangle + \sqrt{f(x)}|1\rangle\bigr)$
-3. **Run QAE**: estimate the probability of measuring the ancilla in $|1\rangle$. This probability is $\sum_x p(x) \cdot f(x) = \mathbb{E}[f(X)]$ — the expected payoff.
+3. **Run QAE**: estimate the probability of measuring the ancilla in $|1\rangle$. This probability is $\\sum_x p(x) \\cdot f(x) = \\mathbb{E}[f(X)]$ — the normalised expected payoff. Multiply by the payoff bound $P_{\\max}$ to recover the actual expected payoff.
 4. Precision $\epsilon$ requires $O(1/\epsilon)$ queries to the oracle
 
 Classical Monte Carlo: precision $\epsilon$ requires $O(1/\epsilon^2)$ samples.
@@ -71,7 +71,9 @@ Setup:
 - Payoff: $\max(S_T - K, 0)$
 - Black-Scholes analytical price: ~$8.02
 
-We discretise the stock price into $2^n$ bins, encode the **log-normal distribution** (stock prices are modelled so that their logarithm follows a normal distribution, ensuring prices can't go negative) as a quantum state, and rotate an ancilla to encode the normalised payoff $\max(S_T - K, 0) / P_{\max}$ into its amplitude. QAE then estimates the expected payoff directly.
+We discretise the stock price into $2^n$ bins, encode the **log-normal distribution** (stock prices are modelled so that their logarithm follows a normal distribution, ensuring prices can't go negative) as a quantum state, and rotate an ancilla to encode the normalised payoff $\\max(S_T - K, 0) / P_{\\max}$ into its amplitude. QAE then estimates the normalised expected payoff; multiplying by $P_{\\max}$ gives the option price.
+
+(The companion notebook demonstrates a simplified version: a comparator oracle that identifies in-the-money states ($S_T > K$) and estimates the probability of exercise. The full payoff-encoding construction described above is the standard approach for pricing continuous payoffs.)
 
 → *The next chapter builds the amplitude estimation circuit from Grover's algorithm, and shows you the code.*
 

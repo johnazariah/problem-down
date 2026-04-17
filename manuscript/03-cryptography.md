@@ -198,7 +198,7 @@ $$\gcd(49 + 1, 15) = \gcd(50, 15) = 5$$
 
 And indeed: $15 = 3 \times 5$. $\blacksquare$
 
-This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially: factoring a 2,000-digit number requires roughly 4,000 logical qubits and $O(n^3)$ gates with $n \approx 6,600$ bits. The same algorithm, larger registers, more gates, same polynomial efficiency.
+This is a toy example; 4 qubits, a number you can factor in your head. But the algorithm scales polynomially. For RSA-2048 (a 617-digit, 2,048-bit number), Shor's algorithm requires roughly 4,000 logical qubits and $O(n^3)$ gates with $n = 2{,}048$. The same algorithm, larger registers, more gates, same polynomial efficiency.
 
 → *The next chapter builds the period-finding circuit from scratch, and shows you the code.*
 
@@ -206,7 +206,7 @@ This is a toy example; 4 qubits, a number you can factor in your head. But the a
 
 We started with credit card numbers and the quiet miracle of public-key cryptography. We factored $15 = 3 \times 5$ on a toy quantum computer. What connects the two?
 
-Scale. The same algorithm that finds the period of $7^x \bmod 15$ can find the period of $a^x \bmod N$ for any $N$. For RSA-2048, $N$ has 617 digits, the input register has ~4,000 qubits, and the circuit has $\sim 10^{10}$ gates. But the structure is identical: superposition, oracle, QFT, measure, continued fractions, $\gcd$. The quantum computer doesn't know whether it's breaking a classroom exercise or a government cipher. It just finds periods.
+Scale. The same algorithm that finds the period of $7^x \bmod 15$ can find the period of $a^x \bmod N$ for any $N$. For RSA-2048, $N$ is a 617-digit number, the registers need ~4,000 logical qubits, and the circuit has $\sim 10^{10}$ gates. But the structure is identical: superposition, oracle, QFT, measure, continued fractions, $\gcd$. The quantum computer doesn't know whether it's breaking a classroom exercise or a government cipher. It just finds periods.
 
 That's why the world's cryptographic infrastructure is being rebuilt. Not because a quantum computer has broken RSA — none has — but because the algorithm is ready and waiting. When the hardware catches up, it will work.
 

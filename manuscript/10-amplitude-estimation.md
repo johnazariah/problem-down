@@ -47,7 +47,9 @@ After $k_\text{opt} = \lfloor \pi / (4\theta) \rfloor$ iterations, the state is 
 
 ### The oracle circuit
 
-For the financial application (Unit 5), the oracle encodes the normalised payoff into an ancilla amplitude: given a quantum register encoding a discretised price $|x\rangle$, rotate an ancilla qubit by an angle proportional to $\max(\text{price}(x) - K, 0)$. The Grover iterator then amplifies the amplitude of the ancilla $|1\rangle$ state, and QAE extracts $\mathbb{E}[f(X)]$ — the expected payoff.
+For the financial application (Unit 5), the full construction encodes the normalised payoff into an ancilla amplitude: given a quantum register encoding a discretised price $|x\\rangle$, rotate an ancilla qubit by an angle whose sine equals the normalised payoff $\\max(\\text{price}(x) - K, 0) / P_{\\max}$. QAE then extracts $\\mathbb{E}[f(X)]$ — the normalised expected payoff — which is rescaled by $P_{\\max}$ to give the option price.
+
+The companion notebook demonstrates a simplified version using a comparator oracle that marks in-the-money states ($S_T > K$). This estimates the exercise probability rather than the full expected payoff, but it illustrates the same Grover + QAE pipeline with a simpler circuit.
 
 ### The diffusion circuit
 
