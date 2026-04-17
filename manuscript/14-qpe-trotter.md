@@ -109,13 +109,13 @@ For an $L \times L$ Hubbard lattice with $2L^2$ spin-orbitals:
 | QFT (for QPE) | $O(m^2)$ controlled rotations |
 | Total | $O(m \cdot N_\text{Trotter} \cdot L^2)$ |
 
-For a $10 \times 10$ lattice with **chemical-precision** QPE ($m \approx 20$ bits, giving ~1 milliHartree accuracy — the threshold from Unit 3 where energy differences become chemically meaningful, $N_\text{Trotter} \approx 10^3$): each Trotter step requires roughly $10^4$ gates on $\sim 200$ qubits. With $N_\text{Trotter} \approx 10^3$ steps per time-evolution query, that's $\sim 10^7$ gates per query. The total T-gate count depends on the QPE precision and implementation details; the Babbush et al. estimates cited in Unit 7 give $\sim 10^{11}$ T-gates for a comparable ($8 \times 8$) lattice, scaling upward with lattice size.
+For an $8 \times 8$ lattice (the same size benchmarked in Unit 7) with **chemical-precision** QPE ($m \approx 20$ bits, giving ~1 milliHartree accuracy — the threshold from Unit 3 where energy differences become chemically meaningful, $N_\text{Trotter} \approx 10^3$): each Trotter step requires roughly $10^4$ gates on $\sim 400$ logical qubits (including QPE ancillas). With $N_\text{Trotter} \approx 10^3$ steps per time-evolution query, that's $\sim 10^7$ gates per query. The total T-gate count — accounting for all QPE queries and the overhead of fault-tolerant gate synthesis — is $\sim 10^{11}$, matching the Babbush et al. estimates cited in Unit 7.
 
 ### Physical qubits
 
-With **surface code** error correction (the leading scheme from Unit 2's Reality Check; physical error rate $10^{-3}$, **code distance** ~20 — the code distance controls how many physical errors can be corrected, with each logical qubit requiring roughly $2d^2 \approx 800$ physical qubits for distance $d = 20$): The $10 \times 10$ Hubbard model needs:
+With **surface code** error correction (the leading scheme from Unit 2's Reality Check; physical error rate $10^{-3}$, **code distance** ~20 — the code distance controls how many physical errors can be corrected, with each logical qubit requiring roughly $2d^2 \approx 800$ physical qubits for distance $d = 20$): the $8 \times 8$ Hubbard model needs:
 
-$$200 \text{ logical} \times 800 \text{ physical/logical} \approx 160{,}000 \text{ physical qubits}$$
+$$400 \text{ logical} \times 800 \text{ physical/logical} \approx 320{,}000 \text{ physical qubits}$$
 
 This is in the same ballpark as the Pinnacle architecture's estimate for RSA-2048 (Unit 2: 100,000 physical qubits). Both are ambitious but plausible targets for the next decade of hardware development.
 
@@ -128,7 +128,7 @@ This is in the same ballpark as the Pinnacle architecture's estimate for RSA-204
 
 3. **The circuit is deep but structured.** Every gate in a Trotter circuit has a physical meaning: it simulates one interaction in the Hamiltonian for one time step. More accuracy → more Trotter steps → deeper circuit.
 
-4. **Resource estimates are concrete.** For the 2D Hubbard model: ~200 qubits, ~$10^7$ gates, ~$10^5$ physical qubits with error correction. These numbers define the engineering targets.
+4. **Resource estimates are concrete.** For the 2D Hubbard model ($8 \times 8$ lattice): ~400 logical qubits, ~$10^{11}$ T-gates, ~$3 \times 10^5$ physical qubits with surface-code error correction. These numbers define the engineering targets.
 
 5. **Everything connects.** QPE reuses the QFT from Deep-Dive 2 (Shor). Trotterisation reuses the ZZ gate from Deep-Dive 1 (QAOA). The fermionic encoding comes from Deep-Dive 3 (VQE). This is where the threads converge.
 
