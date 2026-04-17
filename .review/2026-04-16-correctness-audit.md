@@ -295,3 +295,28 @@ This follow-up commit improves the manuscript and closes most of the previously 
 
 - `T2-1` still looks partially open in the cryptography Reality Check; and
 - the single-audit-file review workflow has regressed.
+
+## Review-cleanup verification addendum - 2026-04-17
+
+I reviewed the subsequent cleanup commit `3d62904c489de677afe2401e92c3027eafdabf65`, whose purpose was to remove stale review files.
+
+### Current state
+
+Two earlier concerns are now resolved in the current repo state:
+
+- the standalone checklist file `/.review/2026-04-17-GPT-5.4-XHigh-tier2-remaining-items.md` has been removed; and
+- the cryptography chapter's ECC Reality Check line now correctly refers to **P-256** rather than generic "256-bit ECC", restoring the intended scope / comparison point.
+
+### Remaining issue
+
+I still see one review-record hygiene problem:
+
+- `/.review/2026-04-16-Gemini-3.1-Pro-Preview.md` contains the same Tier 2 verification report twice.
+
+That duplication does not affect the manuscript itself, but it still leaves the review trail messier than intended.
+
+### Current assessment
+
+No manuscript-content findings in the current cleanup commit.
+
+At this point, the main remaining issue I can see is the duplicated Tier 2 verification text in the Gemini review file. The single-audit-file workflow is closer to the intended end state now than it was in the previous pass, but the review archive is still not fully clean.
