@@ -61,7 +61,7 @@ Every step in this pipeline has been introduced in an earlier unit. This chapter
 
 The active space is where the computational savings come from; and where the physical insight enters.
 
-For CO₂ capture on a metal oxide surface, the active site might be an iron or copper atom with its nearest-neighbour oxygen atoms — perhaps 6 metal d-orbitals and 10 ligand orbitals: 16 spatial orbitals (32 spin-orbitals after accounting for spin up and down). After Jordan-Wigner encoding: 32 qubits. After tapering: roughly 20–24 qubits — feasible on near-term or early fault-tolerant hardware.
+For CO₂ capture on a metal oxide surface, the active site might be an iron or copper atom with its nearest-neighbour oxygen atoms — perhaps 6 metal d-orbitals and 10 ligand orbitals: 16 spatial orbitals (32 spin-orbitals after accounting for spin up and down). After Jordan-Wigner encoding: 32 qubits. After tapering (exploiting symmetries to reduce qubit count): roughly 20–24 qubits — feasible on near-term or early fault-tolerant hardware.
 
 The key point: **you don't need to simulate the whole surface.** The quantum computer handles the 16 orbitals where strong correlation matters. The classical computer handles the other 500 orbitals where mean-field methods are perfectly adequate. This division of labour is what makes quantum-classical embedding practical.
 

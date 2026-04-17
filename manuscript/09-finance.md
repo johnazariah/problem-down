@@ -98,6 +98,8 @@ The pipeline is identical. A more complex derivative has a more complex payoff f
 
 **The quadratic wall.** A quadratic speedup means quantum advantage arrives only above a certain problem size, where the improved scaling overcomes the overhead of quantum error correction. For Monte Carlo, estimates suggest this crossover requires $10^3$–$10^4$ logical qubits; ambitious but within the scope of hardware roadmaps.
 
+**What's real today:** The algorithm is sound and the quadratic speedup is mathematically proven. But the circuits are too deep for current hardware, and the crossover point where quantum beats classical is still distant. Finance is a when-not-if application — but the "when" depends on fault-tolerant hardware.
+
 
 ## Chef's Notes
 

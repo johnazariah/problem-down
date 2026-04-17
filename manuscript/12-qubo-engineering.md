@@ -5,7 +5,7 @@ _This deep dive pairs with Unit 6 (Supply Chains), which introduced nurse schedu
 ## In This Chapter
 
 - **What you'll learn:** How to turn constraints into penalty terms, convert QUBO to an Ising Hamiltonian, and why quantum annealing tunnels through barriers that classical methods can't climb.
-- **What you need:** From Deep-Dive 1, you know cost Hamiltonians and the $ZZ$ gate. Here we extend the cost Hamiltonian concept to *constrained* problems — where not every binary string is a valid solution.
+- **What you need:** From Deep-Dive 1, you know cost Hamiltonians and the $ZZ$ gate. From Unit 6, you know the scheduling problem and the QUBO idea. Here we get our hands dirty: turning real constraints into quadratic penalties, mapping them to Ising Hamiltonians, and exploring quantum annealing as an alternative to QAOA.
 - **Runnable version:** The companion notebook [`06-supply-chains.ipynb`](../notebooks/06-supply-chains.ipynb) solves a small scheduling QUBO on a cloud Quokka.
 
 

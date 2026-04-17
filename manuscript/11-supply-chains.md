@@ -105,7 +105,9 @@ Formulate as QUBO: 8 nurses × 8 shift-slots = 64 binary variables (reducible wi
 
 **Gate-based vs. annealing.** QAOA on gate-based hardware offers more flexibility (arbitrary cost functions, tuneable depth) but currently operates on far fewer qubits. Annealing offers more qubits but less control. The two approaches may converge as hardware improves.
 
-**What would change the picture.** A demonstration of quantum speedup on a real scheduling or logistics problem with practical constraints; not a crafted benchmark instance. This would require either significant improvements in annealer quality or gate-based machines with $O(10^3)$ logical qubits.
+**What would change the picture.** A demonstration of quantum speedup on a real scheduling or logistics problem with practical constraints — not a crafted benchmark instance. This would require either significant improvements in annealer quality or gate-based machines with $O(10^3)$ logical qubits.
+
+**What's real today:** Quantum annealing hardware exists at scale (5,000+ qubits) but hasn't demonstrated clear speedup on practical problems. Gate-based QAOA works in principle but is limited to toy sizes. The hybrid approach — classical solvers augmented by quantum sub-routines — is the most pragmatic near-term path, but attributing advantage to the quantum component remains difficult.
 
 
 ## Chef's Notes

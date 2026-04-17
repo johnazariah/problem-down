@@ -128,7 +128,9 @@ The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, rep
 
 **The VQE stopgap.** Until fault-tolerant QPE is available, VQE on the Hubbard model is an active area of research. Problem-specific ansätze (like the Hamiltonian variational ansatz) can capture Hubbard physics better than generic hardware-efficient circuits. But VQE is fundamentally limited by measurement overhead and barren plateaus (exponentially flat optimisation landscapes) at scale.
 
-**What would change the picture.** A fault-tolerant quantum computer capable of running QPE on a $10 \times 10$ Hubbard lattice. This would produce *new physics*; results that cannot be obtained any other way. The resource estimates suggest $\sim 10^5$ physical qubits with error rates $< 10^{-3}$. This is the most concrete milestone for "quantum utility" in simulation.
+**What would change the picture.** A fault-tolerant quantum computer capable of running QPE on a $10 \times 10$ Hubbard lattice. This would produce *new physics* — results that cannot be obtained any other way. The resource estimates suggest $\sim 10^5$ physical qubits with error rates $< 10^{-3}$. This is the most concrete milestone for "quantum utility" in simulation.
+
+**What's real today:** Small Hubbard models are solvable classically. The quantum advantage will come from lattice sizes ($\geq 8 \times 8$) where classical methods disagree. The algorithms are ready; the hardware is not. Of all the applications in this book, materials simulation has the clearest path to producing genuinely new scientific knowledge once fault-tolerant machines arrive.
 
 
 ## Chef's Notes
