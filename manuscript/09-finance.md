@@ -9,7 +9,7 @@ Pricing a derivative means answering one question: **what is the expected payoff
 
 Monte Carlo works, but it's slow. The statistical error (the uncertainty in your price estimate) shrinks as $1/\sqrt{N}$ where $N$ is the number of samples. To get one more digit of accuracy, you need **100 times more samples**. For complex derivatives that take seconds per sample, this translates to hours or days of computation. Banks run massive compute clusters to price their portfolios overnight. Goldman Sachs reportedly runs over a billion Monte Carlo simulations *per day*.
 
-The $1/\sqrt{N}$ convergence rate isn't a software limitation. It's a mathematical theorem: for classical random sampling, you *cannot* do better than $1/\sqrt{N}$. It's a fundamental limit.
+The $1/\sqrt{N}$ convergence rate isn't a software limitation. For generic random sampling — estimating the mean of an arbitrary distribution from independent samples — you *cannot* do better than $1/\sqrt{N}$. (Structured classical techniques like variance reduction and quasi-Monte Carlo can improve performance for specific problems, but they don't change the fundamental scaling.)
 
 Unless you're quantum.
 
@@ -22,7 +22,7 @@ Classical Monte Carlo: draw $N$ independent samples $X_1, \ldots, X_N$ and compu
 
 $$|\bar{X} - \mu| \sim \frac{\sigma}{\sqrt{N}}$$
 
-where $\sigma$ is the **standard deviation** (a measure of how spread out the payoff values are). To halve the error, quadruple $N$. To gain a factor of 10 in precision, multiply $N$ by 100. This $1/\sqrt{N}$ convergence rate is a mathematical theorem, not a software limitation — for any estimator based on independent classical samples, you *cannot* do better.
+where $\sigma$ is the **standard deviation** (a measure of how spread out the payoff values are). To halve the error, quadruple $N$. To gain a factor of 10 in precision, multiply $N$ by 100. This $1/\sqrt{N}$ convergence rate is a mathematical fact about generic sampling, not a software limitation — for any estimator based on independent classical samples from an arbitrary distribution, you *cannot* do better.
 
 For a derivative that needs 6 digits of accuracy ($10^{-6}$ relative error) with $\sigma \sim 1$: you need $N \sim 10^{12}$ samples. At 1 microsecond per sample, that's 12 days.
 
@@ -48,9 +48,9 @@ Now the key insight: the *angle* $\theta$ encodes $M/N$; the fraction of inputs 
 Applied to Monte Carlo:
 
 1. **Encode** the probability distribution as a quantum state: prepare $\sum_x \sqrt{p(x)}|x\rangle$
-2. **Compute** the payoff function: mark states where the payoff exceeds a threshold (this is the "oracle" for Grover)
-3. **Run QAE**: extract the amplitude $a = \sqrt{\Pr[\text{payoff} > \text{threshold}]}$
-4. The expected payoff is encoded in $a$, estimated to precision $\epsilon$ using $O(1/\epsilon)$ queries
+2. **Encode the payoff** into an ancilla amplitude: for each price state $|x\rangle$, rotate an ancilla qubit so that its amplitude encodes the (normalised) payoff $f(x)$. The combined state becomes $\sum_x \sqrt{p(x)}|x\rangle\bigl(\sqrt{1-f(x)}|0\rangle + \sqrt{f(x)}|1\rangle\bigr)$
+3. **Run QAE**: estimate the probability of measuring the ancilla in $|1\rangle$. This probability is $\sum_x p(x) \cdot f(x) = \mathbb{E}[f(X)]$ — the expected payoff.
+4. Precision $\epsilon$ requires $O(1/\epsilon)$ queries to the oracle
 
 Classical Monte Carlo: precision $\epsilon$ requires $O(1/\epsilon^2)$ samples.
 Quantum amplitude estimation: precision $\epsilon$ requires $O(1/\epsilon)$ queries.
@@ -71,7 +71,7 @@ Setup:
 - Payoff: $\max(S_T - K, 0)$
 - Black-Scholes analytical price: ~$8.02
 
-We discretise the stock price into $2^n$ bins, encode the **log-normal distribution** (stock prices are modelled so that their logarithm follows a normal distribution, ensuring prices can't go negative) as a quantum state, and use the Grover oracle to mark states where $S_T > K$.
+We discretise the stock price into $2^n$ bins, encode the **log-normal distribution** (stock prices are modelled so that their logarithm follows a normal distribution, ensuring prices can't go negative) as a quantum state, and rotate an ancilla to encode the normalised payoff $\max(S_T - K, 0) / P_{\max}$ into its amplitude. QAE then estimates the expected payoff directly.
 
 → *The next chapter builds the amplitude estimation circuit from Grover's algorithm, and shows you the code.*
 
@@ -79,7 +79,7 @@ We discretise the stock price into $2^n$ bins, encode the **log-normal distribut
 
 We priced a European call option — the simplest derivative there is. How does this help Goldman Sachs price exotic instruments?
 
-The pipeline is identical. A more complex derivative has a more complex payoff function (path-dependent, multi-asset, with barriers and early exercise), but the quantum algorithm doesn't care: it just needs an oracle that marks states where the payoff exceeds a threshold, and QAE estimates the probability. The quadratic speedup applies regardless of the payoff's complexity. For Goldman's billion-simulation-per-day workload, the gap between $10^{12}$ classical samples and $10^6$ quantum queries is the gap between a compute cluster and a single machine.
+The pipeline is identical. A more complex derivative has a more complex payoff function (path-dependent, multi-asset, with barriers and early exercise), but the quantum algorithm doesn't care: it just needs a circuit that encodes the payoff into an ancilla amplitude, and QAE estimates the expected value. The quadratic speedup applies regardless of the payoff's complexity. For Goldman's billion-simulation-per-day workload, the gap between $10^{12}$ classical samples and $10^6$ quantum queries is the gap between a compute cluster and a single machine.
 
 
 ## Reality Check

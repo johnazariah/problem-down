@@ -109,7 +109,7 @@ For an $L \times L$ Hubbard lattice with $2L^2$ spin-orbitals:
 | QFT (for QPE) | $O(m^2)$ controlled rotations |
 | Total | $O(m \cdot N_\text{Trotter} \cdot L^2)$ |
 
-For a $10 \times 10$ lattice with **chemical-precision** QPE ($m \approx 20$ bits, giving ~1 milliHartree accuracy — the threshold from Unit 3 where energy differences become chemically meaningful, $N_\text{Trotter} \approx 10^3$): roughly $10^7$ gates on $\sim 200$ qubits.
+For a $10 \times 10$ lattice with **chemical-precision** QPE ($m \approx 20$ bits, giving ~1 milliHartree accuracy — the threshold from Unit 3 where energy differences become chemically meaningful, $N_\text{Trotter} \approx 10^3$): each Trotter step requires roughly $10^4$ gates on $\sim 200$ qubits, giving a total circuit of $\sim 10^7$ gates per QPE query and $\sim 10^{10}$ gates overall (for $O(2^m) \approx 10^6$ QPE queries at $m = 20$ bits — though advanced techniques reduce this significantly). These numbers are broadly consistent with the Babbush et al. estimates cited in Unit 7.
 
 ### Physical qubits
 

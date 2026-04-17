@@ -103,6 +103,8 @@ Here $\oplus$ means XOR (addition modulo 2): $0 \oplus 0 = 0$, $0 \oplus 1 = 1$,
 
 The output register returns to $|{-}\rangle$ in both cases — it's a catalyst, not a container. The information about $f(x)$ lives entirely in the phase of the input register. This is **phase kickback**.
 
+A caveat for later: this clean "catalyst" picture works perfectly when $f$ outputs a single bit. For functions with multi-bit outputs (like $a^x \bmod N$ in Shor's algorithm), the output register does *not* return to its starting state — it remains entangled with the input register. But the QFT on the input register still extracts the period, because the entanglement structure itself encodes the periodicity. We'll see this when we assemble the full period-finding circuit below.
+
 > **Why this matters:** Phases are invisible if you measure immediately: $|+1|^2 = |-1|^2 = 1$. But phases *interfere*. If we apply the right transformation after the phase kickback, different phases will add constructively (amplifying some states) or destructively (suppressing others). This is how quantum algorithms extract information that's hidden in the phases. It's the same principle as QAOA — the cost phase was invisible until the mixer turned phase differences into probability differences.
 
 ### Phase kickback for general functions
@@ -299,7 +301,7 @@ For $N = 15$ (our toy example), the modular exponentiation is small enough to co
 
 ## What you should take away
 
-1. **Phase kickback** converts function values into phases. The output register is a catalyst; it enables the computation but returns to its starting state. The information lives in the phases of the input register.
+1. **Phase kickback** converts function values into phases. For single-bit functions, the output register acts as a catalyst. For multi-bit functions (like modular exponentiation), the output register stays entangled with the input, but the periodicity is still encoded in the input register's amplitudes.
 
 2. **The QFT** converts periodicity in amplitudes to peaks in frequency. It's built from Hadamards and controlled rotations: $O(n^2)$ gates for $n$ qubits. It's the engine that extracts the period.
 

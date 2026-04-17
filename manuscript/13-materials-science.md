@@ -11,9 +11,9 @@ If you could superconduct at room temperature, you could:
 - **Enable practical fusion reactors.** Tokamak fusion requires superconducting magnets to confine plasma. Room-temperature superconductors would simplify the engineering dramatically.
 - **Revolutionise computing.** Superconducting circuits (already the basis of most quantum computers) could operate without cryogenics.
 
-The problem is that we can't *predict* which materials will superconduct at high temperatures. The physics of superconductivity in complex materials involves **strongly correlated electrons** — quantum systems where the interactions between electrons are so strong that the **mean-field** approximation (treating each electron as if it moves in the average field of all the others — the same simplification we saw fail in Unit 3) breaks down completely. We can't simulate these systems classically.
+The problem is that we can't *predict* which materials will superconduct at high temperatures. The physics involves **strongly correlated electrons** — quantum systems where the interactions between electrons are so strong that the **mean-field** approximation (treating each electron as if it moves in the average field of all the others) breaks down completely.
 
-The **Hubbard model**; the simplest model that captures the essential physics of strongly correlated electrons; has been studied for over 60 years. Its phase diagram in two dimensions remains unsolved. We literally do not know whether the 2D Hubbard model supports high-temperature superconductivity. This is not a matter of computational effort; it's a matter of computational *impossibility* with classical methods.
+The **Hubbard model** — the simplest model that captures this physics — has been studied for over 60 years. Its full phase diagram in two dimensions remains unsettled: different high-accuracy methods disagree in key parameter regimes, and whether the model supports superconductivity at high temperatures is still debated. This is not just a matter of computational effort; for the strongly correlated regime, it's a matter of computational *impossibility* with classical methods.
 
 
 ## The Bottleneck
@@ -93,7 +93,7 @@ The Pinnacle architecture (Unit 2) could dramatically reduce these numbers if qu
 
 ## Worked Example
 
-Ground state of the **2-site Hubbard model** via QPE. Sweep the $U/t$ ratio from 0 (free electrons) to 10 (strongly interacting) and observe the **Mott insulator transition**.
+Ground state of the **2-site Hubbard model** via QPE. Sweep the $U/t$ ratio from 0 (free electrons) to 10 (strongly interacting) and observe the **crossover from delocalised to localised behaviour** (a true Mott phase transition emerges only in larger lattices, but the crossover is clearly visible even at 2 sites).
 
 The 2-site Hubbard model with 2 electrons has a 6-dimensional Hilbert space, representable with 4 qubits after Jordan-Wigner encoding. Small enough to run, large enough to show real physics:
 

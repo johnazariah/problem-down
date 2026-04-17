@@ -77,7 +77,7 @@ Now we need to tell the quantum computer what "good" means. We need to translate
 
 Physicists have a word for "the function that assigns a number to every state of a system": they call it a **Hamiltonian**. In physics, the Hamiltonian describes the total energy, and the system naturally evolves toward its lowest-energy state. We're going to borrow this idea: assign an "energy" to every colouring, where lower energy means more edges cut. Then "find the best colouring" becomes "find the lowest-energy state."
 
-This reframing is not just convenient; it's the key insight that makes quantum optimisation work. Quantum systems are *built* to find low-energy states. It's what they do naturally. By encoding our problem as a Hamiltonian, we're asking quantum mechanics to do what it already does best.
+This reframing is not just convenient; it's the key insight that makes quantum optimisation work. Quantum mechanics provides natural machinery for exploring energy landscapes — the Hamiltonian governs how a quantum system evolves, and the tools of quantum computing let us steer that evolution toward low-energy states. By encoding our problem as a Hamiltonian, we're harnessing this machinery for optimisation.
 
 Here's how we build the Hamiltonian for MaxCut. For each edge $(i, j)$, we need an expression that equals 1 when the edge is cut and 0 when it isn't. The trick uses a quantum operator called $Z$ (the Pauli-$Z$ operator, which gives $+1$ for $|0\rangle$ and $-1$ for $|1\rangle$):
 
@@ -149,7 +149,7 @@ So what good are the phases? This is where interference enters.
 
 **Box 3: The mixer** ($e^{-i\beta_k B}$). An $R_X(2\beta_k)$ rotation on every qubit. This "stirs" the superposition, causing amplitudes from different colourings to overlap and interfere. Because the cost phase tagged good colourings with different phases from bad ones, the mixer's stirring produces constructive interference for high-cut colourings and destructive interference for low-cut ones. After the mixer, the probabilities are no longer uniform: good solutions are more likely to appear when you measure.
 
-**Then repeat.** One round of cost-then-mix shifts the probabilities a little. Two rounds shift them more. Each round uses fresh angles ($\gamma_k$, $\beta_k$), so the algorithm can tag and stir with different intensities at each step — like a photographer adjusting focus and exposure between shots. As $p \to \infty$, QAOA converges to the exact optimum. In practice, you use a small $p$ and accept an approximate answer — hence "Approximate" in the name.
+**Then repeat.** One round of cost-then-mix shifts the probabilities a little. Two rounds shift them more. Each round uses fresh angles ($\gamma_k$, $\beta_k$), so the algorithm can tag and stir with different intensities at each step — like a photographer adjusting focus and exposure between shots. In the limit $p \to \infty$ with optimally chosen parameters, QAOA can in principle reach the exact optimum. In practice, you use a small $p$ and accept an approximate answer — hence "Approximate" in the name.
 
 But who chooses the $2p$ angles? You could try random values, but that's wasteful. Instead, QAOA uses a **variational loop** — a quantum-classical hybrid:
 

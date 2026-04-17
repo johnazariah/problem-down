@@ -19,7 +19,7 @@ In 1994, Peter Shor shattered this assumption.
 
 Shor showed that a quantum computer can factor $N$ in time *polynomial* in the number of digits; roughly $n^3$. Not sub-exponential. Not "somewhat faster." Polynomial. For a 2,000-digit number, the difference is between $10^{30}$ years and a few hours.
 
-Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** — given $g^x \bmod p = y$, find $x$ — which breaks Diffie-Hellman (the original public-key protocol) and **elliptic curve cryptography** (ECC), a modern alternative to RSA based on different mathematics. ECC was adopted precisely because its keys are shorter than RSA's for equivalent classical security, but it's in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~20 million noisy qubits needed for RSA-2048. (We'll define logical vs. physical qubits in the Reality Check.) Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
+Shor's algorithm doesn't just threaten RSA. His 1994 paper actually contains *two* quantum algorithms: one for **factoring** (which breaks RSA) and one for the **discrete logarithm problem** — given $g^x \bmod p = y$, find $x$ — which breaks Diffie-Hellman (the original public-key protocol) and **elliptic curve cryptography** (ECC), a modern alternative to RSA based on different mathematics. ECC was adopted precisely because its keys are shorter than RSA's for equivalent classical security, but it's in some ways *more* vulnerable: Roetteler, Naehrig, Svore, and Lauter (2017) estimate that breaking a 256-bit elliptic curve key requires only ~2,330 logical qubits, far fewer than the ~4,000 logical qubits needed for RSA-2048. (We'll define logical vs. physical qubits in the Reality Check.) Both algorithms use the same quantum ingredients: superposition, the QFT, and period-finding.
 
 Let's understand why; and how.
 
@@ -45,9 +45,9 @@ The naive approach; try dividing $N$ by every number up to $\sqrt{N}$; takes $O(
 
 The best classical algorithm, the General Number Field Sieve (GNFS), is far cleverer. It exploits algebraic number theory to find special relationships between numbers modulo $N$. Its running time is roughly:
 
-$$e^{1.923 \cdot n^{1/3} \cdot (\ln n)^{2/3}}$$
+$$\exp\!\left(1.923 \, (\ln N)^{1/3} \, (\ln \ln N)^{2/3}\right)$$
 
-where $n$ is the number of bits in $N$. This is *sub-exponential* — faster than brute force, but still far slower than polynomial. For RSA-2048 (a 617-digit number), the estimated classical effort is around $2^{112}$ operations; securely beyond reach for the foreseeable future.
+where $n$ is the number of bits in $N$ (equivalently, $n = \log_2 N$). This is *sub-exponential* — faster than brute force, but still far slower than polynomial. For RSA-2048 (a 617-digit number), the estimated classical effort is around $2^{112}$ operations; securely beyond reach for the foreseeable future.
 
 The fundamental issue: factoring has no known *polynomial-time* classical algorithm. There's no proof that one doesn't exist (factoring is not known to be NP-complete — meaning it hasn't been proven to be among the "hardest of the hard" problems), but decades of effort by the world's best mathematicians and computer scientists have failed to find one.
 
@@ -117,9 +117,9 @@ Why does the QFT work here? The deep reason is **phase kickback**; the mechanism
 
 When $f$ is computed in superposition, the output register becomes entangled with the input register. If we were to measure the output register and get some value $y_0$, the input register would collapse to an equal superposition of all $x$ values satisfying $f(x) = y_0$:
 
-$$\frac{1}{\sqrt{r}} \sum_{j=0}^{r-1} |x_0 + jr\rangle$$
+$$\frac{1}{\sqrt{M}} \sum_{j=0}^{M-1} |x_0 + jr\rangle$$
 
-where $x_0$ is the smallest such $x$. This state is periodic with period $r$; and the QFT converts periodicity in position to peaks in frequency.
+where $x_0$ is the smallest such $x$ and $M \approx 2^n/r$ is the number of terms (one for each multiple of $r$ that fits in the register). This state is periodic with period $r$; and the QFT converts periodicity in position to peaks in frequency.
 
 We don't actually need to measure the output register. The entanglement does the work for us: the QFT on the input register "sees" the period regardless of which $y_0$ the output register would have yielded. This is the subtlety that makes quantum period-finding work.
 
@@ -186,7 +186,7 @@ Using 4 qubits for the input register ($2^4 = 16$), the QFT concentrates amplitu
 | 8 | 1/2 | $r = 2$ (try again) |
 | 12 | 3/4 | $r = 4$ $\checkmark$ |
 
-Three out of four outcomes give us $r = 4$ (or a multiple).
+Two of the four outcomes directly return $r = 4$. The outcome $k = 8$ gives denominator 2 (a factor of $r$, not $r$ itself — we'd need to try again or check). The outcome $k = 0$ gives no information.
 
 ### Step 6–7: Extract factors
 

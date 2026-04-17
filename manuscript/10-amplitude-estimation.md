@@ -47,9 +47,7 @@ After $k_\text{opt} = \lfloor \pi / (4\theta) \rfloor$ iterations, the state is 
 
 ### The oracle circuit
 
-For the financial application (Unit 5), the oracle marks states where the stock price exceeds the strike: $f(x) = 1$ if $\text{price}(x) > K$.
-
-This is a **comparator circuit**: given a quantum register encoding a discretised price, flip an ancilla if the price exceeds a threshold. The ancilla, prepared in $|{-}\rangle$, converts the flip to a phase via kickback — the same trick from Deep-Dive 2.
+For the financial application (Unit 5), the oracle encodes the normalised payoff into an ancilla amplitude: given a quantum register encoding a discretised price $|x\rangle$, rotate an ancilla qubit by an angle proportional to $\max(\text{price}(x) - K, 0)$. The Grover iterator then amplifies the amplitude of the ancilla $|1\rangle$ state, and QAE extracts $\mathbb{E}[f(X)]$ — the expected payoff.
 
 ### The diffusion circuit
 

@@ -78,7 +78,7 @@ The creation operator becomes:
 
 $$a_i^\dagger \to \frac{1}{2}(X_i - iY_i) \otimes Z_{i-1} \otimes Z_{i-2} \otimes \cdots \otimes Z_0$$
 
-Here $\otimes$ is the **tensor product** — it combines operators on separate qubits into one multi-qubit operator. (The $Z_0 Z_1$ you saw in QAOA is shorthand for $Z_0 \otimes Z_1$.) The factor $\frac{1}{2}(X_i - iY_i)$ is called the **raising operator** — it flips $|0\rangle$ to $|1\rangle$ (creating an electron) while leaving $|1\rangle$ unchanged.
+Here $\otimes$ is the **tensor product** — it combines operators on separate qubits into one multi-qubit operator. (The $Z_0 Z_1$ you saw in QAOA is shorthand for $Z_0 \otimes Z_1$.) The factor $\frac{1}{2}(X_i - iY_i)$ is called the **raising operator** — it flips $|0\rangle$ to $|1\rangle$ (creating an electron) and annihilates $|1\rangle$ (gives zero — you can't create an electron in an orbital that's already occupied).
 
 The string of $Z$ operators is the price we pay for antisymmetry. Each $Z_k$ checks whether orbital $k$ is occupied; if it is, it contributes a minus sign. This enforces the rule that creating an electron "past" occupied orbitals picks up the right number of minus signs.
 
@@ -129,9 +129,7 @@ $$H X H = Z$$
 
 So: apply $H$ to both qubits, then measure in the computational basis. The result gives $\langle X_0 X_1 \rangle$.
 
-How do you measure $\langle Y_0 Y_1 \rangle$? Apply $S^\dagger H$ to each qubit, then measure. The $S$ gate adds a phase of $i$ to $|1\rangle$; its inverse $S^\dagger$ subtracts it. Together with $H$, this rotates the $Y$-measurement basis into the computational basis:
-
-$$S^\dagger H \cdot Y \cdot H S = Z$$
+How do you measure $\langle Y_0 Y_1 \rangle$? Apply $S^\dagger$ then $H$ to each qubit before measuring in the computational basis. This rotates the measurement axis from $Z$ to $Y$, letting you estimate $\langle Y \rangle$ from computational-basis measurement results.
 
 Each distinct measurement basis requires a separate circuit execution. This is the **measurement overhead**; for $T$ Pauli terms in the Hamiltonian, you need at least $T$ different circuit runs (reducible by grouping commuting terms).
 

@@ -47,7 +47,7 @@ The mathematical framework:
 3. **Solve the active space quantumly**: run VQE (Unit 3) or QPE (Unit 7) on the effective Hamiltonian; a much smaller problem than the full system
 4. **Self-consistently update**: the active-space solution modifies the environment, which modifies the effective Hamiltonian, iterate until convergence
 
-This is known as **DMET** (Density Matrix Embedding Theory) or **active-space VQE/QPE**, depending on the specific formulation.
+This approach — embedding a quantum-solved active space inside a classically-solved environment — goes by several names. **DMET** (Density Matrix Embedding Theory) is one well-developed framework; **active-space VQE/QPE** is the broader idea.
 
 ### The full pipeline
 
@@ -61,7 +61,7 @@ Every step in this pipeline has been introduced in an earlier unit. This chapter
 
 The active space is where the computational savings come from; and where the physical insight enters.
 
-For CO₂ capture on a metal oxide surface, the active site might be an iron or copper atom with its nearest-neighbour oxygen atoms; perhaps 6 metal d-orbitals and 10 ligand orbitals: 16 active orbitals. After encoding and tapering, this requires ~12–16 qubits and circuits of moderate depth; feasible on near-term or early fault-tolerant hardware.
+For CO₂ capture on a metal oxide surface, the active site might be an iron or copper atom with its nearest-neighbour oxygen atoms — perhaps 6 metal d-orbitals and 10 ligand orbitals: 16 spatial orbitals (32 spin-orbitals after accounting for spin up and down). After Jordan-Wigner encoding: 32 qubits. After tapering: roughly 20–24 qubits — feasible on near-term or early fault-tolerant hardware.
 
 The key point: **you don't need to simulate the whole surface.** The quantum computer handles the 16 orbitals where strong correlation matters. The classical computer handles the other 500 orbitals where mean-field methods are perfectly adequate. This division of labour is what makes quantum-classical embedding practical.
 
