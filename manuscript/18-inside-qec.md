@@ -33,6 +33,8 @@ A general state $\alpha|0\rangle + \beta|1\rangle$ becomes $\alpha|000\rangle + 
 
 The encoding circuit uses two CNOTs:
 
+![Bit-flip code encoding: two CNOTs spread the logical qubit across three physical qubits](../figures/qec-bitflip-encode.png)
+
 1. Start with the data qubit $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$ and two ancillas in $|0\rangle$
 2. CNOT from qubit 1 to qubit 2
 3. CNOT from qubit 1 to qubit 3
@@ -46,6 +48,8 @@ Suppose a bit flip hits qubit 2: $\alpha|000\rangle + \beta|111\rangle \to \alph
 We need to detect *which* qubit flipped without learning whether the state is $|0\rangle_L$ or $|1\rangle_L$. The trick: measure the **parity** of pairs of qubits, not the qubits themselves.
 
 Two **syndrome measurements**:
+
+![Syndrome extraction circuit: CNOTs compute parity of data qubit pairs into ancillas, which are then measured](../figures/qec-syndrome-circuit.png)
 
 | Measurement | What it checks | No error | Qubit 1 flipped | Qubit 2 flipped | Qubit 3 flipped |
 |:---:|:---|:---:|:---:|:---:|:---:|
@@ -84,6 +88,8 @@ The two codes are related by Hadamard: apply $H$ to every qubit, and the bit-fli
 ## The Shor code: correcting everything
 
 Peter Shor's 9-qubit code (1995) concatenates both ideas: encode against phase flips first (3 physical qubits per block), then encode each block against bit flips (3 blocks of 3 = 9 qubits total).
+
+![Shor [[9,1,3]] encoding circuit: phase-flip encoding (CNOTs + Hadamards) followed by bit-flip encoding within each block](../figures/qec-shor-encode.png)
 
 $$|0\rangle_L = \frac{1}{2\sqrt{2}}(|000\rangle + |111\rangle)(|000\rangle + |111\rangle)(|000\rangle + |111\rangle)$$
 $$|1\rangle_L = \frac{1}{2\sqrt{2}}(|000\rangle - |111\rangle)(|000\rangle - |111\rangle)(|000\rangle - |111\rangle)$$
@@ -132,6 +138,8 @@ The overhead — the ratio $n/k$ — is the price of protection.
 
 The surface code arranges physical qubits on a 2D grid. **Data qubits** sit on the edges; **syndrome qubits** sit on the vertices and faces. Each syndrome qubit measures the parity of its neighbouring data qubits — either $Z$-parity (detecting bit flips) or $X$-parity (detecting phase flips).
 
+![Surface code layout (distance 3): data qubits (black dots) interleaved with X-check plaquettes (green) and Z-check plaquettes (purple), all connected by nearest-neighbour edges](../figures/qec-surface-code.png)
+
 The surface code's advantages:
 
 - **Locality.** Every syndrome measurement involves only nearest-neighbour interactions. No long-range connections needed. This matches the connectivity of superconducting and ion-trap hardware.
@@ -150,6 +158,8 @@ Most quantum gates — $H$, $S$, CNOT, and all Pauli gates — can be implemente
 The $T$ gate ($\pi/8$ rotation) cannot be done transversally in any code that detects all single-qubit errors. This is the **Eastin-Knill theorem**: no code can implement a universal gate set entirely transversally.
 
 The workaround: **magic state distillation**. Prepare a special auxiliary state ($T|+\rangle$), purify it through a resource-intensive distillation protocol, and use it to implement $T$ via gate teleportation. Each logical $T$ gate requires ~15× more physical qubits and operations than a Clifford gate.
+
+![Magic state distillation: 7 noisy copies of the T-state are consumed to produce 1 clean copy, at ~15× overhead per logical T gate](../figures/qec-t-gate-distillation.png)
 
 This is why algorithms are optimised to minimise T-gate count. And it's why the resource tables in Units 2 and 7 report T-gates rather than total gates — the T-gates dominate the physical cost.
 

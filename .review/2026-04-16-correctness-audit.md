@@ -418,6 +418,29 @@ The strongest blockers are one remaining book-identity drift in the conclusion, 
 
    I would not call the structure freeze complete while one of the canonical front/back matter files still carries the previous title.
 
+## Phase 6 publication-rights addendum - 2026-04-17
+
+I reviewed the repo's public-rights posture after the decision to preserve traditional-publisher optionality.
+
+### Result
+
+No new manuscript-correctness issues here, but two production-level changes were the right call:
+
+- removing `project.license: All Rights Reserved` from `myst.yml`, because MyST treats that field as SPDX-style metadata and the old value only generated a warning without strengthening the legal posture; and
+- replacing that machine-readable field with plain-language rights and publication-status notices in the reader-facing front matter and README.
+
+### Current publication posture
+
+The repo is now aligned to a safer publisher-first position:
+
+- the manuscript, figures, and rendered full-book outputs are explicitly framed as unpublished material;
+- the build pipeline is framed as an internal review / validation / submission toolchain rather than an automatic signal that the full book should be public; and
+- the recommended public surface, if needed before publisher outreach concludes, is limited to companion notebooks, figures, excerpts, or a project landing page rather than the full stitched Jupyter Book.
+
+### Assessment
+
+This is the correct production move if preserving optionality for a traditional publisher is currently more important than launching a public web edition.
+
 2. **The README currently overclaims notebook fidelity relative to the repo's own notebook source of truth.**
 
    `README.md` says: "Every unit has a Jupyter notebook that runs the algorithm on a real quantum backend. These are the same algorithms described in the text, shrunk to a size that fits on current hardware."

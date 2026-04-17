@@ -38,6 +38,14 @@ The code in those notebooks is intentionally pedagogy-friendly rather than produ
 - [**The Quokka Cookbook**](https://github.com/johnazariah/quokka-cookbook) — runnable QASM recipes for Quokka. This book tells you *why*; the Cookbook shows you *how*.
 - [**From Molecules to Qubits**](https://github.com/johnazariah/encodings-book) — fermion-to-qubit encodings for quantum chemistry. Units 3, 7, and 8 bridge to this.
 
+## Rights and publication status
+
+This repository contains a working manuscript currently being prepared for publication.
+
+The manuscript text, figures, and rendered book outputs are unpublished material and remain all rights reserved. The HTML and PDF build commands exist for internal review, technical validation, and submission packaging; they are not, by themselves, a decision to publish the full book on the open web.
+
+If public-facing material is released while publisher options are still being preserved, it should be limited to companion notebooks, figures, sample excerpts, or project-overview pages rather than the full stitched manuscript.
+
 ## Building
 
 ```bash

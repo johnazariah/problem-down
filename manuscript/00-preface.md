@@ -10,6 +10,10 @@ For each problem, we ask: what makes it hard? Not "hard" in the vague sense, but
 
 Sometimes the answer is yes. Sometimes the answer is "maybe, if hardware improves by two orders of magnitude." Sometimes the answer is "we honestly don't know yet." We give you all three, clearly labelled.
 
+## Publication status
+
+This manuscript is being prepared for publication. Unless explicitly stated otherwise, the text, figures, and layout in this repository are unpublished material shared for review, technical validation, and submission only. All rights are reserved by the author.
+
 ## How this book is structured
 
 The book is organised into eight **units**, each built around one industry problem. Every unit has two parts:

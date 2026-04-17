@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-17
 **Status:** Live plan. Phases 1-5 closed; Phase 6 in progress.
-**Scope:** Take the manuscript from a reviewed draft to a publishable web-first, print-capable book.
+**Scope:** Take the manuscript from a reviewed draft to a publishable, submission-ready book with strong private HTML and PDF outputs.
 
 Historical note: this file previously tracked the T0 / T0.5 / T1 / T2 review backlog. That review work is now captured in the addenda to `.review/2026-04-16-correctness-audit.md`. This file is now the forward-looking production plan.
 
@@ -52,7 +52,7 @@ The book is ready for release when all of the following are true:
 ### Decisions to lock (30-minute session)
 
 - Confirm the current title/subtitle in `myst.yml`: **The Quantum Bottleneck** / **Real Problems and their Quantum Solutions**.
-- Confirm that the website is the source-of-truth reading experience, with the PDF treated as a polished derivative.
+- Confirm that the HTML build and PDF are maintained as internal review and submission artifacts until the release strategy changes.
 - Confirm that `manuscript/17-error-correction.md` remains a numbered late-book chapter (recommendation: keep it — it earns its place as the foundation for every Reality Check).
 - Freeze the current table of contents as represented in `myst.yml` and mirrored in `README.md`.
 
@@ -92,7 +92,7 @@ For every chapter, verify the following:
 1. `manuscript/00-preface.md`
 2. `manuscript/07-machine-learning.md`
 3. `manuscript/16-quantum-embedding.md`
-4. `manuscript/18-conclusion.md`
+4. `manuscript/19-conclusion.md`
 5. Units 1–3 and their deep dives
 6. Units 5–8 and their deep dives
 7. Full-book cadence pass in output form
@@ -234,6 +234,13 @@ Notebook work should only be pulled back into this main plan if it forces one of
 
 **Goal:** turn a strong manuscript into a finished book object.
 
+### Distribution posture
+
+- Keep the full HTML build and full PDF private while preserving traditional-publisher optionality.
+- Treat the build pipeline as an internal review, validation, and submission system rather than a public-release pipeline.
+- If public material is needed, release only companion notebooks, selected figures, sample excerpts, or a project landing page outside the core manuscript surface.
+- Revisit a public full-book release only after publisher outreach is complete, a publisher explicitly permits it, or the strategy changes from publisher-first to web-first.
+
 ### Tasks
 
 - Rename GitHub repo from `problem-down` to `quantum-bottleneck` and update all internal references (manuscript, notebooks, copilot-instructions, README, conclusion).
@@ -283,6 +290,8 @@ Allow **10 calendar days** for reader feedback. After that, triage what you have
 ## Phase 8 — Release Candidate
 
 **Goal:** freeze scope and ship.
+
+If the project stays on the publisher-first path, treat this as a submission-ready candidate rather than a public web launch.
 
 ### RC rules
 
