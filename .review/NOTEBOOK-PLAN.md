@@ -98,7 +98,7 @@ Every notebook must clear these gates in order:
 | `02-cryptography.ipynb` | passing | Red | compiled period-finding toy with internal inconsistency | `Toy demonstration` unless a larger rewrite earns more | rewrite or sharply reframe so it stops presenting itself as faithful Shor |
 | `03-drug-discovery.ipynb` | passing | Amber | useful VQE anatomy demo that overclaims geometry range and measurement fidelity | `Toy demonstration` or single-geometry `Faithful worked example` | narrow the promise or implement the missing XX/YY measurement path |
 | `04-machine-learning.ipynb` | passing | Amber | conceptually strong and probably close to done | `Faithful worked example` | validate kernel behavior, links, and quantitative claims, then add semantic coverage |
-| `05-finance.ipynb` | passing | Red | title and framing overpromise relative to a Grover-style toy | `Toy demonstration` unless rewritten into real amplitude estimation | rewrite or relabel so it no longer claims amplitude estimation it does not perform |
+| `05-finance.ipynb` | passing | Green | rewritten as an honest classical-pricing notebook plus compiled toy QAE phase readout for exercise probability | `Toy demonstration` | locked unless later promoted to full payoff-encoding amplitude estimation |
 | `06-supply-chains.ipynb` | passing | Red | readable toy with untrustworthy QUBO-to-Ising mapping and scale framing | `Toy demonstration` | repair the mapping and explicitly frame it as a micro-example |
 | `07-materials-science.ipynb` | passing | Green | rewritten as an honest compiled phase-readout notebook anchored to the 2-site Hubbard benchmark | `Toy demonstration` | locked unless later promoted to faithful controlled-time-evolution Hubbard simulation |
 | `08-climate-energy.ipynb` | passing | Amber | strong capstone structure with inherited analytical shortcuts | `Pipeline illustration` unless missing measurement work is implemented | relabel as a pipeline demonstration and align claims with what is actually computed |
@@ -164,12 +164,11 @@ Every notebook must clear these gates in order:
 
 ### Now
 
-1. Rewrite or relabel `05-finance.ipynb` so it stops claiming amplitude estimation it does not implement.
-2. Reframe `02-cryptography.ipynb` as a compiled toy or rebuild it to remove the internal inconsistency.
-3. Repair the QUBO-to-Ising story in `06-supply-chains.ipynb`.
+1. Reframe `02-cryptography.ipynb` as a compiled toy or rebuild it to remove the internal inconsistency.
+2. Repair the QUBO-to-Ising story in `06-supply-chains.ipynb`.
+3. Narrow or deepen `03-drug-discovery.ipynb` until the VQE claims are true.
 
 ### After that
 
-4. Narrow or deepen `03-drug-discovery.ipynb` until the VQE claims are true.
-5. Lock the capstone framing for `08-climate-energy.ipynb`.
-6. Promote `01-logistics.ipynb` and `04-machine-learning.ipynb` to green.
+4. Lock the capstone framing for `08-climate-energy.ipynb`.
+5. Promote `01-logistics.ipynb` and `04-machine-learning.ipynb` to green.

@@ -9,11 +9,9 @@ Netflix had roughly 480,000 users and 18,000 movies. Each user-movie pair is a p
 
 Machine learning at scale is fundamentally a problem of high-dimensional geometry. A classifier draws a boundary in feature space separating "cat" from "dog," "spam" from "not spam," "buy" from "don't buy." The more dimensions, the more expressive the boundary can be; but the harder it is to find.
 
-**Kernel methods** are the mathematical engine behind this. A kernel function $K(x, x')$ computes the similarity between two data points — effectively computing an inner product in a high-dimensional (possibly infinite-dimensional) feature space *without ever explicitly constructing that space*. This is the famous **kernel trick**, and it's what makes **Support Vector Machines** (SVMs) powerful: an SVM finds the boundary that maximises the *margin* (the gap between the boundary and the nearest data points of each class), and it needs only kernel values — pairwise similarities — not the raw feature vectors.
+In a space with $10^8$ dimensions, even *defining* what "similar" means becomes a computational challenge. The classical solution is the **kernel trick**: a kernel function $K(x, x')$ computes the similarity between two data points by implicitly working in a high-dimensional feature space *without ever explicitly constructing it*. This is what makes **Support Vector Machines** (SVMs) powerful — an SVM finds the boundary that maximises the *margin* (the gap between the boundary and the nearest data points of each class), and it needs only pairwise similarities, not the raw feature vectors.
 
-But some useful feature spaces are so large that even the kernel trick breaks down. The computation of certain kernels scales poorly with the number of features or requires evaluating functions that are classically intractable.
-
-A quantum computer operates natively in an exponentially large space; the Hilbert space of $n$ qubits has $2^n$ dimensions. What if that's the feature space?
+But some useful feature spaces are so large that even the kernel trick breaks down. What if the feature space is exponentially large — and the similarity measure is classically intractable?
 
 
 ## The Bottleneck
